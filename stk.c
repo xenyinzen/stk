@@ -16,7 +16,7 @@ static void stk_InternalEvent(SDL_Event *event);
 /* Initial the video surface and the basic structures of STK.
  *
  **/
-int stk_init(void)
+int stk_init()
 {
 	
 	if ( SDL_GetVideoSurface() == NULL)
@@ -29,6 +29,8 @@ int stk_init(void)
 		return 0;
 	if (stk_widget_init() == 0)
 		return 0;
+	if (stk_widget_initType() == 0)
+		return 0;
 	/*
 	if (stk_font_init() == 0)
 		return 0;
@@ -39,7 +41,7 @@ int stk_init(void)
 	return 1;
 }
 
-int stk_Main(void)
+int stk_Main()
 {
 	SDL_Event event;
 	
@@ -67,12 +69,15 @@ static int stk_pushEvent(SDL_Event *event)
 		return 0;
 	
 	switch (event->type) {
+	// close the window
 	case SDL_QUIT:
 		stk_window_close();
 		return 0;
+	// ignore, jump over
 	case SDL_VIDEOEXPOSE:
 	case SDL_ACTIVEEVENT:
 		return 1;
+	// enter internal event handler
 	case STK_EVENT:
 		stk_InternalEvent(event);
 		break;
@@ -80,14 +85,16 @@ static int stk_pushEvent(SDL_Event *event)
 		break;	
 	}
 	
+	// get rid of the mouse motion events from the event queen
 	while (SDL_PeepEvents(&e, 1, SDL_GETEVENT, SDL_MOUSEMOTIONMASK) > 0);
 	
+	// go to window event dispather
 	return stk_window_Event(event);
 } 
 
 static void stk_InternalEvent(SDL_Event *event)
 {
-	STK_WIDGET *widget;
+	STK_Widget *widget;
 	SDL_Rect *rect;
 	switch (event->user.code) {
 	case STK_WIDGET_HIDE:
@@ -105,6 +112,7 @@ static void stk_InternalEvent(SDL_Event *event)
 		widget = event->user.data1;
 		widget->flags |= WIDGET_VISIBLE;
 		if (!(widget->flags & WIDGET_REALIZED)) {
+			printf("stk_InternalEvent: STK_WIDGET_SHOW: widget->flags 0x%x\n", widget->flags);
 			widget->flags |= WIDGET_REALIZED;
 			stk_window_addWidget(widget);
 		}
@@ -120,14 +128,22 @@ static void stk_InternalEvent(SDL_Event *event)
 			stk_widget_draw(widget);
 		break;
 	case STK_WINDOW_REDRAW:
-		stk_window_redraw(event->user.data1);
+		//stk_window_redraw(event->user.data1);
+		stk_window_redraw();
 		break;
 	case STK_WINDOW_REALIZE:
-		stk_window_realize(event->user.data1);
+		//stk_window_realize(event->user.data1);
+		stk_window_realize();
 		break;
 	default:
 		break;
 	}
 
 
+}
+
+int stk_quit()
+{
+	
+	return 0;
 }

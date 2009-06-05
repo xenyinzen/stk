@@ -3,6 +3,7 @@
 
 #include "stk.h"
 #include "stk_widget.h"
+#include "stk_window.h"
 
 static SDL_mutex *my_mutex;
 // this is the global widget type array: IMPORTANT
@@ -12,6 +13,14 @@ static struct STK_WidgetType g_wlist[MAX_WIDGET_TYPE];
 // used to register some signal name into global signal list
 int stk_widget_init()
 {
+	STK_WidgetFuncs f;
+	
+	// register widget type
+	f.draw = stk_label_draw;
+	stk_widget_registerType("Label", &f);
+	
+
+	// register signal for basic widget
 	stk_signal_new("mousebuttondown");
 	stk_signal_new("mousebuttonup");
 	stk_signal_new("mousemotion");
@@ -29,13 +38,15 @@ int stk_widget_init()
 }
 
 // draw all widgets on a window
-int stk_widget_drawAll(STK_Widget *window)
+int stk_widget_drawAll()
 {
 	F_Widget_Draw draw;
 	STK_WidgetListNode *wlist;
 	STK_Widget *widget;
+	STK_Window *win = stk_window_get();
 	
-	wlist = window->widget_list;
+	// get the widget_list pointer
+	wlist = win->widget_list;
 	if (!wlist) {
 		fprintf(stderr, "No widgets to draw!\n");
 		return 0;
@@ -48,14 +59,15 @@ int stk_widget_drawAll(STK_Widget *window)
 			// get the specified widget's draw function
 			draw = stk_widget_getDraw(widget);
 			if (draw) {
-				// ?? need to redefine later
-				draw(widget);	
+				// do really draw on each widgets
+				draw(widget, NULL);	
 			}
 		// go to draw next widget
 		wlist = wlist->next;
 	}
 	SDL_mutexV(my_mutex);
-	SDL_UpdateRect(window->surface, 0, 0, 0, 0);
+	// update whole window surface
+	SDL_UpdateRect(win->widget.surface, 0, 0, 0, 0);
 		
 	return 1;
 }
@@ -88,7 +100,7 @@ int stk_widget_Event(STK_Widget *widget, SDL_Event *event)
 	return 1;
 }
 
-// 
+// set dimension rectagle for 'widget'
 int stk_widget_setDims(STK_Widget *widget, Sint16 x, Sint16 y, Sint16 w, Sint16 h)
 {
 	STK_Window *win;
@@ -98,14 +110,17 @@ int stk_widget_setDims(STK_Widget *widget, Sint16 x, Sint16 y, Sint16 w, Sint16 
 	if (!win) 
 		return 0;
 	
+	// fill up rect structure
 	widget->rect.x = x;
 	widget->rect.y = y;
 	widget->rect.w = w;
 	widget->rect.h = h;
 	
-	if (widget->surface)
+	// widget has a surface, then free it first
+ 	if (widget->surface)
 		SDL_FreeSurface(widget->surface);
 	
+	// create new sub surface on 'win' surface for 'widget'
 	stk_window_createWidgetSurface(widget);
 	
 	return 1;
@@ -114,9 +129,11 @@ int stk_widget_setDims(STK_Widget *widget, Sint16 x, Sint16 y, Sint16 w, Sint16 
 int stk_widget_close(STK_Widget *widget)
 {
 	// here, to free the widget and its child widgets
+	// later finish it
 
 }
 
+// check whether this 'widget' is in the widget list yet
 int stk_widget_isActive(STK_Widget *widget)
 {
 	STK_Window *win = stk_window_get();
@@ -135,7 +152,8 @@ int stk_widget_isActive(STK_Widget *widget)
 }
 
 
-
+// The main drawing function to widget, all windows and widgets 
+// should be drawn by this function
 int stk_widget_draw(STK_Widget *widget)
 {
 	STK_WidgetListNode *t;
@@ -144,41 +162,54 @@ int stk_widget_draw(STK_Widget *widget)
 	SDL_Rect inter;
 	int doupdate = 1;
 	
+	printf("Enter function stk_widget_draw.\n");
+	
 	if (!win)
 		return 0;
 	t = win->widget_list;
 	
 	if (win->visible) {
+		// walk along the widget list on 'win'
 		while (t) {
+			// only compare with those visible widgets
 			if (t->widget->flags & WIDGET_VISIBLE) {
-				if (stk_rect_intersect(&widget->rect, &t->widget->rect, &inter)) {
+				// judge if it is intersecting relation between specific widget and other widgets
+				if (stk_rect_isIntersect(&widget->rect, &t->widget->rect, &inter)) {
+					// get the specific draw function of that widget
 					draw = stk_widget_getDraw(widget);
 					if (draw) 
+						// only update the intersecting part
 						draw(t->widget, &inter);
 					else
 						doupdate = 0;
 				}
-				else if (stk_rect_inside(&widget->rect, &t->widget->rect)) {
+				// judge if 'widget' is inside the list widget
+				else if (stk_rect_isInside(&widget->rect, &t->widget->rect)) {
+					draw = stk_widget_getDraw(widget);
+					if (draw)
+						// only draw 'widget' rect 
+						draw(t->widget, &widget->rect);
+					else
+						doupdate = 0;
+				}
+				// judge if list widget is inside the 'widget'
+				else if (stk_rect_isInside(&t->widget->rect, &widget->rect)) {
 					draw = stk_widget_getDraw(widget);
 					if (draw)
 						draw(t->widget, &widget->rect);
 					else
 						doupdate = 0;
 				}
-				else if (stk_rect_inside(&t->widget->rect, &widget->rect)) {
-					draw = stk_widget_getDraw(widget);
-					if (draw)
-						draw(t->widget, &widget->rect);
-					else
-						doupdate = 0;
-				}
+				// if two widget have no overlap relation, do nothing
 				else {}
 			}
-			t = t->next
+			t = t->next;
 		}
 		
+		// after drawing, we need to update screen
 		if (doupdate) {
 			SDL_Rect update;
+			// get the absolute coordinates of widget.
 			update.x = widget->rect.x + win->widget.rect.x;
 			update.y = widget->rect.y + win->widget.rect.y;
 			update.w = widget->rect.w;
@@ -186,12 +217,19 @@ int stk_widget_draw(STK_Widget *widget)
 			SDL_UpdateRect(win->widget.surface, update.x, update.y, update.w, update.h);			
 		}
 	}
+
+	printf("Enter function stk_widget_draw.\n");
+
 	return 1;
 }
 
+/** ================================================
 
+                     Widget Events
 
+  =============================================  **/
 
+// redraw event
 int stk_widget_EventRedraw(STK_Widget *widget)
 {
 	SDL_Event event;
@@ -209,6 +247,7 @@ int stk_widget_EventRedraw(STK_Widget *widget)
 	return 1;
 }
 
+// hide event
 int stk_widget_EventHide(STK_Widget *widget)
 {
 	SDL_Event event;
@@ -224,6 +263,7 @@ int stk_widget_EventHide(STK_Widget *widget)
 	return 1;
 }
 
+// show event
 int stk_widget_EventShow(STK_Widget *widget)
 {
 	SDL_Event event;
@@ -241,8 +281,13 @@ int stk_widget_EventShow(STK_Widget *widget)
 	return 1;
 }
 
+/** ================================================
 
+                 Utilities Function
 
+  =============================================  **/
+
+// check the mouse pointer is in the area of 'widget'
 int stk_widget_isInside(STK_Widget *widget, int x, int y)
 {
 	if (x > widget->rect.x)
@@ -256,14 +301,15 @@ int stk_widget_isInside(STK_Widget *widget, int x, int y)
 									if (y < (widget->clip.y + widget->clip.h))
 										return 1;
 					}
-					else 
-						return 1;				
+					else {
+						return 0;
+					}
 				}
 
 	return 0;
 }
 
-
+// check whether rect A is inside rect B
 int stk_rect_isInside(const SDL_Rect *A, const SDL_Rect *B)
 {
 	if (A->x >= B->x)
@@ -276,6 +322,8 @@ int stk_rect_isInside(const SDL_Rect *A, const SDL_Rect *B)
 	return 0;
 }
 
+// check whether rect A and rect B is intersecting
+// if is, the intersecting part info is filled into 'in'
 int stk_rect_isIntersect(const SDL_Rect *A, const SDL_Rect *B, SDL_Rect *in)
 {
 	Sint16 Amin, Amax, Bmin, Bmax;
@@ -307,7 +355,7 @@ int stk_rect_isIntersect(const SDL_Rect *A, const SDL_Rect *B, SDL_Rect *in)
 	return (in->w && in->h);
 }
 
-
+// widget type array initialization
 int stk_widget_initType()
 {
 	int i;
@@ -348,20 +396,25 @@ int stk_widget_getTypeByName( char *id )
 	return 0;
 }
 
-
+// register a new widget type
+// should supply two parameters: 
+// 1. widget type name;
+// 2. a set of widget functions
 int stk_widget_registerType( char *id, STK_WidgetFuncs *funcs )
 {
 	int i;
 	for (i=0; i<MAX_WIDGET_TYPE; i++) {
+		// when register a new type, should compare it to every old type name to avoid duplicating.
 		if (g_wlist[i].id) {
 			if (!strcmp(g_wlist[i].id, id)) {
 				fprintf(stderr, "Widget type [%s] has been registered.\n", id);
 				return i;
 			}
 		}
+		// to the end of the widget type list, add new type to that global array
 		else {
 			g_wlist[i].id = id;
-			g_wlist[i].funcs = funcs;
+			g_wlist[i].funcs = *funcs;
 			
 			return i;			
 		}
@@ -370,17 +423,20 @@ int stk_widget_registerType( char *id, STK_WidgetFuncs *funcs )
 	return 0;
 }
 
+// get the type name of that widget
 char *stk_widget_getName( STK_Widget *widget )
 {
 	return g_wlist[widget->type].id;
-
+	// or:  return widget->name;
 }
 
+// get the draw function of that specific widget
 F_Widget_Draw stk_widget_getDraw( STK_Widget *widget)
 {
 	return g_wlist[widget->type].funcs.draw;
 }
 
+// get the set of functions of that widget
 STK_WidgetFuncs stk_widget_getFuncs(STK_Widget *widget)
 {
 	return g_wlist[widget->type].funcs;
