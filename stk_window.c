@@ -33,7 +33,7 @@ STK_Window *stk_window_new( Sint16 x, Sint16 y, Sint16 width, Sint16 height)
 	
 	// create window surface
 	win->widget.surface = stk_window_createSubSurface(video, &(win->widget.rect));
-	win->bgcolor = SDL_MapRGB(win->widget.surface->format, 0xd4, 0xd4, 0xd4);
+	win->bgcolor = 0x00d4d4d4;
 	
 	// set 'g_window' to default window
 	g_window = win;
@@ -51,9 +51,11 @@ int stk_window_open()
 	window->visible = 1;
 	
 	// realize the detailed structure
-	stk_window_EventRealize(window);
+	fprintf(stderr, "Ready to realize the window.\n");
+	stk_window_EventRealize();
 	// draw window and display on screen
-	stk_window_EventRedraw(window);
+	fprintf(stderr, "Ready to redraw the window.\n");
+	stk_window_EventRedraw();
 	
 	return 1;
 }
@@ -149,8 +151,6 @@ int stk_window_getMouseState( int *x, int *y )
 // create the surface for specific widget
 int stk_window_createWidgetSurface(STK_Widget *widget)
 {
-	printf("Enter function stk_window_createWidgetSurface\n");
-	
 	STK_Window *win = stk_window_get();
 	// if the location of widget excced the bounary of win, return directly
 	if (widget->rect.x > win->widget.rect.x + win->widget.rect.w)
@@ -158,19 +158,17 @@ int stk_window_createWidgetSurface(STK_Widget *widget)
 	if (widget->rect.y > win->widget.rect.y + win->widget.rect.h)
 		return 0;
 	
-	if (widget->rect.x + widget->rect.w > win->widget.rect.w )
-		widget->rect.w = win->widget.rect.w - widget->rect.x;
+	if (widget->rect.x + widget->rect.w > win->widget.rect.x + win->widget.rect.w )
+		widget->rect.w = win->widget.rect.x + win->widget.rect.w - widget->rect.x;
 	
-	if (widget->rect.y + widget->rect.h > win->widget.rect.h )
-		widget->rect.h = win->widget.rect.h - widget->rect.y;
+	if (widget->rect.y + widget->rect.h > win->widget.rect.y + win->widget.rect.h )
+		widget->rect.h = win->widget.rect.y + win->widget.rect.h - widget->rect.y;
 
 	widget->surface = stk_window_createSubSurface(win->widget.surface, &(widget->rect));
-	printf("stk_window_createWidgetSurface: widget->surface: 0x%x\n", widget->surface);
 	
-	// ?? why do this step?
+	// ?? why do this step?: to realize that widget using its private method
 	stk_signal_emit(widget, "realize", NULL);
 	
-	printf("Leave function stk_window_createWidgetSurface\n");
 	return 1;
 }
 
@@ -179,7 +177,6 @@ int stk_window_addWidget(STK_Widget *widget)
 {
 	STK_WidgetListNode *item;
 	
-	printf("Enter function stk_window_addWidget\n");
 	STK_Window *win = stk_window_get();
 	if (!win)
 		return 0;
@@ -188,8 +185,6 @@ int stk_window_addWidget(STK_Widget *widget)
 	item->widget = widget;
 	if (widget->surface == NULL)
 		stk_window_createWidgetSurface(widget);
-	printf("widget->surface 0x%x\n", widget->surface);
-	
 	
 	// if 'widget' is the first widget in the widget list
 	if (win->widget_list == NULL) {
@@ -210,7 +205,6 @@ int stk_window_addWidget(STK_Widget *widget)
 	// show widget
 	// stk_signal_emit(widget, "show", NULL);
 	
-	printf("Leave function stk_window_addWidget\n");
 	return 1;
 }
 
@@ -285,20 +279,22 @@ int stk_window_realize()
 // window redraw function
 int stk_window_redraw()
 {
+	SDL_Surface *video = SDL_GetVideoSurface();
 	STK_Window *win = stk_window_get();
 	if (!win)
 		return 0;
 		
 	win->visible = 1;
 	
-	printf("win->bgcolor: %x\n", win->bgcolor);
-	
 	// fill up background
 	SDL_FillRect(win->widget.surface, NULL, win->bgcolor);
 	// redraw all widget on the window
 	stk_widget_drawAll();
 	// update it on the screen
-	SDL_UpdateRect(win->widget.surface, 0, 0, 0, 0);
+	// SDL_UpdateRect(win->widget.surface, 0, 0, 0, 0);  // why using this method not work?
+	stk_window_updateRect(win->widget.rect.x, win->widget.rect.y, win->widget.rect.w, win->widget.rect.h);
+	
+	return 0;
 }
 
 
@@ -441,3 +437,11 @@ int stk_window_drawRect(STK_Window *win, Sint16 x1, Sint16 y1, Sint16 x2, Sint16
 	return stk_prim_rectColor(win->widget.surface, x1, y1, x2, y2, color);
 }
 
+int stk_window_updateRect( Sint16 x, Sint16 y, Sint16 w, Sint16 h)
+{
+	SDL_Surface *video = SDL_GetVideoSurface();
+	
+	SDL_UpdateRect(video, x, y, w, h);
+	
+	return 1;
+}

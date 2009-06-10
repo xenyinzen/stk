@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "SDL.h"
 #include "stk.h"
 #include "stk_widget.h"
 #include "stk_window.h"
+#include "stk_label.h"
 
 static SDL_mutex *my_mutex;
 // this is the global widget type array: IMPORTANT
@@ -13,13 +15,6 @@ static struct STK_WidgetType g_wlist[MAX_WIDGET_TYPE];
 // used to register some signal name into global signal list
 int stk_widget_init()
 {
-	STK_WidgetFuncs f;
-	
-	// register widget type
-	f.draw = stk_label_draw;
-	stk_widget_registerType("Label", &f);
-	
-
 	// register signal for basic widget
 	stk_signal_new("mousebuttondown");
 	stk_signal_new("mousebuttonup");
@@ -33,6 +28,10 @@ int stk_widget_init()
 
 	// for button
 	stk_signal_new("clicked");
+
+
+
+	stk_label_registerType();
 
 	return 1;
 }
@@ -67,7 +66,8 @@ int stk_widget_drawAll()
 	}
 	SDL_mutexV(my_mutex);
 	// update whole window surface
-	SDL_UpdateRect(win->widget.surface, 0, 0, 0, 0);
+	stk_window_updateRect(0, 0, 0, 0);
+	//SDL_UpdateRect(win->widget.surface, 0, 0, 0, 0);
 		
 	return 1;
 }
@@ -130,6 +130,8 @@ int stk_widget_close(STK_Widget *widget)
 {
 	// here, to free the widget and its child widgets
 	// later finish it
+	STK_Widget *wl = stk_window_getWidgetList();
+	
 
 }
 
@@ -162,16 +164,14 @@ int stk_widget_draw(STK_Widget *widget)
 	SDL_Rect inter;
 	int doupdate = 1;
 	
-	printf("Enter function stk_widget_draw.\n");
-	
 	if (!win)
 		return 0;
 	t = win->widget_list;
-	
 	if (win->visible) {
 		// walk along the widget list on 'win'
 		while (t) {
 			// only compare with those visible widgets
+			
 			if (t->widget->flags & WIDGET_VISIBLE) {
 				// judge if it is intersecting relation between specific widget and other widgets
 				if (stk_rect_isIntersect(&widget->rect, &t->widget->rect, &inter)) {
@@ -214,11 +214,9 @@ int stk_widget_draw(STK_Widget *widget)
 			update.y = widget->rect.y + win->widget.rect.y;
 			update.w = widget->rect.w;
 			update.h = widget->rect.h;
-			SDL_UpdateRect(win->widget.surface, update.x, update.y, update.w, update.h);			
+			stk_window_updateRect(update.x, update.y, update.w, update.h);			
 		}
 	}
-
-	printf("Enter function stk_widget_draw.\n");
 
 	return 1;
 }
@@ -400,7 +398,7 @@ int stk_widget_getTypeByName( char *id )
 // should supply two parameters: 
 // 1. widget type name;
 // 2. a set of widget functions
-int stk_widget_registerType( char *id, STK_WidgetFuncs *funcs )
+int stk_widget_registerType( char *id, STK_WidgetFuncs **f )
 {
 	int i;
 	for (i=0; i<MAX_WIDGET_TYPE; i++) {
@@ -414,8 +412,7 @@ int stk_widget_registerType( char *id, STK_WidgetFuncs *funcs )
 		// to the end of the widget type list, add new type to that global array
 		else {
 			g_wlist[i].id = id;
-			g_wlist[i].funcs = *funcs;
-			
+			*f = &g_wlist[i].funcs;
 			return i;			
 		}
 	}

@@ -38,7 +38,7 @@ int stk_window_fillRect(STK_Window *win, SDL_Rect *rect, Uint32 color);
 int stk_window_blitTo(STK_Window *win, SDL_Rect *des_r, SDL_Surface *src, SDL_Rect *src_r);
 int stk_window_drawBox(STK_Window *win, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color);
 int stk_window_drawRect(STK_Window *win, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color);
-
+int stk_window_updateRect( Sint16 x, Sint16 y, Sint16 w, Sint16 h);
 
 
 #endif /* _STK_WINDOW_H_ */

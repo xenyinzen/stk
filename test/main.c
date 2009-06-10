@@ -1,13 +1,15 @@
 
 
 #include "stk.h"
+#include "stk_label.h"
 
 void draw_label()
 {
 	
-	STK_Label *label = (STK_Label *)stk_label_new();
-	stk_widget_setDims((STK_Widget *)label, 100, 100, 100, 50);
-	stk_signal_connect((STK_Widget *)label, "show", (F_Signal_Callback)stk_label_draw, NULL);
+	STK_Label *label = (STK_Label *)stk_label_new("我爱你中国", 100, 200);
+	stk_widget_setDims((STK_Widget *)label, 100, 100, 200, 100);
+	stk_label_setAlignment((STK_Widget *)label, CENTER);
+	stk_label_setColor((STK_Widget *)label, BACKGROUND, 0x00800080);
 	stk_widget_EventShow((STK_Widget *)label);
 }
 
@@ -21,7 +23,13 @@ int main(int argc,char **argv)
     	STK_Widget  *button;
 
     	SDL_Init(SDL_INIT_VIDEO);
-    	video=SDL_SetVideoMode(600, 480, 32, SDL_SWSURFACE);
+
+    	video=SDL_SetVideoMode(600, 480, 32, SDL_HWSURFACE);
+	if ( video == NULL ) {
+		fprintf(stderr, "Couldn't set 640x480x8 video mode: %s\n",
+							SDL_GetError());
+		SDL_Quit();
+	}
     	atexit(SDL_Quit);
     
     	stk_init();

@@ -1,0 +1,10 @@
+
+program = {
+	language = 'c',
+	name = 'test',
+	src = 'test2.c',
+	incdir = '., .., /root/apps/luasystem/lua/include, /root/apps/sdlsystem/include/SDL, /usr/include/SDL',
+	libdir = '., /usr/lib, /root/apps/sdlsystem/lib/, /root/apps/luasystem/lua/lib',
+	libs = 'SDL, SDL_image, lua5.1, m',
+}
+

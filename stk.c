@@ -27,14 +27,13 @@ int stk_init()
 		return 0;
 	if (stk_window_init() == 0)
 		return 0;
-	if (stk_widget_init() == 0)
-		return 0;
 	if (stk_widget_initType() == 0)
 		return 0;
-	/*
+	if (stk_widget_init() == 0)
+		return 0;
 	if (stk_font_init() == 0)
 		return 0;
-	*/
+
 	// enable keyboard settings
 	SDL_EnableUNICODE(1);
 	
@@ -112,7 +111,6 @@ static void stk_InternalEvent(SDL_Event *event)
 		widget = event->user.data1;
 		widget->flags |= WIDGET_VISIBLE;
 		if (!(widget->flags & WIDGET_REALIZED)) {
-			printf("stk_InternalEvent: STK_WIDGET_SHOW: widget->flags 0x%x\n", widget->flags);
 			widget->flags |= WIDGET_REALIZED;
 			stk_window_addWidget(widget);
 		}

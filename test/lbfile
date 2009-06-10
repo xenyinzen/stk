@@ -3,8 +3,8 @@ program = {
 	language = 'c',
 	name = 'main',
 	src = '*.c',
-	incdir = '., /root/apps/luasystem/lua/include, /root/apps/sdlsystem/include/SDL, /usr/include/SDL',
+	incdir = '., .., /root/apps/luasystem/lua/include, /root/apps/sdlsystem/include/SDL, /usr/include/SDL',
 	libdir = '., /usr/lib, /root/apps/sdlsystem/lib/, /root/apps/luasystem/lua/lib',
-	libs = 'SDL, sdltk, SDL_image, lua5.1, m',
+	libs = 'SDL, sdltk, SDL_image, SDL_ttf, lua5.1, m',
 }
 

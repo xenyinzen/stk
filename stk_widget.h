@@ -2,7 +2,6 @@
 #define _STK_WIDGET_H_
 
 #include "SDL.h"
-#include "stk.h"
 
 // the void pointer?
 typedef void* STK_Object;
@@ -37,7 +36,7 @@ typedef void	(*F_Widget_Close)	(STK_Widget *widget);
 typedef struct STK_WidgetFuncs {
 	F_Widget_Draw 		draw;
 //	F_Widget_SizeReq	sizereq;
-//	F_Widget_Close		close;
+	F_Widget_Close		close;
 } STK_WidgetFuncs;
 
 typedef struct STK_WidgetType {
@@ -45,6 +44,21 @@ typedef struct STK_WidgetType {
 	STK_WidgetFuncs	funcs;
 } STK_WidgetType;
 
+enum {
+	STK_WIDGET_HIDE = 1,
+	STK_WIDGET_MOVE,
+	STK_WIDGET_SHOW,
+	STK_WIDGET_REDRAW,
+	STK_WIDGET_RESIZE,
+	STK_WINDOW_REALIZE,
+	STK_WINDOW_REDRAW,
+	STK_IMAGE_EVENT
+};
+
+enum {
+	STK_WIDGET_LABEL = 0,
+	STK_WIDGET_BUTTON
+};
 
 // Macros againt to the STK_Widget.flags
 #define WIDGET_FOCUSABLE	0x00000001
@@ -72,7 +86,7 @@ int stk_rect_isIntersect(const SDL_Rect *A, const SDL_Rect *B, SDL_Rect *in);
 int stk_widget_initType();
 int stk_widget_getType(STK_Widget *widget);
 int stk_widget_getTypeByName( char *id );
-int stk_widget_registerType( char *id, STK_WidgetFuncs *funcs );
+int stk_widget_registerType( char *id, STK_WidgetFuncs **funcs );
 char *stk_widget_getName( STK_Widget *widget );
 F_Widget_Draw stk_widget_getDraw( STK_Widget *widget);
 STK_WidgetFuncs stk_widget_getFuncs(STK_Widget *widget);
