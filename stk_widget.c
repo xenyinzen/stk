@@ -130,8 +130,30 @@ int stk_widget_close(STK_Widget *widget)
 {
 	// here, to free the widget and its child widgets
 	// later finish it
+	STK_Widget *prev;
 	STK_Widget *wl = stk_window_getWidgetList();
 	
+	prev = NULL;
+	while (wl) {
+		
+		if (wl->widget == widget) {
+			if (prev == NULL) {
+				wl = wl->next;
+				stk_window_setWidgetList(wl);
+			}
+			else {
+				prev->next = wl->next;
+			}
+			break;
+		}
+		prev = wl;
+		wl = wl->next;
+	}
+	
+	F_Widget_Close close = stk_widget_getClose(widget);
+	if (close) {
+		close(widget);
+	}
 
 }
 
@@ -431,6 +453,11 @@ char *stk_widget_getName( STK_Widget *widget )
 F_Widget_Draw stk_widget_getDraw( STK_Widget *widget)
 {
 	return g_wlist[widget->type].funcs.draw;
+}
+
+F_Widget_Close stk_widget_getClose( STK_Widget *widget)
+{
+	return g_wlist[widget->type].funcs.close;
 }
 
 // get the set of functions of that widget
