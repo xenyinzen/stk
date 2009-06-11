@@ -40,7 +40,7 @@ int stk_init()
 	return 1;
 }
 
-int stk_Main()
+int stk_main()
 {
 	SDL_Event event;
 	

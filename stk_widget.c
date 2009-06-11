@@ -130,31 +130,43 @@ int stk_widget_close(STK_Widget *widget)
 {
 	// here, to free the widget and its child widgets
 	// later finish it
-	STK_Widget *prev;
-	STK_Widget *wl = stk_window_getWidgetList();
+	STK_WidgetListNode *prev;
+	STK_WidgetListNode *wl = stk_window_getWidgetList();
 	
 	prev = NULL;
+	// walk along with the widget list
 	while (wl) {
-		
 		if (wl->widget == widget) {
 			if (prev == NULL) {
 				wl = wl->next;
+				// reset the widget list head
 				stk_window_setWidgetList(wl);
 			}
 			else {
+				// delete the wanted widget node
 				prev->next = wl->next;
 			}
+			
 			break;
 		}
 		prev = wl;
 		wl = wl->next;
 	}
 	
+	// clear the widget's drawing on the window
+	// put these codes here, we feel afraid not very suitable, later we will write a DISTROY event to call
+	widget->flags |= WIDGET_DESTROY;
+	stk_widget_draw(widget);
+	
+	// get the widget type related close function
 	F_Widget_Close close = stk_widget_getClose(widget);
 	if (close) {
+		fprintf(stderr, "Ready to close widget: %x.\n", widget);
 		close(widget);
 	}
 
+	// free this specific widget list node
+	free(wl);
 }
 
 // check whether this 'widget' is in the widget list yet
@@ -188,9 +200,18 @@ int stk_widget_draw(STK_Widget *widget)
 	
 	if (!win)
 		return 0;
+	
 	t = win->widget_list;
 	if (win->visible) {
 		// walk along the widget list on 'win'
+		
+		
+		if (widget->flags & WIDGET_DESTROY) {
+			SDL_FillRect(win->widget.surface, &widget->rect, win->bgcolor);
+			widget->flags &= ~WIDGET_DESTROY;
+		}
+		else {
+		
 		while (t) {
 			// only compare with those visible widgets
 			
@@ -226,6 +247,7 @@ int stk_widget_draw(STK_Widget *widget)
 				else {}
 			}
 			t = t->next;
+		}
 		}
 		
 		// after drawing, we need to update screen

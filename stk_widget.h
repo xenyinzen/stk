@@ -64,6 +64,7 @@ enum {
 #define WIDGET_FOCUSABLE	0x00000001
 #define WIDGET_REALIZED		0x00000002
 #define WIDGET_VISIBLE		0x00000004
+#define WIDGET_DESTROY		0x80000000
 
 // maximun widget kinds number
 #define MAX_WIDGET_TYPE		100
@@ -89,6 +90,7 @@ int stk_widget_getTypeByName( char *id );
 int stk_widget_registerType( char *id, STK_WidgetFuncs **funcs );
 char *stk_widget_getName( STK_Widget *widget );
 F_Widget_Draw stk_widget_getDraw( STK_Widget *widget);
+F_Widget_Close stk_widget_getClose(STK_Widget *widget);
 STK_WidgetFuncs stk_widget_getFuncs(STK_Widget *widget);
 
 #endif /* _STK_WIDGET_H_ */

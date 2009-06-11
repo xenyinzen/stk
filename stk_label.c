@@ -101,10 +101,16 @@ int stk_label_close(STK_Widget *widget)
 {
 	STK_Label *label = (STK_Label *)widget;
 	
+	// now ready to free surface
+	if (widget->surface) {
+		SDL_FreeSurface(widget->surface);
+	}
+	// now ready to free string
 	if (label->caption) {
 		free(label->caption);
 		label->caption = NULL;
 	}
+	// now ready to free label node
 	free(label);
 	return 1;
 }

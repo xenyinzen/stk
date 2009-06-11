@@ -4,7 +4,7 @@
 #include "SDL.h"
 
 int stk_init();
-int stk_Main();
+int stk_main();
 int stk_quit();
 
 enum {

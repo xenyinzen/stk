@@ -97,6 +97,17 @@ STK_Widget *stk_window_getFocusWidget()
 	return win->focus_widget;
 }
 
+int stk_window_setWidgetList(STK_WidgetListNode *wl)
+{
+	STK_Window *win = stk_window_get();	
+	if (!win)
+		return NULL;
+
+	win->widget_list = wl;
+	
+	return 1;
+}
+
 // set the focus widget of a window
 int stk_window_setFocusWidget(STK_Widget *fw)
 {

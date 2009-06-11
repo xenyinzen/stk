@@ -3,7 +3,7 @@
 #include "stk.h"
 #include "stk_label.h"
 
-void draw_label()
+STK_Widget *draw_label()
 {
 	
 	STK_Label *label = (STK_Label *)stk_label_new("我爱你中国", 100, 200);
@@ -11,6 +11,8 @@ void draw_label()
 	stk_label_setAlignment((STK_Widget *)label, CENTER);
 	stk_label_setColor((STK_Widget *)label, BACKGROUND, 0x00800080);
 	stk_widget_EventShow((STK_Widget *)label);
+	
+	return (STK_Widget *)label;
 }
 
 
@@ -36,10 +38,17 @@ int main(int argc,char **argv)
 
     	stk_window_new(0, 0, 600, 480);
     	
-    	draw_label();
+    	STK_Widget *label = draw_label();
+    	printf("Label: %x\n", label);
     	
     	stk_window_open();
-    
+    	SDL_Delay(5000);
+    	
+    	stk_widget_close(label);
+   	SDL_Delay(5000);
+    	
+    	label = draw_label();
+    	printf("Label: %x\n", label);
 
-    	stk_Main();
+    	stk_main();
 }
