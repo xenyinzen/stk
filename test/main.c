@@ -6,11 +6,11 @@
 STK_Widget *draw_label()
 {
 	
-	STK_Label *label = (STK_Label *)stk_label_new("我爱你中国", 100, 200);
-	stk_widget_setDims((STK_Widget *)label, 100, 100, 200, 100);
-	stk_label_setAlignment((STK_Widget *)label, CENTER);
-	stk_label_setColor((STK_Widget *)label, BACKGROUND, 0x00800080);
-	stk_widget_EventShow((STK_Widget *)label);
+	STK_Label *label = (STK_Label *)STK_LabelNew("我爱你中国", 100, 200);
+	STK_WidgetSetDims((STK_Widget *)label, 100, 100, 200, 100);
+	STK_LabelSetAlignment((STK_Widget *)label, CENTER);
+	STK_LabelSetColor((STK_Widget *)label, BACKGROUND, 0x00800080);
+	STK_WidgetEventShow((STK_Widget *)label);
 	
 	return (STK_Widget *)label;
 }
@@ -34,21 +34,21 @@ int main(int argc,char **argv)
 	}
     	atexit(SDL_Quit);
     
-    	stk_init();
+    	STK_Init();
 
-    	stk_window_new(0, 0, 600, 480);
+    	STK_WindowNew(0, 0, 600, 480);
     	
     	STK_Widget *label = draw_label();
     	printf("Label: %x\n", label);
     	
-    	stk_window_open();
+    	STK_WindowOpen();
     	SDL_Delay(5000);
     	
-    	stk_widget_close(label);
+    	STK_WidgetClose(label);
    	SDL_Delay(5000);
     	
     	label = draw_label();
     	printf("Label: %x\n", label);
 
-    	stk_main();
+    	STK_Main();
 }

@@ -32,17 +32,17 @@ int vlineColor(SDL_Surface * dst, Sint16 x, Sint16 y1, Sint16 y2, Uint32 color);
 int vlineRGBA(SDL_Surface * dst, Sint16 x, Sint16 y1, Sint16 y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
 
 /* Rectangle */
-int stk_prim_rectColor(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color);
+int STK_PrimRectColor(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color);
 int rectangleRGBA(SDL_Surface * dst, Sint16 x1, Sint16 y1,
 				   Sint16 x2, Sint16 y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
 
 /* Filled rectangle (Box) */
-int stk_prim_boxColor(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color);
+int STK_PrimBoxColor(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color);
 int boxRGBA(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2,
 			     Sint16 y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
 
 /* Line */
-int stk_prim_drawLine(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color);
+int STK_PrimDrawLine(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color);
 int lineRGBA(SDL_Surface * dst, Sint16 x1, Sint16 y1,
 			      Sint16 x2, Sint16 y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
 
@@ -52,7 +52,7 @@ int aalineRGBA(SDL_Surface * dst, Sint16 x1, Sint16 y1,
 				Sint16 x2, Sint16 y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
 
 /* Circle */
-int stk_prim_drawCircle(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 r, Uint32 color);
+int STK_PrimDrawCircle(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 r, Uint32 color);
 int circleRGBA(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rad, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
 
 /* AA Circle */

@@ -8,30 +8,27 @@
 #include "stk_window.h"
 
 
-
-static int stk_pushEvent(SDL_Event *event);
-static void stk_InternalEvent(SDL_Event *event);
-
+static int STK_DispatchEvent(SDL_Event *event);
+static void STK_InternalEvent(SDL_Event *event);
 
 /* Initial the video surface and the basic structures of STK.
  *
  **/
-int stk_init()
+int STK_Init()
 {
-	
 	if ( SDL_GetVideoSurface() == NULL)
 		return 0;
 	
 	// begin to initial some lower structures
-	if (stk_signal_init() == 0)
+	if (STK_SignalInit() == 0)
 		return 0;
-	if (stk_window_init() == 0)
+	if (STK_WindowInit() == 0)
 		return 0;
-	if (stk_widget_initType() == 0)
+	if (STK_WidgetInitType() == 0)
 		return 0;
-	if (stk_widget_init() == 0)
+	if (STK_WidgetInit() == 0)
 		return 0;
-	if (stk_font_init() == 0)
+	if (STK_FontInit() == 0)
 		return 0;
 
 	// enable keyboard settings
@@ -40,7 +37,7 @@ int stk_init()
 	return 1;
 }
 
-int stk_main()
+int STK_Main()
 {
 	SDL_Event event;
 	
@@ -51,8 +48,8 @@ int stk_main()
 	
 	while (1) {
 		while (SDL_WaitEvent(&event)) {
-			if (stk_pushEvent(&event) == 0) {
-				stk_quit();
+			if (STK_DispatchEvent(&event) == 0) {
+				STK_Quit();
 				return 0;		
 			}
 		}
@@ -61,7 +58,7 @@ int stk_main()
 	}
 }
 
-static int stk_pushEvent(SDL_Event *event)
+static int STK_DispatchEvent(SDL_Event *event)
 {
 	SDL_Event e;
 	if (SDL_GetVideoSurface() == NULL)
@@ -70,7 +67,7 @@ static int stk_pushEvent(SDL_Event *event)
 	switch (event->type) {
 	// close the window
 	case SDL_QUIT:
-		stk_window_close();
+		STK_WindowClose();
 		return 0;
 	// ignore, jump over
 	case SDL_VIDEOEXPOSE:
@@ -78,7 +75,7 @@ static int stk_pushEvent(SDL_Event *event)
 		return 1;
 	// enter internal event handler
 	case STK_EVENT:
-		stk_InternalEvent(event);
+		STK_InternalEvent(event);
 		break;
 	default:
 		break;	
@@ -88,22 +85,22 @@ static int stk_pushEvent(SDL_Event *event)
 	while (SDL_PeepEvents(&e, 1, SDL_GETEVENT, SDL_MOUSEMOTIONMASK) > 0);
 	
 	// go to window event dispather
-	return stk_window_Event(event);
+	return STK_WindowEvent(event);
 } 
 
-static void stk_InternalEvent(SDL_Event *event)
+static void STK_InternalEvent(SDL_Event *event)
 {
 	STK_Widget *widget;
 	SDL_Rect *rect;
 	switch (event->user.code) {
 	case STK_WIDGET_HIDE:
 		widget = event->user.data1;
-		if (stk_widget_isActive(widget)) {
+		if (STK_WidgetIsActive(widget)) {
 			if (widget->flags & WIDGET_VISIBLE) {
 				widget->flags &= ~WIDGET_VISIBLE;
 				// need to complement later: here could not use the Event function sets.
-				stk_signal_emit(widget, "hide", NULL);
-				stk_widget_draw(widget);
+				STK_SignalEmit(widget, "hide", NULL);
+				STK_WidgetDraw(widget);
 			}
 		}
 		break;
@@ -112,26 +109,26 @@ static void stk_InternalEvent(SDL_Event *event)
 		widget->flags |= WIDGET_VISIBLE;
 		if (!(widget->flags & WIDGET_REALIZED)) {
 			widget->flags |= WIDGET_REALIZED;
-			stk_window_addWidget(widget);
+			STK_WindowAddWidget(widget);
 		}
 		
 		if (widget->rect.w > 0 && widget->rect.h > 0) {
 			// draw widget according its flags and other properties.
-			stk_widget_draw(widget);
+			STK_WidgetDraw(widget);
 		}
 		break;
 	case STK_WIDGET_REDRAW:
 		widget = event->user.data1;
-		if (stk_widget_isActive(widget))
-			stk_widget_draw(widget);
+		if (STK_WidgetIsActive(widget))
+			STK_WidgetDraw(widget);
 		break;
 	case STK_WINDOW_REDRAW:
 		//stk_window_redraw(event->user.data1);
-		stk_window_redraw();
+		STK_WindowRedraw();
 		break;
 	case STK_WINDOW_REALIZE:
 		//stk_window_realize(event->user.data1);
-		stk_window_realize();
+		STK_WindowRealize();
 		break;
 	default:
 		break;
@@ -140,8 +137,7 @@ static void stk_InternalEvent(SDL_Event *event)
 
 }
 
-int stk_quit()
+int STK_Quit()
 {
-	
 	return 0;
 }

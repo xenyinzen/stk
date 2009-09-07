@@ -20,7 +20,7 @@ static void cleanup(int exitcode)
 	exit(exitcode);
 }
 
-int stk_font_init()
+int STK_FontInit()
 {
 	
 	/* Initialize the TTF library */
@@ -42,12 +42,12 @@ int stk_font_init()
 }
 
 
-int stk_font_draw( SDL_Rect *rect, char *str, SDL_Color *fg, SDL_Color *bg)
+int STK_FontDraw( SDL_Rect *rect, char *str, SDL_Color *fg, SDL_Color *bg)
 {
 	SDL_Surface *text, *video;
 	SDL_Rect dst;
 
-	STK_Window *win = stk_window_get();
+	STK_Window *win = STK_WindowGetTop();
 	if (!win)
 		return 0;
 	
@@ -64,7 +64,7 @@ int stk_font_draw( SDL_Rect *rect, char *str, SDL_Color *fg, SDL_Color *bg)
 	return 1;
 }
 
-int stk_font_adapter( SDL_Rect *rect, char *str)
+int STK_FontAdapter( SDL_Rect *rect, char *str)
 {
 	int w, h = 0;
 	TTF_SizeUTF8(font, str, &w, &h);

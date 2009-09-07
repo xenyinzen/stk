@@ -6,15 +6,15 @@
 #include "stk_widget.h"
 #include "stk_label.h"
 
-static void stk_label_calculatePattern(STK_Label *label, SDL_Rect *rect);
+static void STK_LabelCalculatePattern(STK_Label *label, SDL_Rect *rect);
 
 
-STK_Widget *stk_label_new( char *str, Uint16 x, Uint16 y )
+STK_Widget *STK_LabelNew( char *str, Uint16 x, Uint16 y )
 {
 	STK_Widget *widget;
-	STK_Label *label = (STK_Label *)stk_malloc(sizeof(STK_Label));
+	STK_Label *label = (STK_Label *)STK_Malloc(sizeof(STK_Label));
 	
-	// here, need to check x and y's reasonablition
+	// here, need to check x and y's reasonablity
 	
 	widget = (STK_Widget *)label;
 	widget->name	= "Label";
@@ -26,7 +26,7 @@ STK_Widget *stk_label_new( char *str, Uint16 x, Uint16 y )
 	widget->flags	= 0;
 	
 	if (str) {
-		label->caption = (char *)stk_malloc(strlen(str) + 1);
+		label->caption = (char *)STK_Malloc(strlen(str) + 1);
 		// after this copy, the last char left in caption is 0
 		strcpy(label->caption, str);
 	}
@@ -44,23 +44,23 @@ STK_Widget *stk_label_new( char *str, Uint16 x, Uint16 y )
 	
 	label->pattern	= LABEL_NORMAL;
 	
-	stk_widget_EventShow((STK_Widget *)label);
+	STK_WidgetEventShow((STK_Widget *)label);
 	
 	return (STK_Widget *)label;
 }
 
-int stk_label_registerType()
+int STK_LabelRegisterType()
 {
 	STK_WidgetFuncs *f;
-	stk_widget_registerType( "Label", &f );
-	f->draw = stk_label_draw;
-	f->close = stk_label_close;
+	STK_WidgetRegisterType( "Label", &f );
+	f->draw = STK_LabelDraw;
+	f->close = STK_LabelClose;
 	
 	return 1;
 }
 
 
-void stk_label_draw(STK_Widget *widget, SDL_Rect *area)
+void STK_LabelDraw(STK_Widget *widget, SDL_Rect *area)
 {
 	SDL_Rect rect = {0};
 	STK_Label *label = (STK_Label *)widget;
@@ -68,8 +68,7 @@ void stk_label_draw(STK_Widget *widget, SDL_Rect *area)
 	SDL_Color fg = {0};
 	SDL_Color bg = {0};
 	
-	
-	stk_font_adapter(&widget->rect, label->caption);
+	STK_FontAdapter(&widget->rect, label->caption);
 	
 	if (label->bgcolor != TRANSPARANT) {
 		SDL_Rect r;
@@ -80,7 +79,7 @@ void stk_label_draw(STK_Widget *widget, SDL_Rect *area)
 	}
 	
 	if (label->caption) {
-		stk_label_calculatePattern(label, &rect);
+		STK_LabelCalculatePattern(label, &rect);
 		rect.x = rect.x + widget->rect.x;
 		rect.y = rect.y + widget->rect.y;
 		
@@ -92,12 +91,12 @@ void stk_label_draw(STK_Widget *widget, SDL_Rect *area)
 		bg.g = (Uint8)((label->bgcolor >> 8) & 0xff);
 		bg.b = (Uint8)((label->bgcolor >> 0) & 0xff);
 
-		stk_font_draw( &rect, label->caption, &fg, &bg );
+		STK_FontDraw( &rect, label->caption, &fg, &bg );
 	}
 
 }
 
-int stk_label_close(STK_Widget *widget)
+int STK_LabelClose(STK_Widget *widget)
 {
 	STK_Label *label = (STK_Label *)widget;
 	
@@ -115,7 +114,7 @@ int stk_label_close(STK_Widget *widget)
 	return 1;
 }
 
-int stk_label_setColor(STK_Widget *widget, int which, Uint32 color)
+int STK_LabelSetColor(STK_Widget *widget, int which, Uint32 color)
 {
 	STK_Label *label = (STK_Label *)widget;
 	if (label == NULL) 
@@ -134,13 +133,13 @@ int stk_label_setColor(STK_Widget *widget, int which, Uint32 color)
 	return 1;
 }
 
-static void stk_label_calculatePattern(STK_Label *label, SDL_Rect *rect)
+static void STK_LabelCalculatePattern(STK_Label *label, SDL_Rect *rect)
 {
 	STK_Widget *widget = (STK_Widget *)label;
 	SDL_Rect dims = {0};
 	
 	/* Calculate the total size of the string in pixels */
-	stk_font_adapter(&dims, label->caption);
+	STK_FontAdapter(&dims, label->caption);
 	switch (label->alignment) {
 	case TOPLEFT:
 		rect->x = 0;
@@ -169,7 +168,7 @@ static void stk_label_calculatePattern(STK_Label *label, SDL_Rect *rect)
 	}
 }
 
-int stk_label_setAlignment(STK_Widget *widget, int alignment)
+int STK_LabelSetAlignment(STK_Widget *widget, int alignment)
 {
 	STK_Label *label = (STK_Label *)widget;
 	label->alignment = alignment;
@@ -177,7 +176,7 @@ int stk_label_setAlignment(STK_Widget *widget, int alignment)
 	return 1;
 }
 
-int stk_label_setText(STK_Widget *widget, char * text)
+int STK_LabelSetText(STK_Widget *widget, char * text)
 {
 	STK_Label *label = (STK_Label *)widget;
 	
@@ -189,16 +188,16 @@ int stk_label_setText(STK_Widget *widget, char * text)
 		label->caption = NULL;
 	}
 	// because the c string have a zero char in the end, malloc text size + 1 
-	label->caption = (char *)stk_malloc(strlen(text) + 1);
+	label->caption = (char *)STK_Malloc(strlen(text) + 1);
 	// after this copy, the last char left in caption is 0
 	strcpy(label->caption, text);
 	
-	stk_widget_EventRedraw(widget);
+	STK_WidgetEventRedraw(widget);
 			
 	return 1;
 }
 
-char *stk_label_getText(STK_Widget *widget)
+char *STK_LabelGetText(STK_Widget *widget)
 {
 	STK_Label *label = (STK_Label *)widget;
 		

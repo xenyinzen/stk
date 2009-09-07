@@ -11,14 +11,14 @@
 static STK_Window *g_window = NULL;
 
 // create a new window, with dimension parameters
-STK_Window *stk_window_new( Sint16 x, Sint16 y, Sint16 width, Sint16 height)
+STK_Window *STK_WindowNew( Sint16 x, Sint16 y, Sint16 width, Sint16 height)
 {
 	// get the main video surface
 	SDL_Surface *video = SDL_GetVideoSurface();
 	if (video == NULL)
 		return 0;
 	
-	STK_Window *win = (STK_Window *)stk_malloc(sizeof(STK_Window));
+	STK_Window *win = (STK_Window *)STK_Malloc(sizeof(STK_Window));
 	
 	win->widget.rect.x = x;
 	win->widget.rect.y = y;
@@ -32,7 +32,7 @@ STK_Window *stk_window_new( Sint16 x, Sint16 y, Sint16 width, Sint16 height)
 	win->focus_widget = NULL;
 	
 	// create window surface
-	win->widget.surface = stk_window_createSubSurface(video, &(win->widget.rect));
+	win->widget.surface = STK_WindowCreateSubSurface(video, &(win->widget.rect));
 	win->bgcolor = 0x00d4d4d4;
 	
 	// set 'g_window' to default window
@@ -41,9 +41,9 @@ STK_Window *stk_window_new( Sint16 x, Sint16 y, Sint16 width, Sint16 height)
 }
 
 // open the window, means display it on the screen
-int stk_window_open()
+int STK_WindowOpen()
 {
-	STK_Window *window = stk_window_get();
+	STK_Window *window = STK_WindowGetTop();
 	if (window == NULL)
 		return 0;
 	window->type = 0;
@@ -52,35 +52,35 @@ int stk_window_open()
 	
 	// realize the detailed structure
 	fprintf(stderr, "Ready to realize the window.\n");
-	stk_window_EventRealize();
+	STK_WindowEventRealize();
 	// draw window and display on screen
 	fprintf(stderr, "Ready to redraw the window.\n");
-	stk_window_EventRedraw();
+	STK_WindowEventRedraw();
 	
 	return 1;
 }
 
-int stk_window_init()
+int STK_WindowInit()
 {
 	return 1;
 }
 
-int stk_window_close()
+int STK_WindowClose()
 {
 
 }
 
 
-// get the only window
-STK_Window *stk_window_get()
+// get the top window
+STK_Window *STK_WindowGetTop()
 {
 	return g_window;	
 }
 
 // get the widget list of a window
-STK_WidgetListNode *stk_window_getWidgetList()
+STK_WidgetListNode *STK_WindowGetWidgetList()
 {
-	STK_Window *win = stk_window_get();	
+	STK_Window *win = STK_WindowGetTop();	
 	if (!win)
 		return NULL;
 
@@ -88,18 +88,18 @@ STK_WidgetListNode *stk_window_getWidgetList()
 }
 
 // get the focus widget of a window
-STK_Widget *stk_window_getFocusWidget()
+STK_Widget *STK_WindowGetFocusWidget()
 {
-	STK_Window *win = stk_window_get();
+	STK_Window *win = STK_WindowGetTop();
 	if (!win)
 		return NULL;
 		
 	return win->focus_widget;
 }
 
-int stk_window_setWidgetList(STK_WidgetListNode *wl)
+int STK_WindowSetWidgetList(STK_WidgetListNode *wl)
 {
-	STK_Window *win = stk_window_get();	
+	STK_Window *win = STK_WindowGetTop();	
 	if (!win)
 		return NULL;
 
@@ -109,9 +109,9 @@ int stk_window_setWidgetList(STK_WidgetListNode *wl)
 }
 
 // set the focus widget of a window
-int stk_window_setFocusWidget(STK_Widget *fw)
+int STK_WindowSetFocusWidget(STK_Widget *fw)
 {
-	STK_Window *win = stk_window_get();
+	STK_Window *win = STK_WindowGetTop();
 	if (!win)
 		return 0;
 	
@@ -121,7 +121,7 @@ int stk_window_setFocusWidget(STK_Widget *fw)
 }
 
 // create a new sub surface from the parent surface 'sur', using the 'rect' parameter
-SDL_Surface *stk_window_createSubSurface(SDL_Surface *sur, SDL_Rect *rect)
+SDL_Surface *STK_WindowCreateSubSurface(SDL_Surface *sur, SDL_Rect *rect)
 {
 	SDL_Surface *m = sur;
 	SDL_Surface *subsur = NULL;
@@ -145,10 +145,10 @@ SDL_Surface *stk_window_createSubSurface(SDL_Surface *sur, SDL_Rect *rect)
 }
 
 // get the window relative mouse location, fill them into 'x' and 'y'
-int stk_window_getMouseState( int *x, int *y )
+int STK_WindowGetMouseState( int *x, int *y )
 {
 	int abs_x, abs_y;
-	STK_Window *win = stk_window_get();
+	STK_Window *win = STK_WindowGetTop();
 	
 	if (!win) 
 		return 0;
@@ -160,9 +160,9 @@ int stk_window_getMouseState( int *x, int *y )
 }
 
 // create the surface for specific widget
-int stk_window_createWidgetSurface(STK_Widget *widget)
+int STK_WindowCreateWidgetSurface(STK_Widget *widget)
 {
-	STK_Window *win = stk_window_get();
+	STK_Window *win = STK_WindowGetTop();
 	// if the location of widget excced the bounary of win, return directly
 	if (widget->rect.x > win->widget.rect.x + win->widget.rect.w)
 		return 0;
@@ -175,33 +175,33 @@ int stk_window_createWidgetSurface(STK_Widget *widget)
 	if (widget->rect.y + widget->rect.h > win->widget.rect.y + win->widget.rect.h )
 		widget->rect.h = win->widget.rect.y + win->widget.rect.h - widget->rect.y;
 
-	widget->surface = stk_window_createSubSurface(win->widget.surface, &(widget->rect));
+	widget->surface = STK_WindowCreateSubSurface(win->widget.surface, &(widget->rect));
 	
 	// ?? why do this step?: to realize that widget using its private method
-	stk_signal_emit(widget, "realize", NULL);
+	STK_SignalEmit(widget, "realize", NULL);
 	
 	return 1;
 }
 
 // add widget to window's widget list
-int stk_window_addWidget(STK_Widget *widget)
+int STK_WindowAddWidget(STK_Widget *widget)
 {
 	STK_WidgetListNode *item;
 	
-	STK_Window *win = stk_window_get();
+	STK_Window *win = STK_WindowGetTop();
 	if (!win)
 		return 0;
 	
-	item = (STK_WidgetListNode *)stk_malloc(sizeof(STK_WidgetListNode));
+	item = (STK_WidgetListNode *)STK_Malloc(sizeof(STK_WidgetListNode));
 	item->widget = widget;
 	if (widget->surface == NULL)
-		stk_window_createWidgetSurface(widget);
+		STK_WindowCreateWidgetSurface(widget);
 	
 	// if 'widget' is the first widget in the widget list
 	if (win->widget_list == NULL) {
 		win->widget_list = item;
 		// if focus widget is NULL, and if the new widget is focusable, point this new widget
-		if ((stk_window_getFocusWidget() == NULL) && (widget->flags & WIDGET_FOCUSABLE))
+		if ((STK_WindowGetFocusWidget() == NULL) && (widget->flags & WIDGET_FOCUSABLE))
 			win->focus_widget = widget;
 	}
 	else {
@@ -214,12 +214,12 @@ int stk_window_addWidget(STK_Widget *widget)
 	}
 	
 	// show widget
-	// stk_signal_emit(widget, "show", NULL);
+	STK_SignalEmit(widget, "show", NULL);
 	
 	return 1;
 }
 
-STK_Widget *stk_window_removeWidget(STK_Widget *widget)
+STK_Widget *STK_WindowRemoveWidget(STK_Widget *widget)
 {
 	// to fill later
 
@@ -227,9 +227,9 @@ STK_Widget *stk_window_removeWidget(STK_Widget *widget)
 
 
 // window realize event
-int stk_window_EventRealize()
+int STK_WindowEventRealize()
 {
-	STK_Window *window = stk_window_get();
+	STK_Window *window = STK_WindowGetTop();
 	if (!window)
 		return 0;
 	
@@ -244,9 +244,9 @@ int stk_window_EventRealize()
 }
 
 // window redraw event
-int stk_window_EventRedraw()
+int STK_WindowEventRedraw()
 {
-	STK_Window *window = stk_window_get();
+	STK_Window *window = STK_WindowGetTop();
 	if (!window)
 		return 0;
 
@@ -261,18 +261,18 @@ int stk_window_EventRedraw()
 }
 
 // window realize function
-int stk_window_realize()
+int STK_WindowRealize()
 {
-	STK_Window *win = stk_window_get();
+	STK_Window *win = STK_WindowGetTop();
 	if (!win)
 		return 0;
 
-	STK_WidgetListNode *item = stk_window_getWidgetList();
+	STK_WidgetListNode *item = STK_WindowGetWidgetList();
 	
 	while (item) {
 		// create sub surface for each widget
 		if (!item->widget->surface) {
-			stk_window_createWidgetSurface(item->widget);
+			STK_WindowCreateWidgetSurface(item->widget);
 		}
 		
 		item = item->next;
@@ -288,10 +288,10 @@ int stk_window_realize()
 }
 
 // window redraw function
-int stk_window_redraw()
+int STK_WindowRedraw()
 {
 	SDL_Surface *video = SDL_GetVideoSurface();
-	STK_Window *win = stk_window_get();
+	STK_Window *win = STK_WindowGetTop();
 	if (!win)
 		return 0;
 		
@@ -300,20 +300,20 @@ int stk_window_redraw()
 	// fill up background
 	SDL_FillRect(win->widget.surface, NULL, win->bgcolor);
 	// redraw all widget on the window
-	stk_widget_drawAll();
+	STK_WidgetDrawAll();
 	// update it on the screen
 	// SDL_UpdateRect(win->widget.surface, 0, 0, 0, 0);  // why using this method not work?
-	stk_window_updateRect(win->widget.rect.x, win->widget.rect.y, win->widget.rect.w, win->widget.rect.h);
+	STK_WindowUpdateRect(win->widget.rect.x, win->widget.rect.y, win->widget.rect.w, win->widget.rect.h);
 	
 	return 0;
 }
 
 
 // window Event dispather: IMPORTANT
-int stk_window_Event( SDL_Event *event )
+int STK_WindowEvent( SDL_Event *event )
 {
-	STK_Window *win = stk_window_get();
-	STK_WidgetListNode *wl = stk_window_getWidgetList();
+	STK_Window *win = STK_WindowGetTop();
+	STK_WidgetListNode *wl = STK_WindowGetWidgetList();
 	STK_Widget *w;
 	
 	int xrel, yrel;
@@ -330,15 +330,15 @@ int stk_window_Event( SDL_Event *event )
 		while (wl) {
 			w = wl->widget;
 			// judge whether the mouse point is on this widget area 
-			if (stk_widget_isInside(w, xrel, yrel)) {
+			if (STK_WidgetIsInside(w, xrel, yrel)) {
 				// focusable means this widget could be clicked, inputed, and so on
 				if (w->flags & WIDGET_FOCUSABLE) {
 					// while mouse click, take the focus to this widget
-					stk_window_setFocusWidget(w);
+					STK_WindowSetFocusWidget(w);
 					// do a redraw, for change the widget's appearance to let people to see an effect.
-					stk_widget_EventRedraw(w);
+					STK_WidgetEventRedraw(w);
 					// call the deeper event dispatcher function, to call the callback function of that widget
-					stk_widget_Event(w, event);
+					STK_WidgetEvent(w, event);
 					break;
 				}
 			
@@ -352,7 +352,7 @@ int stk_window_Event( SDL_Event *event )
 }
 
 /*
-int stk_window_Event0( SDL_Event *event)
+int STK_WindowEvent0( SDL_Event *event)
 {
 	switch (event->type) {
 	case SDL_KEYDOWN:
@@ -374,7 +374,7 @@ int stk_window_Event0( SDL_Event *event)
 
     ===================================================== **/
 
-int stk_window_drawLine(STK_Window *win, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color)
+int STK_WindowDrawLine(STK_Window *win, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color)
 {
 	x1 += win->widget.rect.x;
 	x2 += win->widget.rect.x;
@@ -382,18 +382,18 @@ int stk_window_drawLine(STK_Window *win, Sint16 x1, Sint16 y1, Sint16 x2, Sint16
 	y1 += win->widget.rect.y;
 	y2 += win->widget.rect.y;
 
-	return stk_prim_drawLine(win->widget.surface, x1, y1, x2, y2, color);		
+	return STK_PrimDrawLine(win->widget.surface, x1, y1, x2, y2, color);		
 }
 
-int stk_window_drawCircle(STK_Window *win, Sint16 x, Sint16 y, Sint16 r, Uint32 color)
+int STK_WindowDrawCircle(STK_Window *win, Sint16 x, Sint16 y, Sint16 r, Uint32 color)
 {
 	x += win->widget.rect.x;
 	y += win->widget.rect.y + 10;
 	
-	return stk_prim_drawCircle(win->widget.surface, x, y, r, color);
+	return STK_PrimDrawCircle(win->widget.surface, x, y, r, color);
 }
 
-int stk_window_fillRect(STK_Window *win, SDL_Rect *rect, Uint32 color)
+int STK_WindowFillRect(STK_Window *win, SDL_Rect *rect, Uint32 color)
 {
 	SDL_Rect r;
 	r.x = rect->x + win->widget.rect.x;
@@ -406,7 +406,7 @@ int stk_window_fillRect(STK_Window *win, SDL_Rect *rect, Uint32 color)
 	return 1;
 }
 
-int stk_window_blitTo(STK_Window *win, SDL_Rect *des_r, SDL_Surface *src, SDL_Rect *src_r)
+int STK_WindowBlitTo(STK_Window *win, SDL_Rect *des_r, SDL_Surface *src, SDL_Rect *src_r)
 {
 	SDL_Surface *dest = win->widget.surface;
 	SDL_Rect r;
@@ -421,7 +421,7 @@ int stk_window_blitTo(STK_Window *win, SDL_Rect *des_r, SDL_Surface *src, SDL_Re
 	return 1;
 }
 
-int stk_window_drawBox(STK_Window *win, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color)
+int STK_WindowDrawBox(STK_Window *win, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color)
 {
 	color = color << 8;
 	color |= 0xff;
@@ -431,11 +431,11 @@ int stk_window_drawBox(STK_Window *win, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 
 	y1 += win->widget.rect.y;
 	y2 += win->widget.rect.y;
 	
-	return stk_prim_boxColor(win->widget.surface, x1, y1, x2, y2, color);
+	return STK_PrimBoxColor(win->widget.surface, x1, y1, x2, y2, color);
 }
 
 
-int stk_window_drawRect(STK_Window *win, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color)
+int STK_WindowDrawRect(STK_Window *win, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color)
 {
 	color = color << 8;
 	color |= 0xff;
@@ -445,10 +445,10 @@ int stk_window_drawRect(STK_Window *win, Sint16 x1, Sint16 y1, Sint16 x2, Sint16
 	y1 += win->widget.rect.y;
 	y2 += win->widget.rect.y;
 	
-	return stk_prim_rectColor(win->widget.surface, x1, y1, x2, y2, color);
+	return STK_PrimRectColor(win->widget.surface, x1, y1, x2, y2, color);
 }
 
-int stk_window_updateRect( Sint16 x, Sint16 y, Sint16 w, Sint16 h)
+int STK_WindowUpdateRect( Sint16 x, Sint16 y, Sint16 w, Sint16 h)
 {
 	SDL_Surface *video = SDL_GetVideoSurface();
 	

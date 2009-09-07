@@ -3,9 +3,9 @@
 
 #include "SDL.h"
 
-int stk_init();
-int stk_main();
-int stk_quit();
+int STK_Init();
+int STK_Main();
+int STK_Quit();
 
 enum {
 	STK_EVENT = SDL_USEREVENT

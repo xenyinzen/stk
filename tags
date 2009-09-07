@@ -8,12 +8,12 @@ AAbits	stk_prim.c	1668;"	d	file:
 AAlevels	stk_prim.c	1667;"	d	file:
 ABS	stk_prim.c	1426;"	d	file:
 BACKGROUND	stk_label.h	49;"	d
-BOTTOMCENTER	stk_label.h	/^	BOTTOMCENTER,$/;"	e	enum:__anon4
-BOTTOMLEFT	stk_label.h	/^	BOTTOMLEFT,$/;"	e	enum:__anon4
-BOTTOMRIGHT	stk_label.h	/^	BOTTOMRIGHT$/;"	e	enum:__anon4
-CENTER	stk_label.h	/^	CENTER,$/;"	e	enum:__anon4
-CENTERLEFT	stk_label.h	/^	CENTERLEFT,$/;"	e	enum:__anon4
-CENTERRIGHT	stk_label.h	/^	CENTERRIGHT,$/;"	e	enum:__anon4
+BOTTOMCENTER	stk_label.h	/^	BOTTOMCENTER,$/;"	e	enum:__anon2
+BOTTOMLEFT	stk_label.h	/^	BOTTOMLEFT,$/;"	e	enum:__anon2
+BOTTOMRIGHT	stk_label.h	/^	BOTTOMRIGHT$/;"	e	enum:__anon2
+CENTER	stk_label.h	/^	CENTER,$/;"	e	enum:__anon2
+CENTERLEFT	stk_label.h	/^	CENTERLEFT,$/;"	e	enum:__anon2
+CENTERRIGHT	stk_label.h	/^	CENTERRIGHT,$/;"	e	enum:__anon2
 CLIP_ACCEPT	BAK/stk_prim.h	7;"	d
 CLIP_ACCEPT	stk_prim.c	1140;"	d	file:
 CLIP_BOTTOM_EDGE	BAK/stk_prim.h	14;"	d
@@ -30,11 +30,12 @@ CLIP_TOP_EDGE	BAK/stk_prim.h	13;"	d
 CLIP_TOP_EDGE	stk_prim.c	1137;"	d	file:
 CallbackListNode	stk_signal.h	/^typedef struct CallbackListNode {$/;"	s
 CallbackListNode	stk_signal.h	/^} CallbackListNode;$/;"	t	typeref:struct:CallbackListNode
+FONT_FILE	stk_font.c	10;"	d	file:
+FONT_SIZE	stk_font.c	9;"	d	file:
 FOREGROUND	stk_label.h	48;"	d
 F_Signal_Callback	stk_signal.h	/^typedef void (*F_Signal_Callback)(STK_Object *object, void *signaldata, void *userdata);$/;"	t
 F_Widget_Close	stk_widget.h	/^typedef void	(*F_Widget_Close)	(STK_Widget *widget);$/;"	t
 F_Widget_Draw	stk_widget.h	/^typedef void	(*F_Widget_Draw) 	(STK_Widget *widget, SDL_Rect *rect);$/;"	t
-F_Widget_SizeReq	stk_widget.h	/^typedef int 	(*F_Widget_SizeReq)	(STK_Widget *widget, SDL_Rect *rect);$/;"	t
 HLineAlpha	stk_prim.c	/^int HLineAlpha(SDL_Surface * dst, Sint16 x1, Sint16 x2, Sint16 y, Uint32 color)$/;"	f
 LABEL_BOUNCE	stk_label.h	/^    LABEL_BOUNCE,$/;"	e	enum:LabelPattern
 LABEL_NORMAL	stk_label.h	/^    LABEL_NORMAL,$/;"	e	enum:LabelPattern
@@ -42,22 +43,38 @@ LABEL_SCROLL_LEFT	stk_label.h	/^    LABEL_SCROLL_LEFT,$/;"	e	enum:LabelPattern
 LABEL_SCROLL_RIGHT	stk_label.h	/^    LABEL_SCROLL_RIGHT$/;"	e	enum:LabelPattern
 LabelPattern	stk_label.h	/^enum LabelPattern$/;"	g
 LabelPattern	stk_label.h	/^} LabelPattern;$/;"	v	typeref:enum:LabelPattern
-MAX_WIDGET_TYPE	stk_widget.h	54;"	d
+MAX_WIDGET_TYPE	stk_widget.h	68;"	d
 M_PI	stk_prim.h	6;"	d
-STK_EVENT	stk.h	/^	STK_EVENT = SDL_USEREVENT,$/;"	e	enum:__anon1
-STK_IMAGE_EVENT	stk.h	/^	STK_IMAGE_EVENT,$/;"	e	enum:__anon2
+STK_BUTTON_DOWN	BAK/stk_button.h	/^	STK_BUTTON_DOWN,$/;"	e	enum:STK_ButtonState
+STK_BUTTON_FOCUSED	BAK/stk_button.h	/^	STK_BUTTON_FOCUSED$/;"	e	enum:STK_ButtonState
+STK_BUTTON_HIGHLIGHTED	BAK/stk_button.h	/^	STK_BUTTON_HIGHLIGHTED,$/;"	e	enum:STK_ButtonState
+STK_BUTTON_UP	BAK/stk_button.h	/^	STK_BUTTON_UP,$/;"	e	enum:STK_ButtonState
+STK_Button	BAK/stk_button.h	/^typedef struct STK_Button {$/;"	s
+STK_Button	BAK/stk_button.h	/^} STK_Button;$/;"	t	typeref:struct:STK_Button
+STK_ButtonState	BAK/stk_button.h	/^typedef enum STK_ButtonState {$/;"	g
+STK_ButtonState	BAK/stk_button.h	/^} STK_ButtonState;$/;"	t	typeref:enum:STK_ButtonState
+STK_EVENT	stk.h	/^	STK_EVENT = SDL_USEREVENT$/;"	e	enum:__anon1
+STK_Frame	BAK/stk_frame.h	/^typedef struct STK_Frame {$/;"	s
+STK_IMAGE_EVENT	stk_widget.h	/^	STK_IMAGE_EVENT$/;"	e	enum:__anon3
+STK_IMAGE_USERDEFINE	BAK/stk_image.h	5;"	d
+STK_Image	BAK/stk_image.h	/^typedef struct STK_Image {$/;"	s
+STK_Image	BAK/stk_image.h	/^} STK_Image;$/;"	t	typeref:struct:STK_Image
 STK_Label	stk_label.h	/^typedef struct STK_Label {$/;"	s
 STK_Label	stk_label.h	/^} STK_Label;$/;"	t	typeref:struct:STK_Label
 STK_Object	stk_widget.h	/^typedef void* STK_Object;$/;"	t
-STK_WIDGET_BUTTON	stk.h	/^	STK_WIDGET_BUTTON,$/;"	e	enum:__anon3
-STK_WIDGET_HIDE	stk.h	/^	STK_WIDGET_HIDE = 1,$/;"	e	enum:__anon2
-STK_WIDGET_LABEL	stk.h	/^	STK_WIDGET_LABEL,$/;"	e	enum:__anon3
-STK_WIDGET_MOVE	stk.h	/^	STK_WIDGET_MOVE,$/;"	e	enum:__anon2
-STK_WIDGET_REDRAW	stk.h	/^	STK_WIDGET_REDRAW,$/;"	e	enum:__anon2
-STK_WIDGET_RESIZE	stk.h	/^	STK_WIDGET_RESIZE,$/;"	e	enum:__anon2
-STK_WIDGET_SHOW	stk.h	/^	STK_WIDGET_SHOW,$/;"	e	enum:__anon2
-STK_WINDOW_REALIZE	stk.h	/^	STK_WINDOW_REALIZE,$/;"	e	enum:__anon2
-STK_WINDOW_REDRAW	stk.h	/^	STK_WINDOW_REDRAW,$/;"	e	enum:__anon2
+STK_PrimBoxColor	stk_prim.c	/^int STK_PrimBoxColor(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color)$/;"	f
+STK_PrimDrawCircle	stk_prim.c	/^int STK_PrimDrawCircle(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 r, Uint32 color)$/;"	f
+STK_PrimDrawLine	stk_prim.c	/^int STK_PrimDrawLine(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color)$/;"	f
+STK_PrimRectColor	stk_prim.c	/^int STK_PrimRectColor(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color)$/;"	f
+STK_WIDGET_BUTTON	stk_widget.h	/^	STK_WIDGET_BUTTON$/;"	e	enum:__anon4
+STK_WIDGET_HIDE	stk_widget.h	/^	STK_WIDGET_HIDE = 1,$/;"	e	enum:__anon3
+STK_WIDGET_LABEL	stk_widget.h	/^	STK_WIDGET_LABEL = 0,$/;"	e	enum:__anon4
+STK_WIDGET_MOVE	stk_widget.h	/^	STK_WIDGET_MOVE,$/;"	e	enum:__anon3
+STK_WIDGET_REDRAW	stk_widget.h	/^	STK_WIDGET_REDRAW,$/;"	e	enum:__anon3
+STK_WIDGET_RESIZE	stk_widget.h	/^	STK_WIDGET_RESIZE,$/;"	e	enum:__anon3
+STK_WIDGET_SHOW	stk_widget.h	/^	STK_WIDGET_SHOW,$/;"	e	enum:__anon3
+STK_WINDOW_REALIZE	stk_widget.h	/^	STK_WINDOW_REALIZE,$/;"	e	enum:__anon3
+STK_WINDOW_REDRAW	stk_widget.h	/^	STK_WINDOW_REDRAW,$/;"	e	enum:__anon3
 STK_Widget	stk_widget.h	/^typedef struct STK_Widget {$/;"	s
 STK_Widget	stk_widget.h	/^} STK_Widget;$/;"	t	typeref:struct:STK_Widget
 STK_WidgetFuncs	stk_widget.h	/^typedef struct STK_WidgetFuncs {$/;"	s
@@ -70,16 +87,21 @@ STK_Window	stk_window.h	/^typedef struct STK_Window {$/;"	s
 STK_Window	stk_window.h	/^} STK_Window;$/;"	t	typeref:struct:STK_Window
 SignalListNode	stk_signal.h	/^typedef struct SignalListNode {$/;"	s
 SignalListNode	stk_signal.h	/^} SignalListNode;$/;"	t	typeref:struct:SignalListNode
-TOPCENTER	stk_label.h	/^	TOPCENTER,$/;"	e	enum:__anon4
-TOPLEFT	stk_label.h	/^	TOPLEFT,$/;"	e	enum:__anon4
-TOPRIGHT	stk_label.h	/^	TOPRIGHT,$/;"	e	enum:__anon4
+TOPCENTER	stk_label.h	/^	TOPCENTER,$/;"	e	enum:__anon2
+TOPLEFT	stk_label.h	/^	TOPLEFT,$/;"	e	enum:__anon2
+TOPRIGHT	stk_label.h	/^	TOPRIGHT,$/;"	e	enum:__anon2
 TRANSPARANT	stk_label.h	47;"	d
 VLineAlpha	stk_prim.c	/^int VLineAlpha(SDL_Surface * dst, Sint16 x, Sint16 y1, Sint16 y2, Uint32 color)$/;"	f
-WIDGET_FOCUSABLE	stk_widget.h	49;"	d
-WIDGET_REALIZED	stk_widget.h	50;"	d
-WIDGET_VISIBLE	stk_widget.h	51;"	d
+WIDGET_DESTROY	stk_widget.h	65;"	d
+WIDGET_FOCUSABLE	stk_widget.h	62;"	d
+WIDGET_REALIZED	stk_widget.h	63;"	d
+WIDGET_VISIBLE	stk_widget.h	64;"	d
 _SDL_PRIM_H_	stk_prim.h	2;"	d
+_STK_BUTTON_H_	BAK/stk_button.h	2;"	d
+_STK_FONT_H_	stk_font.h	2;"	d
+_STK_FRAME_H_	BAK/stk_frame.h	2;"	d
 _STK_H_	stk.h	2;"	d
+_STK_IMAGE_H_	BAK/stk_image.h	2;"	d
 _STK_LABEL_H_	stk_label.h	2;"	d
 _STK_MM_H_	stk_mm.h	2;"	d
 _STK_PRIM_H_	BAK/stk_prim.h	2;"	d
@@ -103,15 +125,20 @@ absolute	stk_widget.h	/^	SDL_Rect absolute;	\/\/ ??$/;"	m	struct:STK_Widget
 alignment	stk_label.h	/^	int alignment;$/;"	m	struct:STK_Label
 bezierColor	stk_prim.c	/^int bezierColor(SDL_Surface * dst, Sint16 * vx, Sint16 * vy, int n, int s, Uint32 color)$/;"	f
 bezierRGBA	stk_prim.c	/^int bezierRGBA(SDL_Surface * dst, Sint16 * vx, Sint16 * vy, int n, int s, Uint8 r, Uint8 g, Uint8 b, Uint8 a)$/;"	f
+bgcolor	BAK/stk_image.h	/^	Uint32 bgcolor;$/;"	m	struct:STK_Image
 bgcolor	stk_label.h	/^	Uint32  bgcolor;$/;"	m	struct:STK_Label
 bgcolor	stk_window.h	/^	Uint32 bgcolor;$/;"	m	struct:STK_Window
 bm	stk_widget.h	/^	int lm, rm, tm, bm;$/;"	m	struct:STK_Widget
+bottom	BAK/stk_frame.h	/^	STK_Image *bottom;$/;"	m	struct:STK_Frame
+bottomleft	BAK/stk_frame.h	/^	STK_Image *bottomleft;$/;"	m	struct:STK_Frame
+bottomright	BAK/stk_frame.h	/^	STK_Image *bottomright;$/;"	m	struct:STK_Frame
 boxRGBA	stk_prim.c	/^int boxRGBA(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a)$/;"	f
 call_list	stk_signal.h	/^	struct CallbackListNode *call_list;$/;"	m	struct:SignalListNode	typeref:struct:SignalListNode::CallbackListNode
 callback	stk_signal.h	/^	F_Signal_Callback callback;$/;"	m	struct:CallbackListNode
 caption	stk_label.h	/^	char *caption;$/;"	m	struct:STK_Label
 child	stk_widget.h	/^	struct STK_Widget *child;		\/\/ point to the child widget of this widget$/;"	m	struct:STK_WidgetListNode	typeref:struct:STK_WidgetListNode::STK_Widget
 circleRGBA	stk_prim.c	/^int circleRGBA(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rad, Uint8 r, Uint8 g, Uint8 b, Uint8 a)$/;"	f
+cleanup	stk_font.c	/^static void cleanup(int exitcode)$/;"	f	file:
 clip	stk_widget.h	/^	SDL_Rect clip;		\/\/ ??$/;"	m	struct:STK_Widget
 clipEncode	BAK/stk_prim.c	/^static int clipEncode(Sint16 x, Sint16 y, Sint16 left, Sint16 top, Sint16 right, Sint16 bottom)$/;"	f	file:
 clipEncode	stk_prim.c	/^static int clipEncode(Sint16 x, Sint16 y, Sint16 left, Sint16 top, Sint16 right, Sint16 bottom)$/;"	f	file:
@@ -121,8 +148,9 @@ clip_xmax	stk_prim.c	12;"	d	file:
 clip_xmin	stk_prim.c	11;"	d	file:
 clip_ymax	stk_prim.c	14;"	d	file:
 clip_ymin	stk_prim.c	13;"	d	file:
+close	stk_widget.h	/^	F_Widget_Close		close;$/;"	m	struct:STK_WidgetFuncs
 draw	stk_widget.h	/^	F_Widget_Draw 		draw;$/;"	m	struct:STK_WidgetFuncs
-draw_label	test/main.c	/^void draw_label()$/;"	f
+draw_label	test/main.c	/^STK_Widget *draw_label()$/;"	f
 ellipseColor	stk_prim.c	/^int ellipseColor(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Uint32 color)$/;"	f
 ellipseRGBA	stk_prim.c	/^int ellipseRGBA(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Uint8 r, Uint8 g, Uint8 b, Uint8 a)$/;"	f
 evaluateBezier	stk_prim.c	/^double evaluateBezier (double *data, int ndata, double t) $/;"	f
@@ -132,6 +160,7 @@ fastPixelColorNolockNoclip	stk_prim.c	/^int fastPixelColorNolockNoclip(SDL_Surfa
 fastPixelRGBA	stk_prim.c	/^int fastPixelRGBA(SDL_Surface * dst, Sint16 x, Sint16 y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)$/;"	f
 fastPixelRGBANolock	stk_prim.c	/^int fastPixelRGBANolock(SDL_Surface * dst, Sint16 x, Sint16 y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)$/;"	f
 fgcolor	stk_label.h	/^	Uint32  fgcolor;$/;"	m	struct:STK_Label
+filename	BAK/stk_image.h	/^	char *filename;		\/\/ filename to load a picture$/;"	m	struct:STK_Image
 filledEllipseColor	stk_prim.c	/^int filledEllipseColor(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Uint32 color)$/;"	f
 filledEllipseRGBA	stk_prim.c	/^int filledEllipseRGBA(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Uint8 r, Uint8 g, Uint8 b, Uint8 a)$/;"	f
 filledPolygonColor	stk_prim.c	/^int filledPolygonColor(SDL_Surface * dst, Sint16 * vx, Sint16 * vy, int n, int color)$/;"	f
@@ -141,8 +170,12 @@ filledTrigonColor	stk_prim.c	/^int filledTrigonColor(SDL_Surface * dst, Sint16 x
 filledTrigonRGBA	stk_prim.c	/^int filledTrigonRGBA(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Sint16 x3, Sint16 y3,$/;"	f
 filledpieColor	stk_prim.c	/^int filledpieColor(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rad, Sint16 start, Sint16 end, Uint32 color)$/;"	f
 filledpieRGBA	stk_prim.c	/^int filledpieRGBA(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rad,$/;"	f
+flags	BAK/stk_image.h	/^	Uint32 flags;	$/;"	m	struct:STK_Image
 flags	stk_widget.h	/^	Uint32 flags;		\/\/ important flag value variable$/;"	m	struct:STK_Widget
 focus_widget	stk_window.h	/^	STK_Widget *focus_widget;$/;"	m	struct:STK_Window
+font	BAK/stk_button.h	/^	STK_Font *font;$/;"	m	struct:STK_Button
+font	stk_font.c	/^TTF_Font *font;$/;"	v
+frame	BAK/stk_button.h	/^	STK_Frame frame;$/;"	m	struct:STK_Button
 funcs	stk_widget.h	/^	STK_WidgetFuncs	funcs;$/;"	m	struct:STK_WidgetType
 g_window	stk_window.c	/^static STK_Window *g_window = NULL;$/;"	v	file:
 g_wlist	stk_widget.c	/^static struct STK_WidgetType g_wlist[MAX_WIDGET_TYPE];$/;"	v	typeref:struct:STK_WidgetType	file:
@@ -158,9 +191,12 @@ hlineRGBAStore	stk_prim.c	/^int hlineRGBAStore(SDL_Surface * dst, Sint16 x1, Sin
 id	stk_widget.h	/^	char *id;$/;"	m	struct:STK_WidgetType
 increase	stk_label.h	/^	int increase;$/;"	m	struct:STK_Label
 inside	stk_widget.h	/^	int inside;		\/\/ ??$/;"	m	struct:STK_Widget
+label	BAK/stk_button.h	/^	STK_Widget *label;$/;"	m	struct:STK_Button
+left	BAK/stk_frame.h	/^	STk_Image *left;$/;"	m	struct:STK_Frame
 lineRGBA	stk_prim.c	/^int lineRGBA(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a)$/;"	f
 lm	stk_widget.h	/^	int lm, rm, tm, bm;$/;"	m	struct:STK_Widget
 main	test/main.c	/^int main(int argc,char **argv)$/;"	f
+main	test/test2/test2.c	/^int main(int argc,char **argv)$/;"	f
 my_mutex	stk_widget.c	/^static SDL_mutex *my_mutex;$/;"	v	file:
 name	stk_widget.h	/^	char *name;		\/\/ name of this widget$/;"	m	struct:STK_Widget
 next	stk_signal.h	/^	struct CallbackListNode *next;$/;"	m	struct:CallbackListNode	typeref:struct:CallbackListNode::CallbackListNode
@@ -177,28 +213,36 @@ pixelColorWeightNolock	stk_prim.c	/^int pixelColorWeightNolock(SDL_Surface * dst
 pixelRGBA	stk_prim.c	/^int pixelRGBA(SDL_Surface * dst, Sint16 x, Sint16 y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)$/;"	f
 polygonColor	stk_prim.c	/^int polygonColor(SDL_Surface * dst, Sint16 * vx, Sint16 * vy, int n, Uint32 color)$/;"	f
 polygonRGBA	stk_prim.c	/^int polygonRGBA(SDL_Surface * dst, Sint16 * vx, Sint16 * vy, int n, Uint8 r, Uint8 g, Uint8 b, Uint8 a)$/;"	f
+rect	BAK/stk_image.h	/^	SDL_Rect rect;$/;"	m	struct:STK_Image
 rect	stk_widget.h	/^	SDL_Rect rect;		\/\/ the rect area this widget occupy$/;"	m	struct:STK_Widget
 rectangleRGBA	stk_prim.c	/^int rectangleRGBA(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a)$/;"	f
 redraw_timer	stk_label.h	/^	SDL_TimerID redraw_timer;$/;"	m	struct:STK_Label
+right	BAK/stk_frame.h	/^	STk_Image *right;$/;"	m	struct:STK_Frame
 rm	stk_widget.h	/^	int lm, rm, tm, bm;$/;"	m	struct:STK_Widget
 signal	stk_signal.h	/^	char *signal;$/;"	m	struct:SignalListNode
 slist_head	stk_signal.c	/^static SignalListNode *slist_head = NULL;$/;"	v	file:
+state	BAK/stk_button.h	/^	STK_ButtonState state;$/;"	m	struct:STK_Button
 stk_InternalEvent	stk.c	/^static void stk_InternalEvent(SDL_Event *event)$/;"	f	file:
-stk_Main	stk.c	/^int stk_Main()$/;"	f
+stk_button_new	BAK/stk_button.c	/^STK_Widget *stk_button_new(  )$/;"	f
+stk_dispatchEvent	stk.c	/^static int stk_dispatchEvent(SDL_Event *event)$/;"	f	file:
+stk_font_adapter	stk_font.c	/^int stk_font_adapter( SDL_Rect *rect, char *str)$/;"	f
+stk_font_draw	stk_font.c	/^int stk_font_draw( SDL_Rect *rect, char *str, SDL_Color *fg, SDL_Color *bg)$/;"	f
+stk_font_init	stk_font.c	/^int stk_font_init()$/;"	f
+stk_frame_new	BAK/stk_frame.c	/^int stk_frame_new(STk_Widget *widget)$/;"	f
 stk_init	stk.c	/^int stk_init()$/;"	f
-stk_label_calcpatt	stk_label.c	/^static void stk_label_calcpatt(STK_Label *label, SDL_Rect *rect)$/;"	f	file:
+stk_label_calculatePattern	stk_label.c	/^static void stk_label_calculatePattern(STK_Label *label, SDL_Rect *rect)$/;"	f	file:
+stk_label_close	stk_label.c	/^int stk_label_close(STK_Widget *widget)$/;"	f
 stk_label_draw	stk_label.c	/^void stk_label_draw(STK_Widget *widget, SDL_Rect *area)$/;"	f
-stk_label_new	stk_label.c	/^STK_Widget *stk_label_new()$/;"	f
+stk_label_getText	stk_label.c	/^char *stk_label_getText(STK_Widget *widget)$/;"	f
+stk_label_new	stk_label.c	/^STK_Widget *stk_label_new( char *str, Uint16 x, Uint16 y )$/;"	f
+stk_label_registerType	stk_label.c	/^int stk_label_registerType()$/;"	f
 stk_label_setAlignment	stk_label.c	/^int stk_label_setAlignment(STK_Widget *widget, int alignment)$/;"	f
 stk_label_setColor	stk_label.c	/^int stk_label_setColor(STK_Widget *widget, int which, Uint32 color)$/;"	f
+stk_label_setText	stk_label.c	/^int stk_label_setText(STK_Widget *widget, char * text)$/;"	f
+stk_main	stk.c	/^int stk_main()$/;"	f
 stk_malloc	stk_mm.c	/^void *stk_malloc( size_t n )$/;"	f
-stk_prim_boxColor	stk_prim.c	/^int stk_prim_boxColor(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color)$/;"	f
 stk_prim_drawCircle	BAK/stk_prim.c	/^int stk_prim_drawCircle(SDL_Surface *dst, Sint16 x, Sint16 y, Sint16 r, Uint32 color)$/;"	f
-stk_prim_drawCircle	stk_prim.c	/^int stk_prim_drawCircle(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 r, Uint32 color)$/;"	f
 stk_prim_drawLine	BAK/stk_prim.c	/^int stk_prim_drawLine(SDL_Surface *dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color)$/;"	f
-stk_prim_drawLine	stk_prim.c	/^int stk_prim_drawLine(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color)$/;"	f
-stk_prim_rectColor	stk_prim.c	/^int stk_prim_rectColor(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color)$/;"	f
-stk_pushEvent	stk.c	/^static int stk_pushEvent(SDL_Event *event)$/;"	f	file:
 stk_quit	stk.c	/^int stk_quit()$/;"	f
 stk_rect_isInside	stk_widget.c	/^int stk_rect_isInside(const SDL_Rect *A, const SDL_Rect *B)$/;"	f
 stk_rect_isIntersect	stk_widget.c	/^int stk_rect_isIntersect(const SDL_Rect *A, const SDL_Rect *B, SDL_Rect *in)$/;"	f
@@ -216,6 +260,7 @@ stk_widget_EventShow	stk_widget.c	/^int stk_widget_EventShow(STK_Widget *widget)
 stk_widget_close	stk_widget.c	/^int stk_widget_close(STK_Widget *widget)$/;"	f
 stk_widget_draw	stk_widget.c	/^int stk_widget_draw(STK_Widget *widget)$/;"	f
 stk_widget_drawAll	stk_widget.c	/^int stk_widget_drawAll()$/;"	f
+stk_widget_getClose	stk_widget.c	/^F_Widget_Close stk_widget_getClose( STK_Widget *widget)$/;"	f
 stk_widget_getDraw	stk_widget.c	/^F_Widget_Draw stk_widget_getDraw( STK_Widget *widget)$/;"	f
 stk_widget_getFuncs	stk_widget.c	/^STK_WidgetFuncs stk_widget_getFuncs(STK_Widget *widget)$/;"	f
 stk_widget_getName	stk_widget.c	/^char *stk_widget_getName( STK_Widget *widget )$/;"	f
@@ -225,7 +270,7 @@ stk_widget_init	stk_widget.c	/^int stk_widget_init()$/;"	f
 stk_widget_initType	stk_widget.c	/^int stk_widget_initType()$/;"	f
 stk_widget_isActive	stk_widget.c	/^int stk_widget_isActive(STK_Widget *widget)$/;"	f
 stk_widget_isInside	stk_widget.c	/^int stk_widget_isInside(STK_Widget *widget, int x, int y)$/;"	f
-stk_widget_registerType	stk_widget.c	/^int stk_widget_registerType( char *id, STK_WidgetFuncs *funcs )$/;"	f
+stk_widget_registerType	stk_widget.c	/^int stk_widget_registerType( char *id, STK_WidgetFuncs **f )$/;"	f
 stk_widget_setDims	stk_widget.c	/^int stk_widget_setDims(STK_Widget *widget, Sint16 x, Sint16 y, Sint16 w, Sint16 h)$/;"	f
 stk_window_Event	stk_window.c	/^int stk_window_Event( SDL_Event *event )$/;"	f
 stk_window_EventRealize	stk_window.c	/^int stk_window_EventRealize()$/;"	f
@@ -251,8 +296,14 @@ stk_window_realize	stk_window.c	/^int stk_window_realize()$/;"	f
 stk_window_redraw	stk_window.c	/^int stk_window_redraw()$/;"	f
 stk_window_removeWidget	stk_window.c	/^STK_Widget *stk_window_removeWidget(STK_Widget *widget)$/;"	f
 stk_window_setFocusWidget	stk_window.c	/^int stk_window_setFocusWidget(STK_Widget *fw)$/;"	f
+stk_window_setWidgetList	stk_window.c	/^int stk_window_setWidgetList(STK_WidgetListNode *wl)$/;"	f
+stk_window_updateRect	stk_window.c	/^int stk_window_updateRect( Sint16 x, Sint16 y, Sint16 w, Sint16 h)$/;"	f
+surface	BAK/stk_image.h	/^	SDL_Surface *surface;$/;"	m	struct:STK_Image
 surface	stk_widget.h	/^	SDL_Surface *surface;	\/\/ the surface drawn on is this widget$/;"	m	struct:STK_Widget
 tm	stk_widget.h	/^	int lm, rm, tm, bm;$/;"	m	struct:STK_Widget
+top	BAK/stk_frame.h	/^	STK_Image *top;$/;"	m	struct:STK_Frame
+topleft	BAK/stk_frame.h	/^	STK_Image *topleft;$/;"	m	struct:STK_Frame
+topright	BAK/stk_frame.h	/^	STK_Image *topright;$/;"	m	struct:STK_Frame
 trigonColor	stk_prim.c	/^int trigonColor(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Sint16 x3, Sint16 y3, Uint32 color)$/;"	f
 trigonRGBA	stk_prim.c	/^int trigonRGBA(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Sint16 x3, Sint16 y3,$/;"	f
 type	stk_signal.h	/^	int type;$/;"	m	struct:SignalListNode
@@ -264,7 +315,9 @@ visible	stk_window.h	/^	int visible;$/;"	m	struct:STK_Window
 vlineColor	BAK/stk_prim.c	/^int vlineColor(SDL_Surface *dst, Sint16 x1, Sint16 y1, Sint16 y2, Uint32 color)$/;"	f
 vlineColor	stk_prim.c	/^int vlineColor(SDL_Surface * dst, Sint16 x, Sint16 y1, Sint16 y2, Uint32 color)$/;"	f
 vlineRGBA	stk_prim.c	/^int vlineRGBA(SDL_Surface * dst, Sint16 x, Sint16 y1, Sint16 y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a)$/;"	f
+widget	BAK/stk_button.h	/^	STK_Widget widget;$/;"	m	struct:STK_Button
 widget	stk_label.h	/^	STK_Widget widget;$/;"	m	struct:STK_Label
 widget	stk_widget.h	/^	STK_Widget *widget;			\/\/ point to a widget$/;"	m	struct:STK_WidgetListNode
 widget	stk_window.h	/^	STK_Widget widget;$/;"	m	struct:STK_Window
 widget_list	stk_window.h	/^	STK_WidgetListNode *widget_list;$/;"	m	struct:STK_Window
+width	BAK/stk_frame.h	/^	Uint16 width;$/;"	m	struct:STK_Frame

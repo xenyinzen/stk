@@ -1050,7 +1050,7 @@ int vlineRGBA(SDL_Surface * dst, Sint16 x, Sint16 y1, Sint16 y2, Uint8 r, Uint8 
 
 /* ----- Rectangle */
 
-int stk_prim_rectColor(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color)
+int STK_PrimRectColor(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color)
 {
     int result;
     Sint16 w, h, xtmp, ytmp;
@@ -1122,7 +1122,7 @@ int rectangleRGBA(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2,
     /*
      * Draw 
      */
-    return (stk_prim_rectColor
+    return (STK_PrimRectColor
 	    (dst, x1, y1, x2, y2, ((Uint32) r << 24) | ((Uint32) g << 16) | ((Uint32) b << 8) | (Uint32) a));
 }
 
@@ -1222,7 +1222,7 @@ static int clipLine(SDL_Surface * dst, Sint16 * x1, Sint16 * y1, Sint16 * x2, Si
 
 /* ----- Filled rectangle (Box) */
 
-int stk_prim_boxColor(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color)
+int STK_PrimBoxColor(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color)
 {
     Sint16 left, right, top, bottom;
     Uint8 *pixel, *pixellast;
@@ -1414,7 +1414,7 @@ int boxRGBA(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint8
     /*
      * Draw 
      */
-    return (stk_prim_boxColor(dst, x1, y1, x2, y2, ((Uint32) r << 24) | ((Uint32) g << 16) | ((Uint32) b << 8) | (Uint32) a));
+    return (STK_PrimBoxColor(dst, x1, y1, x2, y2, ((Uint32) r << 24) | ((Uint32) g << 16) | ((Uint32) b << 8) | (Uint32) a));
 }
 
 /* ----- Line */
@@ -1425,7 +1425,7 @@ int boxRGBA(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint8
 
 #define ABS(a) (((a)<0) ? -(a) : (a))
 
-int stk_prim_drawLine(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color)
+int STK_PrimDrawLine(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color)
 {
     int pixx, pixy;
     int x, y;
@@ -1659,7 +1659,7 @@ int lineRGBA(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint
     /*
      * Draw 
      */
-    return (stk_prim_drawLine(dst, x1, y1, x2, y2, ((Uint32) r << 24) | ((Uint32) g << 16) | ((Uint32) b << 8) | (Uint32) a));
+    return (STK_PrimDrawLine(dst, x1, y1, x2, y2, ((Uint32) r << 24) | ((Uint32) g << 16) | ((Uint32) b << 8) | (Uint32) a));
 }
 
 /* AA Line */
@@ -1744,7 +1744,7 @@ int aalineColorInt(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2
 	/*
 	 * Diagonal line 
 	 */
-	return (stk_prim_drawLine(dst, x1, y1, x2, y2, color));
+	return (STK_PrimDrawLine(dst, x1, y1, x2, y2, color));
     }
 
     /*
@@ -1899,7 +1899,7 @@ int circleRGBA(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rad, Uint8 r, Uint8
     /*
      * Draw 
      */
-    return (stk_prim_drawCircle(dst, x, y, rad, ((Uint32) r << 24) | ((Uint32) g << 16) | ((Uint32) b << 8) | (Uint32) a));
+    return (STK_PrimDrawCircle(dst, x, y, rad, ((Uint32) r << 24) | ((Uint32) g << 16) | ((Uint32) b << 8) | (Uint32) a));
 }
 
 /* ----- AA Circle */
@@ -1926,7 +1926,7 @@ int aacircleRGBA(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rad, Uint8 r, Uin
 
 /* and other speedup changes. */
 
-int stk_prim_drawCircle(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 r, Uint32 color)
+int STK_PrimDrawCircle(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 r, Uint32 color)
 {
     Sint16 left, right, top, bottom;
     int result;
@@ -2848,7 +2848,7 @@ int filledpieColor(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rad, Sint16 sta
     } else if (numpoints == 2) {
 	posX = x + (int) (dr * cos(start_angle));
 	posY = y + (int) (dr * sin(start_angle));
-	return (stk_prim_drawLine(dst, x, y, posX, posY, color));
+	return (STK_PrimDrawLine(dst, x, y, posX, posY, color));
     }
 
     /* Allocate vertex array */
@@ -3017,13 +3017,13 @@ int polygonColor(SDL_Surface * dst, Sint16 * vx, Sint16 * vy, int n, Uint32 colo
      */
     result = 0;
     for (i = 1; i < n; i++) {
-	result |= stk_prim_drawLine(dst, *x1, *y1, *x2, *y2, color);
+	result |= STK_PrimDrawLine(dst, *x1, *y1, *x2, *y2, color);
 	x1 = x2;
 	y1 = y2;
 	x2++;
 	y2++;
     }
-    result |= stk_prim_drawLine(dst, *x1, *y1, *vx, *vy, color);
+    result |= STK_PrimDrawLine(dst, *x1, *y1, *vx, *vy, color);
 
     return (result);
 }
@@ -3308,7 +3308,7 @@ int bezierColor(SDL_Surface * dst, Sint16 * vx, Sint16 * vy, int n, int s, Uint3
 	t += stepsize;
 	x2=(Sint16)evaluateBezier(x,n,t);
 	y2=(Sint16)evaluateBezier(y,n,t);
-	result |= stk_prim_drawLine(dst, x1, y1, x2, y2, color);
+	result |= STK_PrimDrawLine(dst, x1, y1, x2, y2, color);
 	x1 = x2;
 	y1 = y2;
     }

@@ -4,7 +4,7 @@
 #include "stk_mm.h"
 
 
-void *stk_malloc( size_t n )
+void *STK_Malloc( size_t n )
 {
 	void *p;
 	
@@ -13,6 +13,5 @@ void *stk_malloc( size_t n )
 	}
 	
 	memset(p, 0, n);
-	
 	return p;
 }

@@ -6,30 +6,30 @@
 #include "stk_mm.h"
 
 // function declaration
-static int stk_signal_connectToObject(STK_Object *object, char *signal, F_Signal_Callback callback, void *userdata);
-static int stk_signal_emitToObject(STK_Object *object, char *signal, void *signaldata);
+static int STK_SignalConnectToObject(STK_Object *object, char *signal, F_Signal_Callback callback, void *userdata);
+static int STK_SignalEmitToObject(STK_Object *object, char *signal, void *signaldata);
 
 // slist_head point to the head of the global signal list.
 static SignalListNode *slist_head = NULL;
 
-SignalListNode *stk_signal_getListHead()
+SignalListNode *STK_SignalGetListHead()
 {
 	return slist_head;
 }
 
 // initial the head pointer
-int stk_signal_init()
+int STK_SignalInit()
 {
 	slist_head = NULL;
 	return 1;
 }
 
 // register a new signal into the signal list.
-int stk_signal_new( char *signal )
+int STK_SignalNew( char *signal )
 {
 	// if global signal list is blank
 	if (slist_head == NULL) {
-		slist_head = (SignalListNode *)stk_malloc(sizeof(SignalListNode));
+		slist_head = (SignalListNode *)STK_Malloc(sizeof(SignalListNode));
 		slist_head->signal = signal;
 		slist_head->type = 0;
 		slist_head->call_list = NULL;
@@ -37,7 +37,7 @@ int stk_signal_new( char *signal )
 	}
 	// if global signal list is not blank
 	else {
-		SignalListNode *l = stk_signal_getListHead();
+		SignalListNode *l = STK_SignalGetListHead();
 		// walk along the signal list, until the end of it
 		while (l->next) {
 			// check specified 
@@ -49,7 +49,7 @@ int stk_signal_new( char *signal )
 		}
 		
 		// add new signal node to the end of the global signal list
-		l->next = (SignalListNode *)stk_malloc(sizeof(SignalListNode));
+		l->next = (SignalListNode *)STK_Malloc(sizeof(SignalListNode));
 		l->next->signal = signal;
 		l->next->type = 0;
 		l->next->call_list = NULL;
@@ -60,23 +60,22 @@ int stk_signal_new( char *signal )
 }
 
 // Connecting function: connect the 'widget' with 'callback' function on 'signal' 
-int stk_signal_connect(STK_Widget *widget, char *signal, F_Signal_Callback callback, void *userdata)
+int STK_SignalConnect(STK_Widget *widget, char *signal, F_Signal_Callback callback, void *userdata)
 {
 	// force converting STK_Widget type to STK_Object type 
-	return stk_signal_connectToObject((STK_Object *)widget, signal, callback, userdata);
-	return 1;
+	return STK_SignalConnectToObject((STK_Object *)widget, signal, callback, userdata);
 }
 
 // Emit signal function: emit the 'signal' to 'widget' to trigger the corresponding callback function
-int stk_signal_emit(STK_Widget *widget, char *signal, void *signaldata)
+int STK_SignalEmit(STK_Widget *widget, char *signal, void *signaldata)
 {
 	// force converting STK_Widget type to STK_Object type 
-	stk_signal_emitToObject((STK_Object *)widget, signal, signaldata);
+	STK_SignalEmitToObject((STK_Object *)widget, signal, signaldata);
 	return 1;
 }
 
 
-static int stk_signal_connectToObject(STK_Object *object, char *signal, F_Signal_Callback callback, void *userdata)
+static int STK_SignalConnectToObject(STK_Object *object, char *signal, F_Signal_Callback callback, void *userdata)
 {
 	// if global signal list is blank
 	if (slist_head == NULL) {
@@ -102,7 +101,7 @@ static int stk_signal_connectToObject(STK_Object *object, char *signal, F_Signal
 		// find the signal node in the list
 		// if that node's call_list is blank, insert to it as first node
 		if (l->call_list == NULL) {
-			l->call_list = (CallbackListNode *)stk_malloc(sizeof(CallbackListNode));
+			l->call_list = (CallbackListNode *)STK_Malloc(sizeof(CallbackListNode));
 			// object is actually an address
 			l->call_list->object = object;
 			// fill the callback function
@@ -119,7 +118,7 @@ static int stk_signal_connectToObject(STK_Object *object, char *signal, F_Signal
 			while (cbl->next)
 				cbl = cbl->next;
 			// add new node to the end of the callback list
-			cbl->next = (CallbackListNode *)stk_malloc(sizeof(CallbackListNode));
+			cbl->next = (CallbackListNode *)STK_Malloc(sizeof(CallbackListNode));
 			cbl->next->object = object;
 			cbl->next->callback = callback;
 			cbl->next->userdata = userdata;
@@ -128,9 +127,11 @@ static int stk_signal_connectToObject(STK_Object *object, char *signal, F_Signal
 			return 1;		
 		}
 	}
+	
+	return 0;
 }
 
-static int stk_signal_emitToObject(STK_Object *object, char *signal, void *signaldata)
+static int STK_SignalEmitToObject(STK_Object *object, char *signal, void *signaldata)
 {
 	SignalListNode *l;
 	CallbackListNode *cbl;

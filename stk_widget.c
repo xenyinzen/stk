@@ -13,36 +13,36 @@ static struct STK_WidgetType g_wlist[MAX_WIDGET_TYPE];
 
 // widget initial function
 // used to register some signal name into global signal list
-int stk_widget_init()
+int STK_WidgetInit()
 {
 	// register signal for basic widget
-	stk_signal_new("mousebuttondown");
-	stk_signal_new("mousebuttonup");
-	stk_signal_new("mousemotion");
-	stk_signal_new("keydown");
-	stk_signal_new("hide");
-	stk_signal_new("show");
-	stk_signal_new("realize");
-	stk_signal_new("margins");
-	stk_signal_new("activate");
+	STK_SignalNew("mousebuttondown");
+	STK_SignalNew("mousebuttonup");
+	STK_SignalNew("mousemotion");
+	STK_SignalNew("keydown");
+	STK_SignalNew("hide");
+	STK_SignalNew("show");
+	STK_SignalNew("realize");
+	STK_SignalNew("margins");
+	STK_SignalNew("activate");
 
 	// for button
-	stk_signal_new("clicked");
+	STK_SignalNew("clicked");
 
-
-
-	stk_label_registerType();
+	//========================================
+	// register type for each kind of widget
+	STK_LabelRegisterType();
 
 	return 1;
 }
 
 // draw all widgets on a window
-int stk_widget_drawAll()
+int STK_WidgetDrawAll()
 {
 	F_Widget_Draw draw;
 	STK_WidgetListNode *wlist;
 	STK_Widget *widget;
-	STK_Window *win = stk_window_get();
+	STK_Window *win = STK_WindowGetTop();
 	
 	// get the widget_list pointer
 	wlist = win->widget_list;
@@ -56,7 +56,7 @@ int stk_widget_drawAll()
 		widget = (STK_Widget *)wlist->widget;
 		if (widget->flags & WIDGET_VISIBLE)
 			// get the specified widget's draw function
-			draw = stk_widget_getDraw(widget);
+			draw = STK_WidgetGetDraw(widget);
 			if (draw) {
 				// do really draw on each widgets
 				draw(widget, NULL);	
@@ -66,7 +66,7 @@ int stk_widget_drawAll()
 	}
 	SDL_mutexV(my_mutex);
 	// update whole window surface
-	stk_window_updateRect(0, 0, 0, 0);
+	STK_WindowUpdateRect(0, 0, 0, 0);
 	//SDL_UpdateRect(win->widget.surface, 0, 0, 0, 0);
 		
 	return 1;
@@ -75,23 +75,23 @@ int stk_widget_drawAll()
 // widget event dispatcher function
 // when we know which widget event occur on, use this function to separate the event type 
 // and emit corresponding signal to that widget.
-int stk_widget_Event(STK_Widget *widget, SDL_Event *event)
+int STK_WidgetEvent(STK_Widget *widget, SDL_Event *event)
 {
 	switch (event->type) {
 	case SDL_KEYDOWN:
-		stk_signal_emit(widget, "keydown", event);
+		STK_SignalEmit(widget, "keydown", event);
 		break;
 	case SDL_KEYUP:
-		stk_signal_emit(widget, "keyup", event);
+		STK_SignalEmit(widget, "keyup", event);
 		break;
 	case SDL_MOUSEMOTION:
-		stk_signal_emit(widget, "mousemotion", event);
+		STK_SignalEmit(widget, "mousemotion", event);
 		break;
 	case SDL_MOUSEBUTTONDOWN:
-		stk_signal_emit(widget, "mousebuttondown", event);
+		STK_SignalEmit(widget, "mousebuttondown", event);
 		break;
 	case SDL_MOUSEBUTTONUP:
-		stk_signal_emit(widget, "mousebuttonup", event);
+		STK_SignalEmit(widget, "mousebuttonup", event);
 		break;
 	default:
 		break;	
@@ -101,12 +101,12 @@ int stk_widget_Event(STK_Widget *widget, SDL_Event *event)
 }
 
 // set dimension rectagle for 'widget'
-int stk_widget_setDims(STK_Widget *widget, Sint16 x, Sint16 y, Sint16 w, Sint16 h)
+int STK_WidgetSetDims(STK_Widget *widget, Sint16 x, Sint16 y, Sint16 w, Sint16 h)
 {
 	STK_Window *win;
 	if (!widget)
 		return 0;
-	win = stk_window_get();
+	win = STK_WindowGetTop();
 	if (!win) 
 		return 0;
 	
@@ -121,17 +121,17 @@ int stk_widget_setDims(STK_Widget *widget, Sint16 x, Sint16 y, Sint16 w, Sint16 
 		SDL_FreeSurface(widget->surface);
 	
 	// create new sub surface on 'win' surface for 'widget'
-	stk_window_createWidgetSurface(widget);
+	STK_WindowCreateWidgetSurface(widget);
 	
 	return 1;
 }
 
-int stk_widget_close(STK_Widget *widget)
+int STK_WidgetClose(STK_Widget *widget)
 {
 	// here, to free the widget and its child widgets
 	// later finish it
 	STK_WidgetListNode *prev;
-	STK_WidgetListNode *wl = stk_window_getWidgetList();
+	STK_WidgetListNode *wl = STK_WindowGetWidgetList();
 	
 	prev = NULL;
 	// walk along with the widget list
@@ -140,7 +140,7 @@ int stk_widget_close(STK_Widget *widget)
 			if (prev == NULL) {
 				wl = wl->next;
 				// reset the widget list head
-				stk_window_setWidgetList(wl);
+				STK_WindowSetWidgetList(wl);
 			}
 			else {
 				// delete the wanted widget node
@@ -156,10 +156,10 @@ int stk_widget_close(STK_Widget *widget)
 	// clear the widget's drawing on the window
 	// put these codes here, we feel afraid not very suitable, later we will write a DISTROY event to call
 	widget->flags |= WIDGET_DESTROY;
-	stk_widget_draw(widget);
+	STK_WidgetDraw(widget);
 	
 	// get the widget type related close function
-	F_Widget_Close close = stk_widget_getClose(widget);
+	F_Widget_Close close = STK_WidgetGetClose(widget);
 	if (close) {
 		fprintf(stderr, "Ready to close widget: %x.\n", widget);
 		close(widget);
@@ -170,13 +170,13 @@ int stk_widget_close(STK_Widget *widget)
 }
 
 // check whether this 'widget' is in the widget list yet
-int stk_widget_isActive(STK_Widget *widget)
+int STK_WidgetIsActive(STK_Widget *widget)
 {
-	STK_Window *win = stk_window_get();
+	STK_Window *win = STK_WindowGetTop();
 	STK_WidgetListNode *l;
 	
 	if (win) {
-		l = stk_window_getWidgetList(win);
+		l = STK_WindowGetWidgetList(win);
 		while (l) {
 			if (l->widget == widget)
 				return 1;
@@ -190,10 +190,10 @@ int stk_widget_isActive(STK_Widget *widget)
 
 // The main drawing function to widget, all windows and widgets 
 // should be drawn by this function
-int stk_widget_draw(STK_Widget *widget)
+int STK_WidgetDraw(STK_Widget *widget)
 {
 	STK_WidgetListNode *t;
-	STK_Window *win = stk_window_get();
+	STK_Window *win = STK_WindowGetTop();
 	F_Widget_Draw draw = NULL;
 	SDL_Rect inter;
 	int doupdate = 1;
@@ -217,9 +217,9 @@ int stk_widget_draw(STK_Widget *widget)
 			
 			if (t->widget->flags & WIDGET_VISIBLE) {
 				// judge if it is intersecting relation between specific widget and other widgets
-				if (stk_rect_isIntersect(&widget->rect, &t->widget->rect, &inter)) {
+				if (STK_RectIsIntersect(&widget->rect, &t->widget->rect, &inter)) {
 					// get the specific draw function of that widget
-					draw = stk_widget_getDraw(widget);
+					draw = STK_WidgetGetDraw(widget);
 					if (draw) 
 						// only update the intersecting part
 						draw(t->widget, &inter);
@@ -227,8 +227,8 @@ int stk_widget_draw(STK_Widget *widget)
 						doupdate = 0;
 				}
 				// judge if 'widget' is inside the list widget
-				else if (stk_rect_isInside(&widget->rect, &t->widget->rect)) {
-					draw = stk_widget_getDraw(widget);
+				else if (STK_RectIsInside(&widget->rect, &t->widget->rect)) {
+					draw = STK_WidgetGetDraw(widget);
 					if (draw)
 						// only draw 'widget' rect 
 						draw(t->widget, &widget->rect);
@@ -236,8 +236,8 @@ int stk_widget_draw(STK_Widget *widget)
 						doupdate = 0;
 				}
 				// judge if list widget is inside the 'widget'
-				else if (stk_rect_isInside(&t->widget->rect, &widget->rect)) {
-					draw = stk_widget_getDraw(widget);
+				else if (STK_RectIsInside(&t->widget->rect, &widget->rect)) {
+					draw = STK_WidgetGetDraw(widget);
 					if (draw)
 						draw(t->widget, &widget->rect);
 					else
@@ -258,7 +258,7 @@ int stk_widget_draw(STK_Widget *widget)
 			update.y = widget->rect.y + win->widget.rect.y;
 			update.w = widget->rect.w;
 			update.h = widget->rect.h;
-			stk_window_updateRect(update.x, update.y, update.w, update.h);			
+			STK_WindowUpdateRect(update.x, update.y, update.w, update.h);			
 		}
 	}
 
@@ -272,7 +272,7 @@ int stk_widget_draw(STK_Widget *widget)
   =============================================  **/
 
 // redraw event
-int stk_widget_EventRedraw(STK_Widget *widget)
+int STK_WidgetEventRedraw(STK_Widget *widget)
 {
 	SDL_Event event;
 	if (!widget)
@@ -290,7 +290,7 @@ int stk_widget_EventRedraw(STK_Widget *widget)
 }
 
 // hide event
-int stk_widget_EventHide(STK_Widget *widget)
+int STK_WidgetEventHide(STK_Widget *widget)
 {
 	SDL_Event event;
 	if (!widget)
@@ -306,7 +306,7 @@ int stk_widget_EventHide(STK_Widget *widget)
 }
 
 // show event
-int stk_widget_EventShow(STK_Widget *widget)
+int STK_WidgetEventShow(STK_Widget *widget)
 {
 	SDL_Event event;
 	if (!widget)
@@ -330,7 +330,7 @@ int stk_widget_EventShow(STK_Widget *widget)
   =============================================  **/
 
 // check the mouse pointer is in the area of 'widget'
-int stk_widget_isInside(STK_Widget *widget, int x, int y)
+int STK_WidgetIsInside(STK_Widget *widget, int x, int y)
 {
 	if (x > widget->rect.x)
 		if (y > widget->rect.y)
@@ -352,7 +352,7 @@ int stk_widget_isInside(STK_Widget *widget, int x, int y)
 }
 
 // check whether rect A is inside rect B
-int stk_rect_isInside(const SDL_Rect *A, const SDL_Rect *B)
+int STK_RectIsInside(const SDL_Rect *A, const SDL_Rect *B)
 {
 	if (A->x >= B->x)
 		if (A->y >= B->y)
@@ -366,7 +366,7 @@ int stk_rect_isInside(const SDL_Rect *A, const SDL_Rect *B)
 
 // check whether rect A and rect B is intersecting
 // if is, the intersecting part info is filled into 'in'
-int stk_rect_isIntersect(const SDL_Rect *A, const SDL_Rect *B, SDL_Rect *in)
+int STK_RectIsIntersect(const SDL_Rect *A, const SDL_Rect *B, SDL_Rect *in)
 {
 	Sint16 Amin, Amax, Bmin, Bmax;
 	
@@ -398,7 +398,7 @@ int stk_rect_isIntersect(const SDL_Rect *A, const SDL_Rect *B, SDL_Rect *in)
 }
 
 // widget type array initialization
-int stk_widget_initType()
+int STK_WidgetInitType()
 {
 	int i;
 	for (i=0; i<MAX_WIDGET_TYPE; i++) {
@@ -410,7 +410,7 @@ int stk_widget_initType()
 
 
 // get the specified widget type index
-int stk_widget_getType(STK_Widget *widget)
+int STK_WidgetGetType(STK_Widget *widget)
 {
 	if (!widget) {
 		fprintf(stderr, "NULL widget.\n");
@@ -422,7 +422,7 @@ int stk_widget_getType(STK_Widget *widget)
 
 // if we know the name string of one widget, and want to know its type index 
 // in the type array, use this function.
-int stk_widget_getTypeByName( char *id )
+int STK_WidgetGetTypeByName( char *id )
 {
 	int i;
 	for (i=1; i<MAX_WIDGET_TYPE; i++) {
@@ -442,7 +442,7 @@ int stk_widget_getTypeByName( char *id )
 // should supply two parameters: 
 // 1. widget type name;
 // 2. a set of widget functions
-int stk_widget_registerType( char *id, STK_WidgetFuncs **f )
+int STK_WidgetRegisterType( char *id, STK_WidgetFuncs **f )
 {
 	int i;
 	for (i=0; i<MAX_WIDGET_TYPE; i++) {
@@ -465,25 +465,25 @@ int stk_widget_registerType( char *id, STK_WidgetFuncs **f )
 }
 
 // get the type name of that widget
-char *stk_widget_getName( STK_Widget *widget )
+char *STK_WidgetGetName( STK_Widget *widget )
 {
 	return g_wlist[widget->type].id;
 	// or:  return widget->name;
 }
 
 // get the draw function of that specific widget
-F_Widget_Draw stk_widget_getDraw( STK_Widget *widget)
+F_Widget_Draw STK_WidgetGetDraw( STK_Widget *widget)
 {
 	return g_wlist[widget->type].funcs.draw;
 }
 
-F_Widget_Close stk_widget_getClose( STK_Widget *widget)
+F_Widget_Close STK_WidgetGetClose( STK_Widget *widget)
 {
 	return g_wlist[widget->type].funcs.close;
 }
 
 // get the set of functions of that widget
-STK_WidgetFuncs stk_widget_getFuncs(STK_Widget *widget)
+STK_WidgetFuncs STK_WidgetGetFuncs(STK_Widget *widget)
 {
 	return g_wlist[widget->type].funcs;
 }

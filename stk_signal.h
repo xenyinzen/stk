@@ -23,10 +23,10 @@ typedef struct SignalListNode {
 } SignalListNode;
 
 
-int stk_signal_init();
-int stk_signal_new(char *signal);
-int stk_signal_connect(STK_Widget *widget, char *signal, F_Signal_Callback callback, void *userdata);
-int stk_signal_emit(STK_Widget *widget, char *signal, void *signaldata);
+int STK_SignalInit();
+int STK_SignalNew(char *signal);
+int STK_SignalConnect(STK_Widget *widget, char *signal, F_Signal_Callback callback, void *userdata);
+int STK_SignalEmit(STK_Widget *widget, char *signal, void *signaldata);
 
 
 #endif /* _STK_SIGNAL_H_ */
