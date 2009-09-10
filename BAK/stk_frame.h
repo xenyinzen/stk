@@ -4,7 +4,9 @@
 typedef struct STK_Frame {
 	
 	Uint16 width;
-	
+
+	STK_Image *area[8];
+/*	
 	STK_Image *topleft;
 	STK_Image *top;
 	STK_Image *topright;
@@ -13,6 +15,7 @@ typedef struct STK_Frame {
 	STK_Image *bottomleft;
 	STK_Image *bottom;
 	STK_Image *bottomright;
+*/	
 }
 
 

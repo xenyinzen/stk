@@ -11,15 +11,10 @@ typedef enum STK_ButtonState {
 
 typedef struct STK_Button {
 	STK_Widget widget;
-	STK_Frame frame;
+	STK_Image image;
 	STK_ButtonState state;
 	STK_Widget *label;
 	STK_Font *font;
 } STK_Button;
-
-
-
-
-
 
 #endif /* _STK_BUTTON_H_ */
