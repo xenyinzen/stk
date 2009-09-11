@@ -2,6 +2,7 @@
 #define _STK_LABEL_H_
 
 #include "stk_widget.h"
+//#include "sdl_ttf.h"
 
 enum 
 {
@@ -33,6 +34,7 @@ typedef struct STK_Label {
 	int pattern;
 
 	char *caption;
+//	TTF_Font *font;
 } STK_Label;
 
 
