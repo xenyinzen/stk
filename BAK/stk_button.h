@@ -14,6 +14,7 @@ typedef struct STK_Button {
 	STK_Image image;
 	STK_ButtonState state;
 	STK_Widget *label;
+	Uint32 flag;
 } STK_Button;
 
 #endif /* _STK_BUTTON_H_ */

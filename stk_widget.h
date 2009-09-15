@@ -4,7 +4,7 @@
 #include "SDL.h"
 
 // the basic void pointer type
-typedef void* STK_Object;
+typedef void *STK_Object;
 
 typedef struct STK_Widget {
 	SDL_Surface *surface;	// the surface drawn on is this widget
@@ -28,7 +28,7 @@ typedef struct STK_WidgetListNode {
 } STK_WidgetListNode;
 
 
-typedef void	(*F_Widget_Draw) 	(STK_Widget *widget, SDL_Rect *rect);
+typedef void	(*F_Widget_Draw) 	(STK_Widget *widget);
 typedef void	(*F_Widget_Close)	(STK_Widget *widget);
 
 

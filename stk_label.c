@@ -60,11 +60,10 @@ int STK_LabelRegisterType()
 }
 
 
-void STK_LabelDraw(STK_Widget *widget, SDL_Rect *area)
+void STK_LabelDraw(STK_Widget *widget)
 {
 	SDL_Rect rect = {0};
 	STK_Label *label = (STK_Label *)widget;
-	//SDL_Rect draw_position;
 	SDL_Color fg = {0};
 	SDL_Color bg = {0};
 	
@@ -91,7 +90,7 @@ void STK_LabelDraw(STK_Widget *widget, SDL_Rect *area)
 		bg.g = (Uint8)((label->bgcolor >> 8) & 0xff);
 		bg.b = (Uint8)((label->bgcolor >> 0) & 0xff);
 
-		STK_FontDraw( &rect, label->caption, &fg, &bg );
+		STK_FontDraw(label->caption, &rect, &fg, &bg );
 	}
 
 }
@@ -129,6 +128,9 @@ int STK_LabelSetColor(STK_Widget *widget, int which, Uint32 color)
 		default:
 			break;
 	}
+	
+	// need to submit a redraw event
+	STK_WidgetEventRedraw(widget);
 
 	return 1;
 }

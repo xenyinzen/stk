@@ -42,7 +42,7 @@ int STK_FontInit()
 }
 
 
-int STK_FontDraw( SDL_Rect *rect, char *str, SDL_Color *fg, SDL_Color *bg)
+int STK_FontDraw( char *str, SDL_Rect *rect, SDL_Color *fg, SDL_Color *bg)
 {
 	SDL_Surface *text, *video;
 	SDL_Rect dst;

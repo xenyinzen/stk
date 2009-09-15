@@ -53,7 +53,7 @@ enum LabelPattern
 STK_Widget* STK_LabelNew( char *str, Uint16 x, Uint16 y);
 int STK_LabelClose(STK_Widget *widget);
 int STK_LabelRegisterType();
-void STK_LabelDraw(STK_Widget *widget, SDL_Rect *area);
+void STK_LabelDraw(STK_Widget *widget);
 
 int STK_LabelSetColor(STK_Widget *widget, int which, Uint32 color);
 int STK_LabelSetAlignment(STK_Widget *widget, int alignment);

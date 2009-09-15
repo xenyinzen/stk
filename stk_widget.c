@@ -192,64 +192,37 @@ int STK_WidgetIsActive(STK_Widget *widget)
 // should be drawn by this function
 int STK_WidgetDraw(STK_Widget *widget)
 {
-	STK_WidgetListNode *t;
 	STK_Window *win = STK_WindowGetTop();
 	F_Widget_Draw draw = NULL;
-	SDL_Rect inter;
 	int doupdate = 1;
 	
 	if (!win)
 		return 0;
 	
-	t = win->widget_list;
 	if (win->visible) {
 		// walk along the widget list on 'win'
 		
-		
+		// clear widget appearance
 		if (widget->flags & WIDGET_DESTROY) {
+			// here, use real filling action function, rather than event generator
 			SDL_FillRect(win->widget.surface, &widget->rect, win->bgcolor);
-			widget->flags &= ~WIDGET_DESTROY;
+			// widget->flags &= ~WIDGET_DESTROY;
 		}
-		else {
-		
-		while (t) {
-			// only compare with those visible widgets
-			
-			if (t->widget->flags & WIDGET_VISIBLE) {
-				// judge if it is intersecting relation between specific widget and other widgets
-				if (STK_RectIsIntersect(&widget->rect, &t->widget->rect, &inter)) {
-					// get the specific draw function of that widget
-					draw = STK_WidgetGetDraw(widget);
-					if (draw) 
-						// only update the intersecting part
-						draw(t->widget, &inter);
-					else
-						doupdate = 0;
-				}
-				// judge if 'widget' is inside the list widget
-				else if (STK_RectIsInside(&widget->rect, &t->widget->rect)) {
-					draw = STK_WidgetGetDraw(widget);
-					if (draw)
-						// only draw 'widget' rect 
-						draw(t->widget, &widget->rect);
-					else
-						doupdate = 0;
-				}
-				// judge if list widget is inside the 'widget'
-				else if (STK_RectIsInside(&t->widget->rect, &widget->rect)) {
-					draw = STK_WidgetGetDraw(widget);
-					if (draw)
-						draw(t->widget, &widget->rect);
-					else
-						doupdate = 0;
-				}
-				// if two widget have no overlap relation, do nothing
-				else {}
-			}
-			t = t->next;
+		// hide
+		else if (widget->flags & WIDGET_HIDE) {
+			SDL_FillRect(win->widget.surface, &widget->rect, win->bgcolor);
+			// widget->flags &= ~WIDGET_HIDE;
 		}
-		}
-		
+		// showing
+		else if (widget->flags & WIDGET_VISIBLE) {
+			// get the specific draw function of that widget
+			draw = STK_WidgetGetDraw(widget);
+			if (draw)
+				draw(widget);
+			else
+				doupdate = 0;
+		}		
+
 		// after drawing, we need to update screen
 		if (doupdate) {
 			SDL_Rect update;
