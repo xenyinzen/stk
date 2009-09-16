@@ -7,7 +7,7 @@
 #include "stk_button.h"
 #include "stk_label.h"
 
-#define STK_BUTTON_BORDER_THICK	2
+#define STK_BUTTON_BORDER_THICKNESS	2
 
 STK_Widget *STK_ButtonFilling(STK_Widget *widget, Uint32 pattern);
 

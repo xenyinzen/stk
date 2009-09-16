@@ -67,7 +67,20 @@ void STK_LabelDraw(STK_Widget *widget)
 	SDL_Color fg = {0};
 	SDL_Color bg = {0};
 	
+	// backup widget's rect
+	rect.x = widget->rect.x;
+	rect.y = widget->rect.y;
+	rect.w = widget->rect.w;
+	rect.h = widget->rect.h;
+	
 	STK_FontAdapter(&widget->rect, label->caption);
+	
+	// if area has changed, need to reset dimensions of this label: free previous surface and alloc a new one
+	if (rect.x != widget->rect.x 
+		|| rect.y != widget->rect.y 
+		|| rect.w != widget->rect.w
+		|| rect.h != widget->rect.h)
+		STK_WidgetSetDims(widget, widget->rect.x, widget->rect.y, widget->rect.w, widget->rect.h);
 	
 	if (label->bgcolor != TRANSPARANT) {
 		SDL_Rect r;
@@ -78,9 +91,8 @@ void STK_LabelDraw(STK_Widget *widget)
 	}
 	
 	if (label->caption) {
+		// calculate the rect area of font surface: results are placed in rect.
 		STK_LabelCalculatePattern(label, &rect);
-		rect.x = rect.x + widget->rect.x;
-		rect.y = rect.y + widget->rect.y;
 		
 		fg.r = (Uint8)((label->fgcolor >> 16) & 0xff);
 		fg.g = (Uint8)((label->fgcolor >> 8) & 0xff);
@@ -90,9 +102,11 @@ void STK_LabelDraw(STK_Widget *widget)
 		bg.g = (Uint8)((label->bgcolor >> 8) & 0xff);
 		bg.b = (Uint8)((label->bgcolor >> 0) & 0xff);
 
-		STK_FontDraw(label->caption, &rect, &fg, &bg );
+		STK_FontDraw(widget, label->caption, &rect, &fg, &bg );
 	}
-
+	
+	// till now, the surface of label has been filled, but shall we blit it to window surface?
+	
 }
 
 int STK_LabelClose(STK_Widget *widget)

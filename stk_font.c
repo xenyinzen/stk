@@ -42,7 +42,7 @@ int STK_FontInit()
 }
 
 
-int STK_FontDraw( char *str, SDL_Rect *rect, SDL_Color *fg, SDL_Color *bg)
+int STK_FontDraw(STK_Widget *widget, char *str, SDL_Rect *rect, SDL_Color *fg, SDL_Color *bg)
 {
 	SDL_Surface *text, *video;
 	SDL_Rect dst;
@@ -53,12 +53,14 @@ int STK_FontDraw( char *str, SDL_Rect *rect, SDL_Color *fg, SDL_Color *bg)
 	
 	text = TTF_RenderUTF8_Shaded(font, str, *fg, *bg);
 	
-	dst.x = rect->x + win->widget.rect.x;
-	dst.y = rect->y + win->widget.rect.y;
-	dst.w = text->w;
-	dst.h = text->h;
-	video = SDL_GetVideoSurface();
-	SDL_BlitSurface(text, NULL, video, &dst);
+	dst.x = rect->x;
+	dst.y = rect->y;
+	dst.w = text->w;   // here or rect->w
+	dst.h = text->h;   // here or rect->h
+	// this function blit surface to video directly, may be not very suitable
+	//video = SDL_GetVideoSurface();
+	
+	SDL_BlitSurface(text, NULL, widget->surface, &dst);
 	SDL_FreeSurface(text);
 
 	return 1;
