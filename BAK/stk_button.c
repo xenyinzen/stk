@@ -25,21 +25,37 @@ STK_Widget *STK_ButtonNew(char *caption, Uint16 w, Uint16 h)
 	widget->name = "Button";
 	widget->flags = 0;
 	
-	button->label = STK_LabelNew(caption, w - 2*STK_BUTTON_BORDER_THICK, h - 2*STK_BUTTON_BORDER_THICK);
+	// create label structure
+	button->label = STK_LabelNew(caption, w - 2*STK_BUTTON_BORDER_THICKNESS, h - 2*STK_BUTTON_BORDER_THICKNESS);
 
-
-//	object = (STK_Object *)widget;
-	
 	button->state = STK_BUTTON_UP;
 	button->fillstyle = STK_IMAGESTYLE_NORMAL;
-	
-	return (STK_Widget *)widget;	
+
+	STK_WidgetEventShow(widget);	
+	return widget;	
 }
 
 void STK_ButtonDraw(STK_Widget *widget)
 {
 	STK_Button *button = (STK_Button *)widget;
+	STK_Label *label = button->label;
+	SDL_Rect rect;
 	
+        rect.x = widget->rect.x;
+        rect.y = widget->rect.y;
+        rect.w = widget->rect.w;
+        rect.h = widget->rect.h;
+
+        if (label)
+		STK_ChildAdapter(&widget->rect, &label->widget.rect);
+
+        // if area has changed, need to reset dimensions of this label: free previous surface and alloc a new one
+        if (rect.x != widget->rect.x
+                || rect.y != widget->rect.y
+                || rect.w != widget->rect.w
+                || rect.h != widget->rect.h)
+                STK_WidgetSetDims(widget, widget->rect.x, widget->rect.y, widget->rect.w, widget->rect.h);
+
 	// draw button base
 	if (button->state & STK_BUTTON_UP) { 
 		STK_ButtonFilling(widget, 0);
@@ -49,6 +65,7 @@ void STK_ButtonDraw(STK_Widget *widget)
 	}
 	
 	// draw button's child widget: label
+	//STK_WidgetFillChild(widget, );
 	STK_ButtonFillLabel(widget);
 	
 }
@@ -56,17 +73,42 @@ void STK_ButtonDraw(STK_Widget *widget)
 void STK_ButtonFillLabel(STK_Widget *widget)
 {
 	STK_Button *button = (STK_Button *)widget;
+	STK_Widget *child = (STK_Widget *)button->label;
 	SDL_Rect rect;
-	STK_Widget *child = (STK_Widget *)widget->label;
 
 	rect->x = STK_BUTTON_BORDER_THICKNESS;
 	rect->y = STK_BUTTON_BORDER_THICKNESS;
 	rect->w = widget->rect.w - 2*STK_BUTTON_BORDER_THICKNESS;
 	rect->h = widget->rect.h - 2*STK_BUTTON_BORDER_THICKNESS;
 
+	// blit label's surface to button's surface
 	SDL_BlitSurface(child->surface, NULL, widget->surface, &rect);
 
 }
+
+void STK_ButtonClose(STK_Widget *widget)
+{
+	STK_Button *button = (STK_Button *)widget;
+	STK_Widget *child = (STK_Widget *)button->label;
+	F_Widget_Close close;
+	
+	// free child memory: label
+	close = STK_WidgetGetClose(child);
+	if (close)
+		close(child);
+	button->label = NULL;
+
+	// free button's own memory
+        // now ready to free surface
+        if (widget->surface) {
+                SDL_FreeSurface(widget->surface);
+        }
+        // now ready to free button structure
+        free(button);
+
+	return 0;
+}
+
 
 STK_Widget *STK_ButtonFilling(STK_Widget *widget, Uint32 pattern)
 {
@@ -147,16 +189,6 @@ STK_Widget *STK_ButtonFilling(STK_Widget *widget, Uint32 pattern)
 
 }
 
-void STK_ButtonClose(STK_Widget *widget)
-{
-	STK_Widget *child = (STK_Widget *)widget->label;
-	// free child memory
-	
-	// free button's own memory
-	
-	
-}
-
 int STK_ButtonRegisterType()
 {
         STK_WidgetFuncs *f;
@@ -164,6 +196,45 @@ int STK_ButtonRegisterType()
         f->draw = STK_ButtonDraw;
         f->close = STK_ButtonClose;
 
-        return 1;
+        return 0;
 }
 
+int STK_ChildAdapter(SDL_Rect *r0, SDL_Rect *r1)
+{
+	if (r0->w < r1->w)
+		r0->w = r1->w;
+	if (r0->h < r1->w)
+		r0->h = r1->h;
+
+	return 0;
+}
+
+int STK_ButtonSetText(STK_Widget *widget, char *str)
+{
+	STK_Button *button = (STK_Button *)widget;
+	STK_Widget *label = button->label;
+	// here to set label's new size (but will trigger a redraw event on label)
+	STK_LabelSetText(label, str);
+	
+	// trigger a redraw event on button
+	STK_WidgetEventRedraw(widget);
+	return 0;
+}
+
+// not very needed
+int STK_ButtonSetSize(STK_Widget *widget, Uint16 width, Uint16 height)
+{
+	STK_Button *button = (STK_Button *)widget;
+	STK_Widget *label = button->label;
+	
+	
+
+	
+
+}
+
+
+
+
+
+  
