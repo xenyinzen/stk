@@ -18,6 +18,7 @@ typedef struct STK_Widget {
 	int type;		// identify the type of this widget, to index this type's other characters.
 	int inside;		// ??
 	Uint32 flags;		// important flag value variable
+	Uint32 state;
 } STK_Widget;
 
 typedef struct STK_WidgetListNode {
@@ -54,6 +55,10 @@ enum {
 };
 
 enum {
+	STK_EVENT = SDL_USEREVENT
+};
+
+enum {
 	STK_WIDGET_LABEL = 0,
 	STK_WIDGET_BUTTON
 };
@@ -62,7 +67,9 @@ enum {
 #define WIDGET_FOCUSABLE	0x00000001
 #define WIDGET_REALIZED		0x00000002
 #define WIDGET_VISIBLE		0x00000004
+#define WIDGET_HIDDEN		0x00000008
 #define WIDGET_DESTROY		0x80000000
+
 
 // maximun widget kinds number
 #define MAX_WIDGET_TYPE		100

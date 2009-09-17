@@ -13,8 +13,8 @@ Uint32 g_image_dividing_horizontal[2][2][2] = {
 		{ 0x000000ff, 0x0000ff00 }, // area 3, bottomcenter, two pixels
 	},
 	{	// pattern 2
-		{ 0x0000ff00, 0x00ff0000 }, // area 1, topcenter, two pixels
-		{ 0x000000ff, 0x0000ff00 }, // area 3, bottomcenter, two pixels
+		{ 0x0000ffff, 0x00ffff00 }, // area 1, topcenter, two pixels
+		{ 0x0000ff00, 0x00ff0000 }, // area 3, bottomcenter, two pixels
 	}
 };
 
@@ -24,8 +24,8 @@ Uint32 g_image_dividing_vertical[2][2][2] = {
 		{ 0x0000ff00, 0x00ff0000 }  // area 4, leftcenter, two pixels
 	},
 	{	// pattern 2
-		{ 0x0000ff00, 0x00ff0000 }, // area 2, rightcenter, two pixels
-		{ 0x0000ff00, 0x00ff0000 }  // area 4, leftcenter, two pixels
+		{ 0x0000ffff, 0x00ff00ff }, // area 2, rightcenter, two pixels
+		{ 0x0000ffff, 0x00ff00ff }  // area 4, leftcenter, two pixels
 	}
 };
 
@@ -37,19 +37,19 @@ Uint32 g_image_dividing_matrix[2][4][4] = {
 		{ 0x0000ff00, 0x00ffff00, 0x00008080, 0x00ff7799 }  // area 8, bottomleft, 2x2 pixels
 	},
 	{	// pattern 2
-		{ 0x00ffff77, 0x00ff7777, 0x00ff0088, 0x00ffffff }, // area 5, topleft, 2x2 pixels
-		{ 0x0000ff77, 0x00ff5566, 0x00ff0080, 0x00ff8080 }, // area 6, topright, 2x2 pixels
-		{ 0x00ff8080, 0x00ffffff, 0x00808080, 0x00404040 }, // area 7, bottomright, 2x2 pixels
-		{ 0x0000ff00, 0x00ffff00, 0x00008080, 0x00ff7799 }  // area 8, bottomleft, 2x2 pixels
+		{ 0x00000077, 0x00007777, 0x00ffff88, 0x00f00fff }, // area 5, topleft, 2x2 pixels
+		{ 0x00000077, 0x00005566, 0x00ffff80, 0x00ff0080 }, // area 6, topright, 2x2 pixels
+		{ 0x00008080, 0x00ff00ff, 0x00800080, 0x00400040 }, // area 7, bottomright, 2x2 pixels
+		{ 0x00ffff00, 0x00ff0000, 0x00000080, 0x00ff0099 }  // area 8, bottomleft, 2x2 pixels
 	}
 };
 
 
 // here, pattern need to vertify furtherly
-SDL_Surface *STK_ImageFillRect(SDL_Widget *widget, SDL_Image *image, SDL_Rect *rect, Uint32 pattern, Uint32 n)
+int STK_ImageFillRect(SDL_Surface *surface, STK_Image *image, SDL_Rect *rect, Uint32 pattern, Uint32 n)
 {
-	SDL_Surface *surface = widget->surface;
-	Uint32 bgcolor = widget->bgcolor;
+	// here miss something
+	Uint32 bgcolor = 0x00f4f400;
 	int style = image->fillstyle;
 	int i = 0;
 	SDL_Rect r;
@@ -62,7 +62,7 @@ SDL_Surface *STK_ImageFillRect(SDL_Widget *widget, SDL_Image *image, SDL_Rect *r
 			SDL_FillRect(surface, NULL, 0x00808080);
 		break;
 	case STK_IMAGESTYLE_HORIZONTAL:
-		for (i = 0; i < rect.h ; i++) {
+		for (i = 0; i < rect->h ; i++) {
 			r.x = rect->x;
 			r.y = rect->y + i;
 			r.w = rect->w;
@@ -71,15 +71,15 @@ SDL_Surface *STK_ImageFillRect(SDL_Widget *widget, SDL_Image *image, SDL_Rect *r
 		}
 		break;
 	case STK_IMAGESTYLE_VERTICAL:
-		for (i = 0; i < rect.w; i++) {
+		for (i = 0; i < rect->w; i++) {
 			r.x = rect->x + i;
 			r.y = rect->y;
 			r.w = 1;
 			r.h = rect->h;
-			SDL_FileRect(surface, &r, g_image_dividing_vertical[pattern][n][i]);
+			SDL_FillRect(surface, &r, g_image_dividing_vertical[pattern][n][i]);
 		}
 		break;
-	case STK_IMAGESTYLE_MATRIX: 
+	case STK_IMAGESTYLE_MATRIX: { 
 		SDL_Surface *s;
 		s = SDL_CreateRGBSurfaceFrom((void *)g_image_dividing_matrix[pattern][n], 
 						2, 
@@ -92,7 +92,8 @@ SDL_Surface *STK_ImageFillRect(SDL_Widget *widget, SDL_Image *image, SDL_Rect *r
 						0xff000000);
 		SDL_BlitSurface(s, NULL, surface, rect);
 		break;
-	case STK_IMAGESTYLE_PICTURE:
+		}
+	case STK_IMAGESTYLE_PICTURE: {
 		SDL_Surface *s;
 		SDL_Rect r;
 		r.x = 0; 
@@ -104,9 +105,11 @@ SDL_Surface *STK_ImageFillRect(SDL_Widget *widget, SDL_Image *image, SDL_Rect *r
 		if (s) 
 			SDL_BlitSurface(s, &r, surface, rect);			
 		break;
+		}
 	default:
 		break;
 
 	}
 	
+	return 0;
 }

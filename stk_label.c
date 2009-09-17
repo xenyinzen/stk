@@ -2,7 +2,6 @@
 #include <malloc.h>
 #include <string.h>
 
-#include "stk.h"
 #include "stk_widget.h"
 #include "stk_label.h"
 
@@ -36,7 +35,7 @@ STK_Widget *STK_LabelNew( char *str, Uint16 x, Uint16 y )
 	
 	label->height	= 20;
 	label->fgcolor	= 0x00000000;
-	label->bgcolor	= 0x00d4d4d4;			//TRANSPARANT;
+	label->bgcolor	= 0x00d400d4;			//TRANSPARANT;
 	
 	label->offset	= 0;
 	label->increase	= 1;
@@ -44,7 +43,8 @@ STK_Widget *STK_LabelNew( char *str, Uint16 x, Uint16 y )
 	
 	label->pattern	= LABEL_NORMAL;
 	
-	STK_WidgetEventShow((STK_Widget *)label);
+	// maybe some change
+//	STK_WidgetEventShow((STK_Widget *)label);
 	
 	return (STK_Widget *)label;
 }

@@ -2,10 +2,10 @@
 #include <stdlib.h>
 
 #include "SDL.h"
-#include "stk.h"
 #include "stk_widget.h"
 #include "stk_window.h"
 #include "stk_label.h"
+#include "stk_button.h"
 
 static SDL_mutex *my_mutex;
 // this is the global widget type array: IMPORTANT
@@ -32,6 +32,7 @@ int STK_WidgetInit()
 	//========================================
 	// register type for each kind of widget
 	STK_LabelRegisterType();
+	STK_ButtonRegisterType();
 
 	return 1;
 }
@@ -59,7 +60,7 @@ int STK_WidgetDrawAll()
 			draw = STK_WidgetGetDraw(widget);
 			if (draw) {
 				// do really draw on each widgets
-				draw(widget, NULL);	
+				draw(widget);	
 			}
 		// go to draw next widget
 		wlist = wlist->next;
@@ -209,7 +210,7 @@ int STK_WidgetDraw(STK_Widget *widget)
 			// widget->flags &= ~WIDGET_DESTROY;
 		}
 		// hide
-		else if (widget->flags & WIDGET_HIDE) {
+		else if (widget->flags & WIDGET_HIDDEN) {
 			SDL_FillRect(win->widget.surface, &widget->rect, win->bgcolor);
 			// widget->flags &= ~WIDGET_HIDE;
 		}
@@ -309,16 +310,16 @@ int STK_WidgetIsInside(STK_Widget *widget, int x, int y)
 		if (y > widget->rect.y)
 			if (x < (widget->rect.x + widget->rect.w))
 				if (y < (widget->rect.y + widget->rect.h)) {
-					if (widget->clip.w > 0) {
-						if (x > widget->clip.x)
-							if (y > widget->clip.y)
-								if (x < (widget->clip.x + widget->clip.w))
-									if (y < (widget->clip.y + widget->clip.h))
+					//if (widget->clip.w > 0) {
+					//	if (x > widget->clip.x)
+					//		if (y > widget->clip.y)
+					//			if (x < (widget->clip.x + widget->clip.w))
+					//				if (y < (widget->clip.y + widget->clip.h))
 										return 1;
-					}
-					else {
-						return 0;
-					}
+				//	}
+				//	else {
+				//		return 0;
+				//	}
 				}
 
 	return 0;

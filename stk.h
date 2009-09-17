@@ -7,9 +7,5 @@ int STK_Init();
 int STK_Main();
 int STK_Quit();
 
-enum {
-	STK_EVENT = SDL_USEREVENT
-};
-
 
 #endif /* _STK_H_ */

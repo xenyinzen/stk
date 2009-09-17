@@ -2,7 +2,6 @@
 #include <stdlib.h>
 
 #include "SDL.h"
-#include "stk.h"
 #include "stk_prim.h"
 #include "stk_widget.h"
 #include "stk_window.h"
@@ -214,7 +213,7 @@ int STK_WindowAddWidget(STK_Widget *widget)
 	}
 	
 	// show widget
-	STK_SignalEmit(widget, "show", NULL);
+//	STK_SignalEmit(widget, "show", NULL);
 	
 	return 1;
 }
@@ -318,23 +317,38 @@ int STK_WindowEvent( SDL_Event *event )
 	
 	int xrel, yrel;
 	
+	printf("Enter STK_WindowEvent.\n");
 	// if the event type is SDL_MOUSEMOTION, SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP, STK_EVENT and so on
 	if (win && event->type >= SDL_MOUSEMOTION) {
 		// calculate the relative coordinates
 		xrel = event->motion.x - win->widget.rect.x;
 		yrel = event->motion.y - win->widget.rect.y;
+		printf("enter in SDL_MOUSEMOTION\n");
 	}
 	
 	if (event->type == SDL_MOUSEBUTTONDOWN) {
 		// find out if mouse point is in certain widget 
+		printf("wl = %x.\n", wl);
 		while (wl) {
 			w = wl->widget;
+			printf("w = %x.\n", w);
+			printf("widget x = %d.\n", w->rect.x);
+			printf("widget y = %d.\n", w->rect.y);
+			printf("widget w = %d.\n", w->rect.w);
+			printf("widget h = %d.\n", w->rect.h);
+			
+			printf("mouse x = %d.\n", xrel);
+			printf("mouse y = %d.\n", yrel);
+			
 			// judge whether the mouse point is on this widget area 
 			if (STK_WidgetIsInside(w, xrel, yrel)) {
 				// focusable means this widget could be clicked, inputed, and so on
 				if (w->flags & WIDGET_FOCUSABLE) {
 					// while mouse click, take the focus to this widget
 					STK_WindowSetFocusWidget(w);
+					// update state
+					w->state = 1;
+					printf("In STK_WindowEvent. Ready to redraw widget.\n");
 					// do a redraw, for change the widget's appearance to let people to see an effect.
 					STK_WidgetEventRedraw(w);
 					// call the deeper event dispatcher function, to call the callback function of that widget
@@ -347,6 +361,7 @@ int STK_WindowEvent( SDL_Event *event )
 			wl = wl->next;		
 		}
 	}
+	printf("Exit STK_WindowEvent.\n");
 
 	return 1;
 }

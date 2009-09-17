@@ -36,7 +36,6 @@ int STK_FontInit()
 					FONT_SIZE, FONT_FILE, SDL_GetError());
 		cleanup(-1);
 	}
-	// TTF_SetFontStyle(font, TTF_STYLE_NORMAL);
 		
 	return 1;
 }
@@ -44,7 +43,7 @@ int STK_FontInit()
 
 int STK_FontDraw(STK_Widget *widget, char *str, SDL_Rect *rect, SDL_Color *fg, SDL_Color *bg)
 {
-	SDL_Surface *text, *video;
+	SDL_Surface *text;
 	SDL_Rect dst;
 
 	STK_Window *win = STK_WindowGetTop();
@@ -57,8 +56,6 @@ int STK_FontDraw(STK_Widget *widget, char *str, SDL_Rect *rect, SDL_Color *fg, S
 	dst.y = rect->y;
 	dst.w = text->w;   // here or rect->w
 	dst.h = text->h;   // here or rect->h
-	// this function blit surface to video directly, may be not very suitable
-	//video = SDL_GetVideoSurface();
 	
 	SDL_BlitSurface(text, NULL, widget->surface, &dst);
 	SDL_FreeSurface(text);
