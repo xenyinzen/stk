@@ -35,7 +35,7 @@ STK_Widget *STK_LabelNew( char *str, Uint16 x, Uint16 y )
 	
 	label->height	= 20;
 	label->fgcolor	= 0x00000000;
-	label->bgcolor	= 0x00d400d4;			//TRANSPARANT;
+	label->bgcolor	= 0x00d4d4d4;			//TRANSPARANT;
 	
 	label->offset	= 0;
 	label->increase	= 1;

@@ -361,8 +361,43 @@ int STK_WindowEvent( SDL_Event *event )
 			wl = wl->next;		
 		}
 	}
-	printf("Exit STK_WindowEvent.\n");
+	else if (event->type == SDL_MOUSEBUTTONUP) {
+		// find out if mouse point is in certain widget 
+		printf("wl = %x.\n", wl);
+		while (wl) {
+			w = wl->widget;
+			printf("w = %x.\n", w);
+			printf("widget x = %d.\n", w->rect.x);
+			printf("widget y = %d.\n", w->rect.y);
+			printf("widget w = %d.\n", w->rect.w);
+			printf("widget h = %d.\n", w->rect.h);
+			
+			printf("mouse x = %d.\n", xrel);
+			printf("mouse y = %d.\n", yrel);
+			
+			// judge whether the mouse point is on this widget area 
+			if (STK_WidgetIsInside(w, xrel, yrel)) {
+				// focusable means this widget could be clicked, inputed, and so on
+				if (w->flags & WIDGET_FOCUSABLE) {
+					// while mouse click, take the focus to this widget
+					//STK_WindowSetFocusWidget(w);
+					// update state
+					w->state = 2;
+					printf("In STK_WindowEvent. Ready to redraw widget.\n");
+					// do a redraw, for change the widget's appearance to let people to see an effect.
+					STK_WidgetEventRedraw(w);
+					// call the deeper event dispatcher function, to call the callback function of that widget
+					STK_WidgetEvent(w, event);
+					break;
+				}
+			
+			}
+			// go to next widget
+			wl = wl->next;		
+		}
+	}
 
+	printf("Exit STK_WindowEvent.\n");
 	return 1;
 }
 
