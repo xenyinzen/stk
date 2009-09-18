@@ -17,7 +17,7 @@ STK_Widget *draw_label()
 
 STK_Widget *draw_button()
 {
-	STK_Button *button = (STK_Button *)STK_ButtonNew("hehe, haha, xixi", 10, 10, 100, 30);
+	STK_Button *button = (STK_Button *)STK_ButtonNew("请点我哈哈哈哈哈", 200, 240, 100, 30);
 //	STK_WindowAddWidget((STK_Widget *)button);
 	STK_WidgetEventShow((STK_Widget *)button);
 	return (STK_Widget *)button;
