@@ -380,7 +380,7 @@ int STK_WindowEvent( SDL_Event *event )
 				// focusable means this widget could be clicked, inputed, and so on
 				if (w->flags & WIDGET_FOCUSABLE) {
 					// while mouse click, take the focus to this widget
-					//STK_WindowSetFocusWidget(w);
+					// STK_WindowSetFocusWidget(w);
 					// update state
 					w->state = 2;
 					printf("In STK_WindowEvent. Ready to redraw widget.\n");
