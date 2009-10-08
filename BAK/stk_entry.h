@@ -11,7 +11,11 @@ typedef struct STK_Entry {
 	Uint32 cur_pos;		// current char position in the output frame
 	Uint32 start_char;	// the start char address in the char buffer
 	Uint32 end_char;	// then end char address in the char buffer
+	Uint32 start_redraw;	// redraw start position
+	Uint32 end_redraw;	// redraw end postion
 	
+	Uint32 cursor_pos;	// current cursor position (pixel value)
+	Uint32 cursor_pos_old;	// the old cursor position (pixel value)
 	Uint32 distance;	// the relative position of char rect on drawing start
 	Uint32 charskip;	// the dividing space between two chars in a line
 	SDL_Rect text_rect;	// current char rectangle area 

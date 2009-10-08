@@ -4,21 +4,31 @@
 #include "stk_mm.h"
 #include "stk_text.h"
 
+// 64 bytes
+#define MEM_BLOCK_UNIT	64
+
 STK_Text *STK_TextNew(char *str)
 {
 	STK_Text *text;
+	int c;
+	char *p;
 	
 	text = (STK_Text *)STK_Malloc(sizeof(STK_Text));
 	if (str) {
 		text->length = strlen(str);
-		text->data   = strdup(str);
-		text->size   = text->length;
-		text->flag   = 0;
+		
+		c = text->length / MEM_BLOCK_UNIT;
+		text->size = (c + 1) * MEM_BLOCK_UNIT;
+		
+		p = (char *)STK_Malloc(text->size);
+		strcpy(p, str);
+		text->data = p;
 	}
 	
 	return text;
 }
 
+/*
 STK_Text *STK_TextNewFixed(char *str, Uint16 size)
 {
 	STK_Text *text;
@@ -44,6 +54,7 @@ STK_Text *STK_TextNewFixed(char *str, Uint16 size)
 
 	return text;
 }
+*/
 
 int STK_TextFree(STK_Text *text)
 {
@@ -65,28 +76,20 @@ int STK_TextSetText(STK_Text *text, char *str)
 		return 1;
 	}
 	len = strlen(str);
-	// if string buffer has fixed length
-	if (text->flag == 1) {
-		if (len >= text->size) {
-			fprintf(stderr, "STK_TextSetText: the length of str is too big.\n");
-			return -1;			
-		}
-		strcpy(text->data, str);
-		text->length = len;
-		text->size = len;
-	}
 	// if string buffer has variable length
 	else if (text->flag == 0) {
-		char *p = strdup(str);
-		if (!p) {
-			fprintf(stderr, "STK_TextSetText: strdup failed for str.\n");
-			return -1;			
+		char *p;
+		int c;
+		while (len > text->size) {
+			// expand to twice of the original memory block size
+			text->size = text->size * 2;	
 		}
+		
+		p = (char *)STK_Malloc(text->size);
 		// free old data buffer
 		free(text->data);
 		text->data = p;
 		text->length = len;
-		text->size = len;
 	}
 
 	return 0;	
@@ -126,6 +129,7 @@ int STK_TextInsertStr(STK_Text *text, char *str, int pos)
 {
 	char *p, *pn;
 	int len;
+	int newlen;
 	
 	if (!text || !str ) {
 		fprintf(stderr, "STK_TextInsertStr: text or str is NULL.\n");
@@ -138,19 +142,35 @@ int STK_TextInsertStr(STK_Text *text, char *str, int pos)
 	}
 	
 	len = strlen(str);
-	// insert buffer
-	pn = (char *)STK_Malloc(text->length + len + 1);
-	strncpy(pn, text->data, pos);
-	strncpy(pn + pos, str, len);
-	strcpy(pn + pos + len, text->data + pos);
-	
-	// free old data buffer
-	free(text->data);
-	// assign new data buffer
-	text->data = pn;
-	text->length += len;
-	text->size = text->length;
-	
+	newlen = text->length + len;
+	// need to alloc new memory block
+	if (newlen >= text->size) {
+		while (newlen >= text->size) {
+			text->size = text->size * 2;
+		}
+		
+		// insert buffer
+		pn = (char *)STK_Malloc(newlen + 1);
+		strncpy(pn, text->data, pos);
+		strncpy(pn + pos, str, len);
+		strcpy(pn + pos + len, text->data + pos);
+		// free old data buffer
+		free(text->data);
+		// assign new data buffer
+		text->data = pn;
+		text->length = newlen;
+	}
+	// not neccessory to alloc new memory block
+	else {
+		int i;
+		// move data after specified position
+		for (i = text->length; i >= pos; i--) {
+			text->data[i + 1] = text->data[i];
+		}
+		strncpy(text->data + pos, str, len);
+
+		text->length = newlen;
+	}
 	return 0;
 }
 

@@ -6,7 +6,6 @@ typedef struct STK_Text {
 	Uint32 length;		// the length of string
 	Uint32 size;		// the size of the string buffer
 	Uint32 charcount;	// the char numbers (may containing ASCII char and Chinese character)
-	Uint32 flag;
 } STK_Text;
 
 typedef struct STK_TextPara {

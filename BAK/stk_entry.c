@@ -59,6 +59,14 @@ int STK_EntryRegisterType()
         return 0;
 }
 
+// Define: 	when (end_redraw == 0) && (start_redraw == 0),  
+//			fillup background
+//		else when (end_redraw - start_redraw) == 0,
+//			fillup one char at position cur_pos
+//		else when (end_redraw - start_redraw) == n,
+//			fillup n+1 chars between current cursor position (start_redraw) and end_redraw
+//		else when (end_redraw == end_char) && (start_redraw == start_char)
+//			redraw all chars between start_redraw and end_redraw
 // 
 void STK_EntryDraw(STK_Widget *widget)
 {
@@ -69,33 +77,37 @@ void STK_EntryDraw(STK_Widget *widget)
 	SDL_Rect r;
 	
 	// fillup background
-	SDL_FillRect(widget->surface, NULL, 0x00f0f0f0);
-	
+	if (entry->start_redraw == 0 && entry->end_redraw == 0) {
+		SDL_FillRect(widget->surface, NULL, 0x00f0f0f0);
+	}
 	// fillup font surface (one by one), control the char dividing space by myself
-	for (i = 0; i < entry->start_char; i++) {
-		int l = 0;
-		l = entry->start_char + i;
-		// find proper char into utf8char array: can process ascii char and Chinese character
-		STK_TextGetChar(utf8char, entry->text, l);
+	else {
+		dist = entry->cursor_pos + entry->charskip;
+		for (i = entry->start_redraw; i < entry->end_redraw + 1;) {
+			// XXX: find proper char into utf8char array: can process ascii char and Chinese character
+			STK_TextGetChar(utf8char, entry->text, i);
+			
+			// initial value for cursor
+			// dist = STK_EntryGetDistance(entry);
+			// calculate the relative location of the drawing char rect
+			r.x = STK_ENTRY_BORDER_THICKNESS + dist;
+			r.y = STK_ENTRY_BORDER_THICKNESS;
+			STK_FontGetCharSize(entry->text.data[i], &r); // TTF_SizeUTF8(entry->text.data[entry->cur_pos]);
+			
+			// fill char on the widget's surface
+			STK_FillChar(widget->surface, &r, utf8char);
+			// update distance
+			dist += r.w + entry->charskip;
+			//STK_EntrySetDistance(dist);
+			
+			// here, may add 1~3 once
+			i++;
+		}
+		// keep current cursor position not changed in draw function
 		
-		// initial value is 2, for cursor
-		dist = STK_EntryGetDistance(entry);
-		// calculate the relative location of the drawing char rect
-		r.x = STK_ENTRY_BORDER_THICKNESS + dist;
-		r.y = STK_ENTRY_BORDER_THICKNESS;
-		STK_FontGetCharSize(entry->text.data[l], &r); // TTF_SizeUTF8(entry->text.data[entry->cur_pos]);
-		
-		// fill char on the widget's surface
-		STK_FillChar(widget->surface, &r, utf8char);
-		// update distance
-		dist = dist + r.w + entry->charskip;
-		STK_EntrySetDistance(dist);
-		
-		// update current cursor position
-		entry->cur_pos = l;		
 	}
 	
-	// fillup cursor
+	// fillup cursor: need to clean previous black line and draw new line in new position
 	STK_EntryDrawCursor(entry);
 }
 
@@ -104,15 +116,29 @@ void STK_EntryDrawCursor(STK_Entry *entry)
 {
 	SDL_Rect r;
 	STK_Widget *widget = (STK_Widget *)widget;
+	
+	// clean old cursor
 	// according to current cursor location, but now it's the last character
-	int dist = STK_EntryGetDistance();
+	int dist = entry->cursor_pos_old;
 	
 	r.x = STK_ENTRY_BORDER_THICKNESS + dist - STK_ENTRY_CURSOR_WIDTH;
 	r.y = STK_ENTRY_BORDER_THICKNESS;
 	r.w = STK_ENTRY_CURSOR_WIDTH;			// cursor width
 	r.h = widget->rect.h - 2 * STK_ENTRY_BORDER_THICKNESS;
 
-	// don't blind now
+	// clean old cursor draft
+	SDL_FillRect(widget->surface, &r, entry->bgcolor);
+
+	// draw new cursor
+	// according to current cursor location, but now it's the last character
+	int dist = entry->cursor_pos;
+	
+	r.x = STK_ENTRY_BORDER_THICKNESS + dist - STK_ENTRY_CURSOR_WIDTH;
+	r.y = STK_ENTRY_BORDER_THICKNESS;
+	r.w = STK_ENTRY_CURSOR_WIDTH;			// cursor width
+	r.h = widget->rect.h - 2 * STK_ENTRY_BORDER_THICKNESS;
+
+	// draw new cursor, don't blit now
 	SDL_FillRect(widget->surface, &r, entry->cursor_color);
 }
 
@@ -266,7 +292,7 @@ Uint32 STK_EntryCalcDisplayWindowTextLength(STK_Entry *entry)
 	return sum;
 }
 
-// in this function, only modify display window about variables
+// in this function, only modify display window related variables
 int STK_EntryKeyLeft(STK_Entry *entry)
 {
 	Uint32 tmp_length;
@@ -310,8 +336,9 @@ int STK_EntryKeyRight(STK_Entry *entry)
 
 int STK_EntryKeyHome(STK_Entry *entry)
 {
-	entry->start_char = 0;
+	Uint32 tmp_length = 0;
 	
+	entry->start_char = 0;
 	tmp_length = STK_EntryCalcDisplayWindowTextLength(entry);
 	// here to make sure that text display won't excced entry's textarea border
 	while (tmp_length > entry->textarea.w) {
@@ -326,8 +353,9 @@ int STK_EntryKeyHome(STK_Entry *entry)
 
 int STK_EntryKeyEnd(STK_Entry *entry)
 {
+	Uint32 tmp_length = 0;
+
 	entry->end_char = entry->text.length - 1;
-	
 	tmp_length = STK_EntryCalcDisplayWindowTextLength(entry);
 	// here to make sure that text display won't excced entry's textarea border
 	while (tmp_length > entry->textarea.w) {
@@ -339,12 +367,44 @@ int STK_EntryKeyEnd(STK_Entry *entry)
 	return 0;
 }
 
+// some complicated
 int STK_EntryKeyDelete(STK_Entry *entry)
 {
+	Uint32 tmp_length = 0;
 	
+	int pos = entry->start_char + entry->cur_pos;
+	// text buffer process, need to implement
+	STK_TextDeleteStr(entry->text, pos, 1);
+	
+	// if content length is shorter than width of entry
+	if (entry->end_char >= entry->text.length) {
+		entry->end_char--;
+	}
+	// else if content length is longer than width of entry
+	else {
+		tmp_length = STK_EntryCalcDisplayWindowTextLength(entry);
+		if (tmp_length > entry->textarea.w) {
+			// here to make sure that text display won't excced entry's textarea border
+			while (tmp_length > entry->textarea.w) {
+				entry->end_char--;
+				if (entry->end_char < entry->start_char)
+					break;
+				tmp_length = STK_EntryCalcDisplayWindowTextLength(entry);
+			}
+		}
+		else {
+			// here to make sure that text display won't excced entry's textarea border
+			while (tmp_length < entry->textarea.w) {
+				entry->end_char++;
+				if (entry->end_char >= entry->text.length)
+					break;
+				tmp_length = STK_EntryCalcDisplayWindowTextLength(entry);
+			}
+			entry->end_char--;
+		}
+	
+	}
 
-
+	return 0;
 }
-
-
 
