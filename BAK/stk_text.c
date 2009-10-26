@@ -125,6 +125,13 @@ STK_Text *STK_TextSubText(STK_Text *text, int start, Uint32 count)
 	return subtext;
 }
 
+int STK_TextAppendStr(STK_Text *text, char *str)
+{
+	
+
+
+}
+
 int STK_TextInsertStr(STK_Text *text, char *str, int pos)
 {
 	char *p, *pn;

@@ -6,6 +6,7 @@
 #include "stk_window.h"
 #include "stk_label.h"
 #include "stk_button.h"
+#include "stk_slidebar.h"
 
 static SDL_mutex *my_mutex;
 // this is the global widget type array: IMPORTANT
@@ -33,8 +34,9 @@ int STK_WidgetInit()
 	// register type for each kind of widget
 	STK_LabelRegisterType();
 	STK_ButtonRegisterType();
+	STK_SlidebarRegisterType();
 
-	return 1;
+	return 0;
 }
 
 // draw all widgets on a window
@@ -49,7 +51,7 @@ int STK_WidgetDrawAll()
 	wlist = win->widget_list;
 	if (!wlist) {
 		fprintf(stderr, "No widgets to draw!\n");
-		return 0;
+		return 1;
 	} 
 	
 	SDL_mutexP(my_mutex);
@@ -70,7 +72,7 @@ int STK_WidgetDrawAll()
 	STK_WindowUpdateRect(0, 0, 0, 0);
 	//SDL_UpdateRect(win->widget.surface, 0, 0, 0, 0);
 		
-	return 1;
+	return 0;
 }
 
 // widget event dispatcher function
@@ -98,7 +100,7 @@ int STK_WidgetEvent(STK_Widget *widget, SDL_Event *event)
 		break;	
 	}
 	
-	return 1;
+	return 0;
 }
 
 // set dimension rectagle for 'widget'
@@ -106,10 +108,10 @@ int STK_WidgetSetDims(STK_Widget *widget, Sint16 x, Sint16 y, Sint16 w, Sint16 h
 {
 	STK_Window *win;
 	if (!widget)
-		return 0;
+		return 1;
 	win = STK_WindowGetTop();
 	if (!win) 
-		return 0;
+		return 1;
 	
 	// fill up rect structure
 	widget->rect.x = x;
@@ -124,7 +126,7 @@ int STK_WidgetSetDims(STK_Widget *widget, Sint16 x, Sint16 y, Sint16 w, Sint16 h
 	// create new sub surface on 'win' surface for 'widget'
 	STK_WindowCreateWidgetSurface(widget);
 	
-	return 1;
+	return 0;
 }
 
 int STK_WidgetClose(STK_Widget *widget)
@@ -198,7 +200,7 @@ int STK_WidgetDraw(STK_Widget *widget)
 	int doupdate = 1;
 	
 	if (!win)
-		return 0;
+		return 1;
 	
 	if (win->visible) {
 		// walk along the widget list on 'win'
@@ -236,7 +238,7 @@ int STK_WidgetDraw(STK_Widget *widget)
 		}
 	}
 
-	return 1;
+	return 0;
 }
 
 /** ================================================
@@ -250,7 +252,7 @@ int STK_WidgetEventRedraw(STK_Widget *widget)
 {
 	SDL_Event event;
 	if (!widget)
-		return 0;
+		return 1;
 	
 	if (widget->flags & WIDGET_VISIBLE) {
 		event.type = STK_EVENT;
@@ -260,7 +262,7 @@ int STK_WidgetEventRedraw(STK_Widget *widget)
 		
 		SDL_PushEvent(&event);
 	}
-	return 1;
+	return 0;
 }
 
 // hide event
@@ -268,7 +270,7 @@ int STK_WidgetEventHide(STK_Widget *widget)
 {
 	SDL_Event event;
 	if (!widget)
-		return 0;
+		return 1;
 	
 	event.type = STK_EVENT;
 	event.user.code = STK_WIDGET_HIDE;
@@ -276,7 +278,7 @@ int STK_WidgetEventHide(STK_Widget *widget)
 	event.user.data2 = 0;
 		
 	SDL_PushEvent(&event);
-	return 1;
+	return 0;
 }
 
 // show event
@@ -284,7 +286,7 @@ int STK_WidgetEventShow(STK_Widget *widget)
 {
 	SDL_Event event;
 	if (!widget)
-		return 0;
+		return 1;
 	
 	if (!(widget->flags & WIDGET_VISIBLE)) {
 		event.type = STK_EVENT;
@@ -294,7 +296,7 @@ int STK_WidgetEventShow(STK_Widget *widget)
 		
 		SDL_PushEvent(&event);
 	}
-	return 1;
+	return 0;
 }
 
 /** ================================================
@@ -379,7 +381,7 @@ int STK_WidgetInitType()
 		memset(&g_wlist[i], 0, sizeof(STK_WidgetType));
 	}
 
-	return 1;
+	return 0;
 }
 
 

@@ -82,13 +82,17 @@ void STK_EntryDraw(STK_Widget *widget)
 	}
 	// fillup font surface (one by one), control the char dividing space by myself
 	else {
-		dist = entry->cursor_pos + entry->charskip;
+		// if cursor is at the end of an entry
+		if (entry->cur_pos >= entry->end_char)
+			dist = entry->charskip;
+		// else if cursor is at the begin of an entry of middle of an entry
+		else		
+			dist = entry->cursor_pos + entry->charskip;
+			
 		for (i = entry->start_redraw; i < entry->end_redraw + 1;) {
 			// XXX: find proper char into utf8char array: can process ascii char and Chinese character
 			STK_TextGetChar(utf8char, entry->text, i);
 			
-			// initial value for cursor
-			// dist = STK_EntryGetDistance(entry);
 			// calculate the relative location of the drawing char rect
 			r.x = STK_ENTRY_BORDER_THICKNESS + dist;
 			r.y = STK_ENTRY_BORDER_THICKNESS;
@@ -98,8 +102,6 @@ void STK_EntryDraw(STK_Widget *widget)
 			STK_FillChar(widget->surface, &r, utf8char);
 			// update distance
 			dist += r.w + entry->charskip;
-			//STK_EntrySetDistance(dist);
-			
 			// here, may add 1~3 once
 			i++;
 		}
@@ -108,6 +110,7 @@ void STK_EntryDraw(STK_Widget *widget)
 	}
 	
 	// fillup cursor: need to clean previous black line and draw new line in new position
+	// every time need to redraw cursor, but not background, and chars on textarea 
 	STK_EntryDrawCursor(entry);
 }
 
@@ -142,8 +145,8 @@ void STK_EntryDrawCursor(STK_Entry *entry)
 	SDL_FillRect(widget->surface, &r, entry->cursor_color);
 }
 
-// the distance of a new char will been drawn
-Uint32 STK_EntryGetDistance(STK_Entry *entry)
+// the distance of current cursor will been got
+Uint32 STK_EntryGetCursorDistance(STK_Entry *entry)
 {
 	// calculate the distance from the start of string.
 	// I think: should record.
@@ -153,7 +156,7 @@ Uint32 STK_EntryGetDistance(STK_Entry *entry)
 		dist += charwidth[entry->text.data[i]] + STK_ENTRY_CURSOR_WIDTH;		
 	}
 	
-	return dist;
+	return dist - STK_ENTRY_CURSOR_WIDTH;
 }
 
 // need to do a initial function to charwidth
@@ -188,7 +191,7 @@ int STK_EntryInitCharWidth(STK_Widget *widget)
 }
 
 // process keydown event
-static void STK_EntrySignalKeyDown(STK_Object *object,void *signaldata,void *userdata)
+static void STK_EntrySignalKeyDown(STK_Object *object, void *signaldata, void *userdata)
 {
 	STK_Entry *entry = (STK_Entry *)object;
 	SDL_Event *event = (SDL_Event *)signaldata;
@@ -204,10 +207,11 @@ static void STK_EntrySignalKeyDown(STK_Object *object,void *signaldata,void *use
 	mod = event->key.keysym.mod;
 	switch (event->key.keysym.sym) {
 	case SDLK_DELETE:
-		// if (entry->cur_pos )
-		STK_EntryKeyDelete();
-		STK_WidgetEventRedraw(widget);
-		STK_SignalEmit(widget, "changed", NULL);
+		if (entry->start_char + entry->cur_pos < entry->text.length) {
+			STK_EntryKeyDelete(entry);
+			STK_WidgetEventRedraw(widget);
+			STK_SignalEmit(widget, "changed", NULL);
+		}
 		break;
 	case SDLK_BACKSPACE:
 		if (entry->cur_pos > 0) {
@@ -231,7 +235,7 @@ static void STK_EntrySignalKeyDown(STK_Object *object,void *signaldata,void *use
 		}    			
 		break;    		
 	case SDLK_RIGHT:
-		if () {
+		if (entry->start_char + entry->cur_pos < entry->text.length - 1) {
 			STK_EntryKeyRight(entry);
 			STK_WidgetEventRedraw(widget);
 		}
@@ -255,7 +259,8 @@ static void STK_EntrySignalKeyDown(STK_Object *object,void *signaldata,void *use
 			}
 			
 			if (key < 127) {
-				STK_EntryKeyGeneral();
+				entry->inputkey[0] = key;
+				STK_EntryKeyGeneral(entry);
 				STK_WidgetEventRedraw(widget);
 				STK_SignalEmit(widget, "changed", NULL);
 			}
@@ -292,16 +297,58 @@ Uint32 STK_EntryCalcDisplayWindowTextLength(STK_Entry *entry)
 	return sum;
 }
 
+// input a char, shift display window and redraw window
+int STK_EntryKeyGeneral(STK_Entry *entry)
+{
+	// insert input key into text buffer
+	STK_TextInsertStr(entry->text, entry->inputkey, entry->start_char + entry->cur_pos);
+	entry->end_char++;
+	// when input key is at the last position
+	if (entry->start_char + entry->cur_pos >= entry->end_char - 1) {
+		STK_EntryCalcHeadLimitation(entry);
+	}
+	// when input key is at the beginning or the middle position
+	else {
+		STK_EntryCalcTailLimitation(entry);
+	}
+
+
+}
+
+int STK_EntryCalcHeadLimitation(STK_Entry *entry)
+{
+	tmp_length = STK_EntryCalcDisplayWindowTextLength(entry);
+	// here to make sure that text display won't excced entry's textarea border
+	while (tmp_length > entry->textarea.w) {
+		entry->start_char++;
+		tmp_length = STK_EntryCalcDisplayWindowTextLength(entry);
+	}
+
+}
+
+int STK_EntryCalcTailLimitation(STK_Entry *entry)
+{
+	tmp_length = STK_EntryCalcDisplayWindowTextLength(entry);
+	// here to make sure that text display won't excced entry's textarea border
+	while (tmp_length > entry->textarea.w) {
+		entry->end_char--;
+		tmp_length = STK_EntryCalcDisplayWindowTextLength(entry);
+	}
+
+}
+
 // in this function, only modify display window related variables
 int STK_EntryKeyLeft(STK_Entry *entry)
 {
 	Uint32 tmp_length;
 	
-	if (entry->cur_pos > 0)
+	if (entry->cur_pos > 0) {
 		entry->cur_pos--;
+	}
 	else {
-		if (entry->start_char > 0)
+		if (entry->start_char > 0) {
 			entry->start_char--;
+		}
 		tmp_length = STK_EntryCalcDisplayWindowTextLength(entry);
 		// here to make sure that text display won't excced entry's textarea border
 		while (tmp_length > entry->textarea.w) {

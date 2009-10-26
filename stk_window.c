@@ -44,7 +44,7 @@ int STK_WindowOpen()
 {
 	STK_Window *window = STK_WindowGetTop();
 	if (window == NULL)
-		return 0;
+		return 1;
 	window->type = 0;
 	window->bgcolor = SDL_MapRGB(window->widget.surface->format, 0xd4, 0xd4, 0xd4);
 	window->visible = 1;
@@ -56,12 +56,12 @@ int STK_WindowOpen()
 	fprintf(stderr, "Ready to redraw the window.\n");
 	STK_WindowEventRedraw();
 	
-	return 1;
+	return 0;
 }
 
 int STK_WindowInit()
 {
-	return 1;
+	return 0;
 }
 
 int STK_WindowClose()

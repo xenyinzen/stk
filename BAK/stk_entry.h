@@ -26,7 +26,9 @@ typedef struct STK_Entry {
 	
 	// used to record char's width map
 	Uint16 charwidth[255];
-		
+
+	Uint16 inputkey[4];		// used to store input char at every input
+			
 } STK_Entry;
 
 
