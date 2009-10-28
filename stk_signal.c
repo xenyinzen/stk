@@ -21,7 +21,7 @@ SignalListNode *STK_SignalGetListHead()
 int STK_SignalInit()
 {
 	slist_head = NULL;
-	return 1;
+	return 0;
 }
 
 // register a new signal into the signal list.
@@ -43,7 +43,7 @@ int STK_SignalNew( char *signal )
 			// check specified 
 			if (!strcmp(l->signal, signal)) {
 				fprintf(stderr, "Signal [%s] already exists.\n", signal);
-				return 0;
+				return 1;
 			}
 			l = l->next;
 		}
@@ -56,7 +56,7 @@ int STK_SignalNew( char *signal )
 		l->next->next = NULL;
 	}
 	
-	return 1;
+	return 0;
 }
 
 // Connecting function: connect the 'widget' with 'callback' function on 'signal' 
@@ -70,8 +70,7 @@ int STK_SignalConnect(STK_Widget *widget, char *signal, F_Signal_Callback callba
 int STK_SignalEmit(STK_Widget *widget, char *signal, void *signaldata)
 {
 	// force converting STK_Widget type to STK_Object type 
-	STK_SignalEmitToObject((STK_Object *)widget, signal, signaldata);
-	return 1;
+	return STK_SignalEmitToObject((STK_Object *)widget, signal, signaldata);
 }
 
 
@@ -80,7 +79,7 @@ static int STK_SignalConnectToObject(STK_Object *object, char *signal, F_Signal_
 	// if global signal list is blank
 	if (slist_head == NULL) {
 		fprintf(stderr, "Signal [%s] doesn't exist.\n", signal);
-		return 0;	
+		return 1;	
 	}
 	// if global signal list is not blank
 	else {
@@ -95,7 +94,7 @@ static int STK_SignalConnectToObject(STK_Object *object, char *signal, F_Signal_
 		
 		if (l == NULL) {
 			fprintf(stderr, "Signal [%s] doesn't exist.\n", signal);
-			return 0;
+			return 1;
 		}
 		
 		// find the signal node in the list
@@ -110,7 +109,7 @@ static int STK_SignalConnectToObject(STK_Object *object, char *signal, F_Signal_
 			l->call_list->userdata = userdata;
 			l->call_list->next = NULL;
 			
-			return 1;
+			return 0;
 		}
 		else {
 			CallbackListNode *cbl = l->call_list;
@@ -124,11 +123,9 @@ static int STK_SignalConnectToObject(STK_Object *object, char *signal, F_Signal_
 			cbl->next->userdata = userdata;
 			cbl->next->next = NULL;
 			
-			return 1;		
+			return 0;		
 		}
 	}
-	
-	return 0;
 }
 
 static int STK_SignalEmitToObject(STK_Object *object, char *signal, void *signaldata)
@@ -153,8 +150,8 @@ static int STK_SignalEmitToObject(STK_Object *object, char *signal, void *signal
 						// two parameters: signaldata, userdata. They can play a important part when program.
 						callback( object, signaldata, cbl->userdata );
 					}
+					cbl = cbl->next;
 				}
-				cbl = cbl->next;
 			}
 			else {
 				fprintf(stderr, "No handlers for signal %s.\n", signal);
@@ -163,7 +160,7 @@ static int STK_SignalEmitToObject(STK_Object *object, char *signal, void *signal
 		l = l->next;
 	}
 
-	return 1;
+	return 0;
 }
 
 

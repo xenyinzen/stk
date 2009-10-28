@@ -56,7 +56,7 @@ int STK_LabelRegisterType()
 	f->draw = STK_LabelDraw;
 	f->close = STK_LabelClose;
 	
-	return 1;
+	return 0;
 }
 
 
@@ -124,14 +124,16 @@ int STK_LabelClose(STK_Widget *widget)
 	}
 	// now ready to free label node
 	free(label);
-	return 1;
+	
+	return 0;
 }
 
 int STK_LabelSetColor(STK_Widget *widget, int which, Uint32 color)
 {
 	STK_Label *label = (STK_Label *)widget;
 	if (label == NULL) 
-		return 0;
+		return 1;
+		
 	switch (which) {
 		case FOREGROUND:
 			label->fgcolor = color;
@@ -146,7 +148,7 @@ int STK_LabelSetColor(STK_Widget *widget, int which, Uint32 color)
 	// need to submit a redraw event
 	STK_WidgetEventRedraw(widget);
 
-	return 1;
+	return 0;
 }
 
 static void STK_LabelCalculatePattern(STK_Label *label, SDL_Rect *rect)
@@ -189,7 +191,7 @@ int STK_LabelSetAlignment(STK_Widget *widget, int alignment)
 	STK_Label *label = (STK_Label *)widget;
 	label->alignment = alignment;
 	
-	return 1;
+	return 0;
 }
 
 int STK_LabelSetText(STK_Widget *widget, char * text)
@@ -197,7 +199,7 @@ int STK_LabelSetText(STK_Widget *widget, char * text)
 	STK_Label *label = (STK_Label *)widget;
 	
 	if (text == NULL)
-		return 0;
+		return 1;
 	
 	if (label->caption) {
 		free(label->caption);
@@ -210,7 +212,7 @@ int STK_LabelSetText(STK_Widget *widget, char * text)
 	
 	STK_WidgetEventRedraw(widget);
 			
-	return 1;
+	return 0;
 }
 
 char *STK_LabelGetText(STK_Widget *widget)

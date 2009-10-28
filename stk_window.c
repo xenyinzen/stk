@@ -15,7 +15,7 @@ STK_Window *STK_WindowNew( Sint16 x, Sint16 y, Sint16 width, Sint16 height)
 	// get the main video surface
 	SDL_Surface *video = SDL_GetVideoSurface();
 	if (video == NULL)
-		return 0;
+		return 1;
 	
 	STK_Window *win = (STK_Window *)STK_Malloc(sizeof(STK_Window));
 	
@@ -26,6 +26,7 @@ STK_Window *STK_WindowNew( Sint16 x, Sint16 y, Sint16 width, Sint16 height)
 	
 	// when create, the visible flags is set to 0, means not display now
 	win->visible = 0;
+	win->pressed = 0;
 	// nonsense
 	win->type = 0;
 	win->focus_widget = NULL;
@@ -100,11 +101,11 @@ int STK_WindowSetWidgetList(STK_WidgetListNode *wl)
 {
 	STK_Window *win = STK_WindowGetTop();	
 	if (!win)
-		return NULL;
+		return 1;
 
 	win->widget_list = wl;
 	
-	return 1;
+	return 0;
 }
 
 // set the focus widget of a window
@@ -112,11 +113,11 @@ int STK_WindowSetFocusWidget(STK_Widget *fw)
 {
 	STK_Window *win = STK_WindowGetTop();
 	if (!win)
-		return 0;
+		return 1;
 	
 	win->focus_widget = fw;
 	
-	return 1;
+	return 0;
 }
 
 // create a new sub surface from the parent surface 'sur', using the 'rect' parameter
@@ -150,12 +151,12 @@ int STK_WindowGetMouseState( int *x, int *y )
 	STK_Window *win = STK_WindowGetTop();
 	
 	if (!win) 
-		return 0;
+		return 1;
 
 	SDL_GetMouseState(&abs_x, &abs_y);
 	*x = abs_x - win->widget.rect.x;
 	*y = abs_y - win->widget.rect.y;	
-	return 1;	
+	return 0;	
 }
 
 // create the surface for specific widget
@@ -164,9 +165,9 @@ int STK_WindowCreateWidgetSurface(STK_Widget *widget)
 	STK_Window *win = STK_WindowGetTop();
 	// if the location of widget excced the bounary of win, return directly
 	if (widget->rect.x > win->widget.rect.x + win->widget.rect.w)
-		return 0;
+		return 1;
 	if (widget->rect.y > win->widget.rect.y + win->widget.rect.h)
-		return 0;
+		return 1;
 	
 	if (widget->rect.x + widget->rect.w > win->widget.rect.x + win->widget.rect.w )
 		widget->rect.w = win->widget.rect.x + win->widget.rect.w - widget->rect.x;
@@ -179,7 +180,7 @@ int STK_WindowCreateWidgetSurface(STK_Widget *widget)
 	// ?? why do this step?: to realize that widget using its private method
 	STK_SignalEmit(widget, "realize", NULL);
 	
-	return 1;
+	return 0;
 }
 
 // add widget to window's widget list
@@ -189,7 +190,7 @@ int STK_WindowAddWidget(STK_Widget *widget)
 	
 	STK_Window *win = STK_WindowGetTop();
 	if (!win)
-		return 0;
+		return 1;
 	
 	item = (STK_WidgetListNode *)STK_Malloc(sizeof(STK_WidgetListNode));
 	item->widget = widget;
@@ -215,7 +216,7 @@ int STK_WindowAddWidget(STK_Widget *widget)
 	// show widget
 //	STK_SignalEmit(widget, "show", NULL);
 	
-	return 1;
+	return 0;
 }
 
 STK_Widget *STK_WindowRemoveWidget(STK_Widget *widget)
@@ -230,7 +231,7 @@ int STK_WindowEventRealize()
 {
 	STK_Window *window = STK_WindowGetTop();
 	if (!window)
-		return 0;
+		return 1;
 	
 	SDL_Event event;
 	event.type = STK_EVENT;
@@ -239,7 +240,7 @@ int STK_WindowEventRealize()
 	event.user.data2 = 0;
 	
 	SDL_PushEvent(&event);
-	return 1;
+	return 0;
 }
 
 // window redraw event
@@ -247,7 +248,7 @@ int STK_WindowEventRedraw()
 {
 	STK_Window *window = STK_WindowGetTop();
 	if (!window)
-		return 0;
+		return 1;
 
 	SDL_Event event;
 	event.type = STK_EVENT;
@@ -256,7 +257,7 @@ int STK_WindowEventRedraw()
 	event.user.data2 = 0;
 	
 	SDL_PushEvent(&event);
-	return 1;
+	return 0;
 }
 
 // window realize function
@@ -264,7 +265,7 @@ int STK_WindowRealize()
 {
 	STK_Window *win = STK_WindowGetTop();
 	if (!win)
-		return 0;
+		return 1;
 
 	STK_WidgetListNode *item = STK_WindowGetWidgetList();
 	
@@ -283,7 +284,7 @@ int STK_WindowRealize()
 	if (win->widget.rect.h == 0)
 		win->widget.rect.h = 480;
 
-	return 1;
+	return 0;
 }
 
 // window redraw function
@@ -292,7 +293,7 @@ int STK_WindowRedraw()
 	SDL_Surface *video = SDL_GetVideoSurface();
 	STK_Window *win = STK_WindowGetTop();
 	if (!win)
-		return 0;
+		return 1;
 		
 	win->visible = 1;
 	
@@ -323,11 +324,12 @@ int STK_WindowEvent( SDL_Event *event )
 		// calculate the relative coordinates
 		xrel = event->motion.x - win->widget.rect.x;
 		yrel = event->motion.y - win->widget.rect.y;
-		printf("enter in SDL_MOUSEMOTION\n");
 	}
 	
 	if (event->type == SDL_MOUSEBUTTONDOWN) {
+		win->pressed = 1;
 		// find out if mouse point is in certain widget 
+		printf("Mouse button down\n");
 		printf("wl = %x.\n", wl);
 		while (wl) {
 			w = wl->widget;
@@ -351,6 +353,7 @@ int STK_WindowEvent( SDL_Event *event )
 					printf("In STK_WindowEvent. Ready to redraw widget.\n");
 					// do a redraw, for change the widget's appearance to let people to see an effect.
 					STK_WidgetEventRedraw(w);
+					printf("Ready to enter widget event processing.\n");
 					// call the deeper event dispatcher function, to call the callback function of that widget
 					STK_WidgetEvent(w, event);
 					break;
@@ -362,7 +365,9 @@ int STK_WindowEvent( SDL_Event *event )
 		}
 	}
 	else if (event->type == SDL_MOUSEBUTTONUP) {
+		win->pressed = 0;
 		// find out if mouse point is in certain widget 
+		printf("Mouse button up\n");
 		printf("wl = %x.\n", wl);
 		while (wl) {
 			w = wl->widget;
@@ -386,6 +391,7 @@ int STK_WindowEvent( SDL_Event *event )
 					printf("In STK_WindowEvent. Ready to redraw widget.\n");
 					// do a redraw, for change the widget's appearance to let people to see an effect.
 					STK_WidgetEventRedraw(w);
+					printf("Ready to enter widget event processing.\n");
 					// call the deeper event dispatcher function, to call the callback function of that widget
 					STK_WidgetEvent(w, event);
 					break;
@@ -396,9 +402,22 @@ int STK_WindowEvent( SDL_Event *event )
 			wl = wl->next;		
 		}
 	}
+	else if (event->type == SDL_MOUSEMOTION) {
+		if (win->pressed == 1 && win->focus_widget) {
+			w = win->focus_widget;
+			// judge whether the mouse point is on this widget area 
+			if (STK_WidgetIsInside(w, xrel, yrel) && (w->flags & WIDGET_DRAGABLE)) {
+				// focusable means this widget could be clicked, inputed, and so on
+				printf("Enter drag motion");
+				w->state = 3;
+//				STK_WidgetEventRedraw(w);
+				STK_WidgetEvent(w, event);
+			}
+		}		
+	}
 
 	printf("Exit STK_WindowEvent.\n");
-	return 1;
+	return 0;
 }
 
 /*
@@ -453,7 +472,7 @@ int STK_WindowFillRect(STK_Window *win, SDL_Rect *rect, Uint32 color)
 	
 	SDL_FillRect(win->widget.surface, &r, color);
 	
-	return 1;
+	return 0;
 }
 
 int STK_WindowBlitTo(STK_Window *win, SDL_Rect *des_r, SDL_Surface *src, SDL_Rect *src_r)
@@ -468,7 +487,7 @@ int STK_WindowBlitTo(STK_Window *win, SDL_Rect *des_r, SDL_Surface *src, SDL_Rec
 	
 	SDL_BlitSurface(src, src_r, dest, &r);
 
-	return 1;
+	return 0;
 }
 
 int STK_WindowDrawBox(STK_Window *win, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color)
@@ -504,5 +523,5 @@ int STK_WindowUpdateRect( Sint16 x, Sint16 y, Sint16 w, Sint16 h)
 	
 	SDL_UpdateRect(video, x, y, w, h);
 	
-	return 1;
+	return 0;
 }

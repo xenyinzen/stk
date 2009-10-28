@@ -1,6 +1,10 @@
 #ifndef _STK_SLIDEBAR_H_
 #define _STK_SLIDEBAR_H_
 
+#include "stk_widget.h"
+
+#define STK_SLIDEBAR_STEP 5
+
 enum {
 	STK_SLIDEBAR_IDLE,
 	STK_SLIDEBAR_DRAG
@@ -9,6 +13,13 @@ enum {
 enum {
 	STK_SLIDEBAR_HORIZONTAL,
 	STK_SLIDEBAR_VERTICAL
+};
+
+enum {
+	STK_SLIDEBAR_LEFT,
+	STK_SLIDEBAR_RIGHT,
+	STK_SLIDEBAR_UP,
+	STK_SLIDEBAR_DOWN
 };
 
 enum {
@@ -42,18 +53,15 @@ typedef struct STK_Slidebar {
 	float pixelstep;	// pixels on screen, should be accurate, otherwise will introduce in big residuals.
 	
 	Uint32 value_locked;
-	Uint32 flag;
-
 } STK_Slidebar;
 
-#define STK_SLIDEBAR_STEP 5
 
 STK_Widget *STK_SlidebarNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h);
 int STK_SlidebarRegisterType();
 int STK_SlidebarClose(STK_Widget *widget);
-void STK_SlidebarDraw(STK_Slidebar *slider);
+void STK_SlidebarDraw(STK_Widget *widget);
 
-int STK_SlidebarGetCurrentValue(STK_Slidebar *slider);
+Uint32 STK_SlidebarGetCurrentValue(STK_Slidebar *slider);
 int STK_SlidebarSetValue(STK_Slidebar *slider, int type, int value);
 
 #endif /* _STK_SLIDEBAR_H_ */

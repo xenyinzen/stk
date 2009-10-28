@@ -9,6 +9,7 @@ typedef struct STK_Window {
 	Uint8 type;
 	Uint32 bgcolor;
 	int visible;
+	int pressed;		// for global drag effects.
 
 	STK_Widget *focus_widget;
 	STK_WidgetListNode *widget_list;

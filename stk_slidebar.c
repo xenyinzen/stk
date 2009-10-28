@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "stk_mm.h"
+#include "stk_widget.h"
 #include "stk_slidebar.h"
 
 #define STK_SLIDEBAR_BORDER_THICKNESS 3
@@ -32,18 +33,18 @@ STK_Widget *STK_SlidebarNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h)
 	widget = (STK_Widget *)slider;
 	object = (STK_Object *)slider;
 	
+	widget->name = "Slidebar";
+	widget->type = STK_WIDGET_SLIDEBAR;
 	widget->rect.x = x;
 	widget->rect.y = y;
 	widget->rect.w = w;
 	widget->rect.h = h;
+	widget->flags |= WIDGET_FOCUSABLE+WIDGET_DRAGABLE;
 	
 	if (w > h)
 		orientation = STK_SLIDEBAR_HORIZONTAL;
 	else
 		orientation = STK_SLIDEBAR_VERTICAL;
-	
-	widget->flags = 0;
-	widget->type = "STK_Slidebar";
 	
 	// connect three mouse events
 	STK_SignalConnect(widget, "mousebuttondown", STK_SlidebarEventMouseButtonDown, widget);
@@ -92,7 +93,7 @@ int STK_SlidebarRegisterType()
 
 int STK_SlidebarClose(STK_Widget *widget)
 {
-	STK_Slidebar *slider = (STK_Slidebar *)widget
+	STK_Slidebar *slider = (STK_Slidebar *)widget;
 	
 	// now ready to free surface
 	if (widget->surface) {
@@ -106,7 +107,7 @@ int STK_SlidebarClose(STK_Widget *widget)
 // 
 void STK_SlidebarDraw(STK_Widget *widget)
 {
-	STK_Slidebar * slider = (STK_Slidebar *)widget;
+	STK_Slidebar *slider = (STK_Slidebar *)widget;
 	
 	// vertical
 	if (slider->orientation == STK_SLIDEBAR_VERTICAL) {
@@ -130,7 +131,7 @@ void STK_SlidebarDraw(STK_Widget *widget)
 		
 		if (r.h < 10)
 			r.h = 10;
-		
+/*		
 		// fill the border of the button
 		STK_DrawLine(s, r.x, r.y+r.h-1, r.x+r.w-1, r.y+r.h-1, 0x404040ff);	// bottom line 1
 		STK_DrawLine(s, r.x+r.w-1, r.y, r.x+r.w-1, r.y+r.h-1, 0x404040ff);	// right line 1
@@ -141,6 +142,7 @@ void STK_SlidebarDraw(STK_Widget *widget)
 		STK_DrawLine(s, r.x+1, r.y+1, r.x+1, r.y+r.h-2, 0xffffffff);		// left line 2
 		STK_DrawLine(s, r.x, r.y, r.x+r.w-1, r.y, 0xd4d0c8ff);			// top line 1
 		STK_DrawLine(s, r.x, r.y, r.x, r.y+r.h-1, 0xd4d0c8ff);			// left line 1
+*/
 	} 
 	// horizontal
 	else {
@@ -161,7 +163,7 @@ void STK_SlidebarDraw(STK_Widget *widget)
 		
 		if (r.w < 10)
 			r.w = 10;
-		
+/*		
 		// fill the border of the inner button
 		STK_DrawLine(s, r.x, r.y+r.h-1, r.x+r.w-1, r.y+r.h-1, 0x404040ff);
 		STK_DrawLine(s, r.x+r.w-1, r.y, r.x+r.w-1, r.y+r.h-1, 0x404040ff);
@@ -172,7 +174,7 @@ void STK_SlidebarDraw(STK_Widget *widget)
 		STK_DrawLine(s, r.x+1, r.y+1, r.x+1, r.y+r.h-2, 0xffffffff);
 		STK_DrawLine(s, r.x, r.y, r.x+r.w-1, r.y, 0xd4d0c8ff);
 		STK_DrawLine(s, r.x, r.y, r.x, r.y+r.h-1, 0xd4d0c8ff);		
-	
+*/	
 	}
 }
 
@@ -180,8 +182,9 @@ static void STK_SlidebarEventMouseButtonDown(STK_Object *object, void *signaldat
 {
 	STK_Slidebar *slider = (STK_Slidebar *)object;
 	STK_Widget *widget = (STK_Widget *)object;
-	STK_Event *event = (STK_Event *)signaldata;
+	SDL_Event *event = (SDL_Event *)signaldata;
 	
+	printf("Enter slidebar mouse button down event process.\n");
 	// if mouse point is in slidebar
 	if (STK_WidgetIsInside(widget, event->motion.x, event->motion.y)) {
 		int motion;
@@ -202,9 +205,10 @@ static void STK_SlidebarEventMouseButtonDown(STK_Object *object, void *signaldat
 					slider->state = STK_SLIDEBAR_DRAG;
 					slider->r_x = motion - widget->rect.x - slider->curpixel;
 					// maybe need to change the appearance of the button when was pressed
-					STK_WidgetRedrawEvent(widget);
+					// STK_WidgetEventRedraw(widget);
 					return ;
 				}
+				slider->changed = 1;
 				
 			}
 			// down button on touchpad
@@ -222,27 +226,28 @@ static void STK_SlidebarEventMouseButtonDown(STK_Object *object, void *signaldat
 			// only left mouse button can affect
 			if (event->button.button == SDL_BUTTON_LEFT) {
 				// if mouse point is in part 3, move downwards
-				if (motion > (widget->rect.y + slider->curpixel + slider->b_height) {
+				if (motion > (widget->rect.y + slider->curpixel + slider->b_height)) {
 					STK_SlidebarStep(slider, STK_SLIDEBAR_DOWN, STK_SLIDEBAR_STEP);
 				}
 				// if mouse point is in part 2, change the slidebar's state
 				else if (motion > (widget->rect.y + slider->curpixel)) {
 					slider->state = STK_SLIDEBAR_DRAG;
 					slider->r_y = motion - widget->rect.y - slider->curpixel;
-					STK_WidgetRedrawEvent(widget);
+					// STK_WidgetEventRedraw(widget);
 					return ;
 				}
 				// if mouse point is in part 1, move upwards
 				else {
 					STK_SlidebarStep(slider, STK_SLIDEBAR_UP, STK_SLIDEBAR_STEP);
 				}
+				slider->changed = 1;
 			}
 			// down button on touchpad
 			if (event->button.button == 4)
                                 STK_SlidebarStep(slider, STK_SLIDEBAR_UP, STK_SLIDEBAR_STEP);
                         // up button on touchpad
                         if (event->button.button == 5)
-                                STK_SlidebarStep(slider, STK_SLIDEBAR_BUTTON, STK_SLIDEBAR_STEP);
+                                STK_SlidebarStep(slider, STK_SLIDEBAR_DOWN, STK_SLIDEBAR_STEP);
 		}
 	}
 	
@@ -252,8 +257,9 @@ static void STK_SlidebarEventMouseButtonDown(STK_Object *object, void *signaldat
 		// restore state
 		slider->changed = 0;
 		// redraw on screen
-		STK_WidgetEventRedraw(widget);
+		// STK_WidgetEventRedraw(widget);
 	}
+	printf("exit slidebar mouse button down event process.\n");
 
 }
 
@@ -263,6 +269,7 @@ static void STK_SlidebarEventMouseButtonUp(STK_Object *object, void *signaldata,
 	STK_Slidebar *slider = (STK_Slidebar *)object;
 	STK_Widget *widget = (STK_Widget *)object;
 	
+	printf("Enter slidebar mouse button up event process.\n");
 	if (slider->state == STK_SLIDEBAR_DRAG) {
 		slider->state = STK_SLIDEBAR_IDLE;
 		// force to do a redrawing
@@ -272,8 +279,9 @@ static void STK_SlidebarEventMouseButtonUp(STK_Object *object, void *signaldata,
 	if (slider->changed) {
 		STK_SignalEmit(widget, "value-changed", NULL);
 		slider->changed = 0;
-		STK_WidgetEventRedraw(widget);
+		// STK_WidgetEventRedraw(widget);
 	}
+	printf("exit slidebar mouse button up event process.\n");
 }
 
 // drag to move 
@@ -283,6 +291,7 @@ static void STK_SlidebarEventMouseMotion(STK_Object *object, void *signaldata, v
 	STK_Widget *widget = (STK_Widget *)object;
 	SDL_Event *event = (SDL_Event *)signaldata;
 	
+	printf("Enter slidebar mouse motion event process.\n");
 	if (slider->state == STK_SLIDEBAR_DRAG) {
 		// horizontal
 		if (slider->orientation == STK_SLIDEBAR_HORIZONTAL) {
@@ -302,6 +311,7 @@ static void STK_SlidebarEventMouseMotion(STK_Object *object, void *signaldata, v
 		slider->changed = 0;
 		STK_WidgetEventRedraw(widget);
 	}
+	printf("exit slidebar mouse motion event process.\n");
 }
 
 static void STK_SlidebarValueToPixel(STK_Slidebar *slider)
@@ -365,7 +375,7 @@ int STK_SlidebarSetValue(STK_Slidebar *slider, int type, int value)
 	if (slider == NULL)
 		return 1;
 	switch (type) {
-	case STK_SLIDEBAR_CURRENT_VALUE:
+	case STK_SLIDEBAR_CURVALUE:
 		if (value != slider->curvalue) {
 			if (value >= slider->maxvalue)
 				slider->curvalue = slider->maxvalue;
@@ -376,7 +386,7 @@ int STK_SlidebarSetValue(STK_Slidebar *slider, int type, int value)
 			STK_WidgetEventRedraw(widget);			
 		}	
 		break;
-	case STK_SLIDEBAR_MIN_VALUE:
+	case STK_SLIDEBAR_MINVALUE:
 		slider->minvalue = value;
 		if (slider->curvalue < slider->minvalue) {
 			slider->curvalue = slider->minvalue;
@@ -384,7 +394,7 @@ int STK_SlidebarSetValue(STK_Slidebar *slider, int type, int value)
 			STK_WidgetEventRedraw(widget);
 		}
 		break;
-	case STK_SLIDEBAR_MAX_VALUE:
+	case STK_SLIDEBAR_MAXVALUE:
 		slider->maxvalue = value;
 		if (slider->curvalue > slider->maxvalue) {
 			slider->curvalue = slider->maxvalue;
@@ -392,7 +402,7 @@ int STK_SlidebarSetValue(STK_Slidebar *slider, int type, int value)
 			STK_WidgetEventRedraw(widget);
 		}
 		break;
-	case STK_SLIDEBAR_STEP:
+	case STK_SLIDEBAR_STEPVALUE:
 		slider->step = value;
 		break; 
 	}

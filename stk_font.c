@@ -37,7 +37,7 @@ int STK_FontInit()
 		cleanup(-1);
 	}
 		
-	return 1;
+	return 0;
 }
 
 
@@ -48,7 +48,7 @@ int STK_FontDraw(STK_Widget *widget, char *str, SDL_Rect *rect, SDL_Color *fg, S
 
 	STK_Window *win = STK_WindowGetTop();
 	if (!win)
-		return 0;
+		return 1;
 	
 	text = TTF_RenderUTF8_Shaded(font, str, *fg, *bg);
 	
@@ -60,7 +60,7 @@ int STK_FontDraw(STK_Widget *widget, char *str, SDL_Rect *rect, SDL_Color *fg, S
 	SDL_BlitSurface(text, NULL, widget->surface, &dst);
 	SDL_FreeSurface(text);
 
-	return 1;
+	return 0;
 }
 
 int STK_FontAdapter( SDL_Rect *rect, char *str)
@@ -75,5 +75,5 @@ int STK_FontAdapter( SDL_Rect *rect, char *str)
 		rect->h = h;
 	}
 	
-	return 1;
+	return 0;
 }

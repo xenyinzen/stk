@@ -60,7 +60,8 @@ enum {
 
 enum {
 	STK_WIDGET_LABEL = 0,
-	STK_WIDGET_BUTTON
+	STK_WIDGET_BUTTON,
+	STK_WIDGET_SLIDEBAR
 };
 
 // Macros againt to the STK_Widget.flags
@@ -68,6 +69,7 @@ enum {
 #define WIDGET_REALIZED		0x00000002
 #define WIDGET_VISIBLE		0x00000004
 #define WIDGET_HIDDEN		0x00000008
+#define WIDGET_DRAGABLE		0x00000010
 #define WIDGET_DESTROY		0x80000000
 
 

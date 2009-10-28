@@ -80,6 +80,7 @@ int STK_WidgetDrawAll()
 // and emit corresponding signal to that widget.
 int STK_WidgetEvent(STK_Widget *widget, SDL_Event *event)
 {
+	printf("Enter widget event processing function\n");
 	switch (event->type) {
 	case SDL_KEYDOWN:
 		STK_SignalEmit(widget, "keydown", event);
@@ -99,6 +100,8 @@ int STK_WidgetEvent(STK_Widget *widget, SDL_Event *event)
 	default:
 		break;	
 	}
+
+	printf("exit widget event processing function\n");
 	
 	return 0;
 }
@@ -436,8 +439,6 @@ int STK_WidgetRegisterType( char *id, STK_WidgetFuncs **f )
 			return i;			
 		}
 	}
-	
-	return 0;
 }
 
 // get the type name of that widget
