@@ -40,7 +40,7 @@ int STK_FontInit()
 	return 0;
 }
 
-
+// here, rect is the relative rectagle location against to the widget
 int STK_FontDraw(STK_Widget *widget, char *str, SDL_Rect *rect, SDL_Color *fg, SDL_Color *bg)
 {
 	SDL_Surface *text;
@@ -48,6 +48,8 @@ int STK_FontDraw(STK_Widget *widget, char *str, SDL_Rect *rect, SDL_Color *fg, S
 
 	STK_Window *win = STK_WindowGetTop();
 	if (!win)
+		return 1;
+	if (!str || !strcmp(str, ""))
 		return 1;
 	
 	text = TTF_RenderUTF8_Shaded(font, str, *fg, *bg);
@@ -66,6 +68,10 @@ int STK_FontDraw(STK_Widget *widget, char *str, SDL_Rect *rect, SDL_Color *fg, S
 int STK_FontAdapter( SDL_Rect *rect, char *str)
 {
 	int w, h = 0;
+	
+	if (!str || !strcmp(str, ""))
+		return 1;
+	
 	TTF_SizeUTF8(font, str, &w, &h);
 	if (!rect->w || rect->w < w ) {
 		rect->w = w;

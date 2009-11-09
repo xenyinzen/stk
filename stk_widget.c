@@ -7,6 +7,7 @@
 #include "stk_label.h"
 #include "stk_button.h"
 #include "stk_slidebar.h"
+#include "stk_entry.h"
 
 static SDL_mutex *my_mutex;
 // this is the global widget type array: IMPORTANT
@@ -35,6 +36,7 @@ int STK_WidgetInit()
 	STK_LabelRegisterType();
 	STK_ButtonRegisterType();
 	STK_SlidebarRegisterType();
+	STK_EntryRegisterType();
 
 	return 0;
 }

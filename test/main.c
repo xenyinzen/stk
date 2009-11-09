@@ -3,6 +3,7 @@
 #include "stk_label.h"
 #include "stk_button.h"
 #include "stk_slidebar.h"
+#include "stk_entry.h"
 
 STK_Widget *draw_label()
 {
@@ -26,11 +27,20 @@ STK_Widget *draw_button()
 
 STK_Widget *draw_slidebar()
 {
-	STK_Slidebar *slider = (STK_Slidebar *)STK_SlidebarNew(50, 30, 30, 200);
+	STK_Slidebar *slider = (STK_Slidebar *)STK_SlidebarNew(50, 30, 30, 400);
 	STK_WidgetEventShow((STK_Widget *)slider);
 	return (STK_Widget *)slider;
 
 }
+
+STK_Widget *draw_entry()
+{
+	STK_Entry *entry = (STK_Entry *)STK_EntryNew(150, 30, 200, 50, 0, "hehe");
+	STK_WidgetEventShow((STK_Widget *)entry);
+	return (STK_Widget *)entry;
+
+}
+
 
 int main(int argc,char **argv)
 {
@@ -57,6 +67,7 @@ int main(int argc,char **argv)
     	
     	draw_button();
     	draw_slidebar();
+    	draw_entry();
     	
     	STK_WindowOpen();
 //    	SDL_Delay(5000);

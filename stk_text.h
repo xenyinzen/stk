@@ -1,6 +1,8 @@
 #ifndef _STK_TEXT_H_
 #define _STK_TEXT_H_
 
+#include "SDL.h"
+
 typedef struct STK_Text {
 	char *data;
 	Uint32 length;		// the length of string

@@ -61,7 +61,8 @@ enum {
 enum {
 	STK_WIDGET_LABEL = 0,
 	STK_WIDGET_BUTTON,
-	STK_WIDGET_SLIDEBAR
+	STK_WIDGET_SLIDEBAR,
+	STK_WIDGET_ENTRY
 };
 
 // Macros againt to the STK_Widget.flags

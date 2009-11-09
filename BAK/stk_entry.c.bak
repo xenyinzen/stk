@@ -313,6 +313,12 @@ int STK_EntryKeyGeneral(STK_Entry *entry)
 	}
 
 
+
+
+
+
+
+
 }
 
 int STK_EntryCalcHeadLimitation(STK_Entry *entry)

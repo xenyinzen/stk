@@ -415,6 +415,16 @@ int STK_WindowEvent( SDL_Event *event )
 			}
 		}		
 	}
+	else if (event->type == SDL_KEYDOWN) {
+		if (win->focus_widget) {
+			w = win->focus_widget;
+			if (w->flags & WIDGET_FOCUSABLE) {
+				printf("Enter keydown to entry");
+				STK_WidgetEvent(w, event);
+			}
+		} 
+	}
+	
 
 	printf("Exit STK_WindowEvent.\n");
 	return 0;

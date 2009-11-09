@@ -28,34 +28,6 @@ STK_Text *STK_TextNew(char *str)
 	return text;
 }
 
-/*
-STK_Text *STK_TextNewFixed(char *str, Uint16 size)
-{
-	STK_Text *text;
-	int nn = 1024;
-	int len = 0;
-	
-	len = strlen(str);
-	if (size <= len) {
-		fprintf(stderr, "Size is too small.");
-		return -1;	
-	}	
-	if (size >= 64 && size < nn)
-		nn = size;
-	
-	text = (STK_Text *)STK_Malloc(sizeof(STK_Text));
-	text->data = STK_Malloc(nn);
-	if (str) {
-		sprintf(text->data. "%s", str);
-		text->length = strlen(str);
-		text->size = nn;
-		text->flag = 1;
-	}
-
-	return text;
-}
-*/
-
 int STK_TextFree(STK_Text *text)
 {
 	if (text) {
@@ -70,27 +42,24 @@ int STK_TextFree(STK_Text *text)
 int STK_TextSetText(STK_Text *text, char *str)
 {
 	int len;
-
+	char *p;
+	
 	if (!text || !str ) {
 		fprintf(stderr, "STK_TextSetText: text or str is NULL.\n");
 		return 1;
 	}
 	len = strlen(str);
-	// if string buffer has variable length
-	else if (text->flag == 0) {
-		char *p;
-		int c;
-		while (len > text->size) {
-			// expand to twice of the original memory block size
-			text->size = text->size * 2;	
-		}
-		
-		p = (char *)STK_Malloc(text->size);
-		// free old data buffer
-		free(text->data);
-		text->data = p;
-		text->length = len;
+
+	while (len > text->size) {
+		// expand to twice of the original memory block size
+		text->size = text->size * 2;	
 	}
+	
+	p = (char *)STK_Malloc(text->size);
+	// free old data buffer
+	free(text->data);
+	text->data = p;
+	text->length = len;
 
 	return 0;	
 }
@@ -119,6 +88,7 @@ STK_Text *STK_TextSubText(STK_Text *text, int start, Uint32 count)
 	strncpy(pn, p, count); 
 	pn[count] = '\0';
 	
+	// new memory block
 	subtext = STK_TextNew(pn);
 	free(pn);
 
@@ -127,9 +97,10 @@ STK_Text *STK_TextSubText(STK_Text *text, int start, Uint32 count)
 
 int STK_TextAppendStr(STK_Text *text, char *str)
 {
+	// Insert string into the end of the text.
+	STK_TextInsertStr(text, str, text->length);
 	
-
-
+	return 0;
 }
 
 int STK_TextInsertStr(STK_Text *text, char *str, int pos)
@@ -143,7 +114,7 @@ int STK_TextInsertStr(STK_Text *text, char *str, int pos)
 		return -1;
 	}
 	
-	if (pos >= text->length) {
+	if (pos > text->length) {
 		fprintf(stderr, "STK_TextInsertStr: pos is too large.\n");
 		return -1;
 	}
@@ -181,9 +152,28 @@ int STK_TextInsertStr(STK_Text *text, char *str, int pos)
 	return 0;
 }
 
+int STK_TextRemoveStr(STK_Text *text, int count)
+{
+	if (text->length == 0)
+		return -1;
+		
+	if (count > text->length) {
+                fprintf(stderr, "STK_TextDeleteStr: pos or count is too large.\n");
+                return -1;
+	}
+	
+	text->length = text->length - count;
+	text->data[text->length] = '\0';
+	
+	return 0;
+}
+
 int STK_TextDeleteStr(STK_Text *text, int pos, int count)
 {
-	if (pos >= text->length || count >= length) {
+	if (text->length == 0)
+		return -1;
+	
+	if (pos >= text->length || count > text->length) {
 		fprintf(stderr, "STK_TextDeleteStr: pos or count is too large.\n");
 		return -1;	
 	}
