@@ -102,9 +102,14 @@ void STK_EntryDraw(STK_Widget *widget)
                 STK_FontDraw(widget, entry->text->data, &r, &fg, &bg);
 		
 //	}
-	STK_FontAdapter(&r, entry->text->data);
-	entry->cursor_pos = r.w + STK_ENTRY_BORDER_THICKNESS;
-	entry->cursor_height = r.h;
+	if (STK_FontAdapter(&r, entry->text->data) == 0) {
+		entry->cursor_pos = r.w + STK_ENTRY_BORDER_THICKNESS;
+		entry->cursor_height = r.h;
+	}
+	else {
+		entry->cursor_pos = STK_ENTRY_BORDER_THICKNESS;
+		entry->cursor_height = entry->cursor_height;
+	}
 	// fillup cursor: need to clean previous black line and draw new line in new position
 	// every time need to redraw cursor, but not background, and chars on textarea 
 	STK_EntryDrawCursor(entry);

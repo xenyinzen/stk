@@ -4,6 +4,7 @@
 #include "stk_button.h"
 #include "stk_slidebar.h"
 #include "stk_entry.h"
+#include "stk_radiobutton.h"
 
 STK_Widget *draw_label()
 {
@@ -41,6 +42,13 @@ STK_Widget *draw_entry()
 
 }
 
+STK_Widget *draw_radiobutton()
+{
+	STK_RadioButton *rbutton = (STK_RadioButton *)STK_RadioButtonNew("I am Tang Gang", 300, 400, 200, 30);
+	STK_WidgetEventShow((STK_Widget *)rbutton);
+	return (STK_Widget *)rbutton;
+
+}
 
 int main(int argc,char **argv)
 {
@@ -68,8 +76,10 @@ int main(int argc,char **argv)
     	draw_button();
     	draw_slidebar();
     	draw_entry();
+    	draw_radiobutton();
     	
     	STK_WindowOpen();
+    	
 //    	SDL_Delay(5000);
     	
 //    	STK_WidgetClose(label);
