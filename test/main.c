@@ -7,6 +7,7 @@
 #include "stk_radiobutton.h"
 #include "stk_radiogroup.h"
 #include "stk_progressbar.h"
+#include "stk_msgbox.h"
 
 STK_Widget *draw_label()
 {
@@ -30,7 +31,7 @@ STK_Widget *draw_button()
 
 STK_Widget *draw_slidebar()
 {
-	STK_Slidebar *slider = (STK_Slidebar *)STK_SlidebarNew(50, 30, 30, 400);
+	STK_Slidebar *slider = (STK_Slidebar *)STK_SlidebarNew(50, 30, 30, 200);
 	STK_WidgetEventShow((STK_Widget *)slider);
 	return (STK_Widget *)slider;
 
@@ -50,6 +51,23 @@ STK_Widget *draw_radiobutton()
 	STK_WidgetEventShow((STK_Widget *)rbutton);
 	return (STK_Widget *)rbutton;
 
+}
+
+STK_Widget *draw_msgbox()
+{
+	STK_MsgBox *msgbox = (STK_MsgBox *)STK_MsgBoxNew(20, 250, 250, 150, "first line");
+	STK_WidgetEventShow((STK_Widget *)msgbox);
+	
+	STK_MsgBoxAddMsg(msgbox, "The second line");
+	STK_MsgBoxAddMsg(msgbox, "The 3rd line");
+	STK_MsgBoxAddMsg(msgbox, "The 4th line");
+	STK_MsgBoxAddMsg(msgbox, "The 5th line");
+	STK_MsgBoxAddMsg(msgbox, "The 6th line");
+	STK_MsgBoxAddMsg(msgbox, "The 7th line");
+	STK_MsgBoxAddMsg(msgbox, "The 8th line");
+	
+	
+	return (STK_Widget *)msgbox;
 }
 
 char *str[] = {"aaaaaaaaaaaaaaaaaaaaaaaa", "BBBbbbbbbbbbbbbb", "CDdddddddddddddddd", "EFGHfffffffffffffffffffffff" };
@@ -76,13 +94,14 @@ int main(int argc,char **argv)
 
     	SDL_Surface *video;
     	STK_Widget  *button;
-
+	STK_MsgBox *msgbox;
+	
     	Uint32 value = 10;
     	
     	SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER);
 
     	video=SDL_SetVideoMode(640, 480, 32, SDL_HWSURFACE);
-	if ( video == NULL ) {
+	if ( video ==  NULL ) {
 		fprintf(stderr, "Couldn't set 640x480x8 video mode: %s\n",
 							SDL_GetError());
 		SDL_Quit();
@@ -102,7 +121,9 @@ int main(int argc,char **argv)
     	draw_radiobutton();
     	draw_radiogroup();
 	draw_progressbar(&value);
-    	
+	msgbox = (STK_MsgBox *)draw_msgbox();
+	STK_MsgBoxAddMsg(msgbox, "This 9th string.");
+ 		    	
     	STK_WindowOpen();
     	
 //    	SDL_Delay(5000);

@@ -83,3 +83,8 @@ int STK_FontAdapter( SDL_Rect *rect, char *str)
 	
 	return 0;
 }
+
+int STK_FontGetHeight()
+{
+	return TTF_FontHeight(font);
+}

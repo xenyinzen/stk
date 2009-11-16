@@ -11,6 +11,7 @@
 #include "stk_radiobutton.h"
 #include "stk_radiogroup.h"
 #include "stk_progressbar.h"
+#include "stk_msgbox.h"
 
 static SDL_mutex *my_mutex;
 // this is the global widget type array: IMPORTANT
@@ -43,6 +44,7 @@ int STK_WidgetInit()
 	STK_RadioButtonRegisterType();
 	STK_RadioGroupRegisterType();
 	STK_ProgressBarRegisterType();
+	STK_MsgBoxRegisterType();
 
 	return 0;
 }
