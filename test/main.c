@@ -6,6 +6,7 @@
 #include "stk_entry.h"
 #include "stk_radiobutton.h"
 #include "stk_radiogroup.h"
+#include "stk_progressbar.h"
 
 STK_Widget *draw_label()
 {
@@ -61,6 +62,14 @@ STK_Widget *draw_radiogroup()
 	return (STK_Widget *)rg;
 }
 
+STK_Widget *draw_progressbar(Uint32 *p)
+{
+	STK_ProgressBar *pb = (STK_ProgressBar *)STK_ProgressBarNew(400, 20, 200, 50, p);
+	STK_WidgetEventShow((STK_Widget *)pb);
+	
+	return (STK_Widget *)pb;
+}
+
 
 int main(int argc,char **argv)
 {
@@ -68,9 +77,11 @@ int main(int argc,char **argv)
     	SDL_Surface *video;
     	STK_Widget  *button;
 
-    	SDL_Init(SDL_INIT_VIDEO);
+    	Uint32 value = 10;
+    	
+    	SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER);
 
-    	video=SDL_SetVideoMode(600, 480, 32, SDL_HWSURFACE);
+    	video=SDL_SetVideoMode(640, 480, 32, SDL_HWSURFACE);
 	if ( video == NULL ) {
 		fprintf(stderr, "Couldn't set 640x480x8 video mode: %s\n",
 							SDL_GetError());
@@ -80,7 +91,7 @@ int main(int argc,char **argv)
     
     	STK_Init();
 
-    	STK_WindowNew(0, 0, 600, 480);
+    	STK_WindowNew(0, 0, 640, 480);
     	
     	STK_Widget *label = draw_label();
     	printf("Label: %x\n", label);
@@ -90,6 +101,7 @@ int main(int argc,char **argv)
     	draw_entry();
     	draw_radiobutton();
     	draw_radiogroup();
+	draw_progressbar(&value);
     	
     	STK_WindowOpen();
     	
