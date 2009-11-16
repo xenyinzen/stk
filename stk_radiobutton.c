@@ -149,8 +149,7 @@ STK_Widget *STK_RadioButtonFilling(STK_Widget *widget, Uint32 pattern)
 	rect.w = radiobutton->header_height;
 	rect.h = radiobutton->header_height;
 	radiobutton->image.fillstyle = STK_IMAGESTYLE_MATRIX;
-	// need to be modified heavily
-	STK_ImageFillRect(widget->surface, &radiobutton->image, &rect, pattern, 0);
+	STK_ImageFillRect(widget->surface, &radiobutton->image, &rect, pattern, 10);
 	
 	// area 2: label background area, fill mono color
 	rect.x = radiobutton->border + radiobutton->header_height + radiobutton->interval;
@@ -158,7 +157,7 @@ STK_Widget *STK_RadioButtonFilling(STK_Widget *widget, Uint32 pattern)
 	rect.w = widget->rect.w - rect.x - radiobutton->border;
 	rect.h = widget->rect.h - 2 * radiobutton->border;
 	radiobutton->image.fillstyle = STK_IMAGESTYLE_NORMAL;
-	STK_ImageFillRect(widget->surface, &radiobutton->image, &rect, pattern, 0);
+	STK_ImageFillRect(widget->surface, &radiobutton->image, &rect, pattern, 10);
 	
 	printf("Exit STK_RadioButtonFilling");
 	return widget;
