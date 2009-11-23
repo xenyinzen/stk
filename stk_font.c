@@ -15,7 +15,7 @@ STK_Font font1[STK_FONT_SIZENUM] = { 0 };
 
 char *default_font = "msyh.ttf";
 Uint32 default_fontsize_index = 1;
-Uint32 fontsize_array[STK_FONT_SIZENUM] = {10, 12, 18, 24};
+Uint32 fontsize_array[STK_FONT_SIZENUM] = {12, 16, 24, 36};
 
 static void cleanup(TTF_Font *font, int exitcode)
 {
@@ -115,6 +115,7 @@ int STK_FontDraw(STK_Font *font, char *str, STK_Widget *widget, SDL_Rect *rect, 
 {
 	SDL_Surface *text;
 	SDL_Rect dst;
+	Uint32 colorkey_bg;
 
 	STK_Window *win = STK_WindowGetTop();
 	if (!win)
@@ -123,6 +124,7 @@ int STK_FontDraw(STK_Font *font, char *str, STK_Widget *widget, SDL_Rect *rect, 
 		return -1;
 	
 	text = TTF_RenderUTF8_Shaded(font->font, str, *fg, *bg);
+//	text = TTF_RenderUTF8_Solid(font->font, str, *fg);
 	
 	dst.x = rect->x;
 	dst.y = rect->y;
@@ -130,6 +132,10 @@ int STK_FontDraw(STK_Font *font, char *str, STK_Widget *widget, SDL_Rect *rect, 
 	dst.w = (text->w <= rect->w ? text->w: rect->w); 
 	dst.h = (text->h <= rect->h ? text->h: rect->h); 
 	
+	// set the background of label being transparent, magic num is for test only
+	colorkey_bg = SDL_MapRGB(text->format, bg->r, bg->g, bg->b);
+	SDL_SetColorKey(text, SDL_SRCCOLORKEY, colorkey_bg);
+			
 	SDL_BlitSurface(text, NULL, widget->surface, &dst);
 	SDL_FreeSurface(text);
 

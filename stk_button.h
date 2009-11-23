@@ -3,6 +3,7 @@
 
 #include "stk_widget.h"
 #include "stk_image.h"
+#include "stk_label.h"
 
 typedef enum STK_ButtonState {
 	STK_BUTTON_DOWN = 1,
@@ -15,7 +16,7 @@ typedef struct STK_Button {
 	STK_Widget widget;
 	STK_Image image;
 	STK_ButtonState state;
-	STK_Widget *label;
+	STK_Label *label;
 	Uint32 flag;
 } STK_Button;
 

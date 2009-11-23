@@ -4,8 +4,7 @@
 #include "stk_widget.h"
 #include "stk_font.h"
 
-enum STK_LabelAlignment
-{
+enum STK_LabelAlignment {
 	STK_LABEL_TOPLEFT,
 	STK_LABEL_TOPCENTER,
 	STK_LABEL_TOPRIGHT,
@@ -15,6 +14,18 @@ enum STK_LabelAlignment
 	STK_LABEL_BOTTOMLEFT,
 	STK_LABEL_BOTTOMCENTER,
 	STK_LABEL_BOTTOMRIGHT
+};
+
+enum STK_LabelPattern {
+    	STK_LABEL_NORMAL,
+    	STK_LABEL_BOUNCE,
+    	STK_LABEL_SCROLL_LEFT,
+    	STK_LABEL_SCROLL_RIGHT
+};
+
+enum STK_LabelColorType {
+	STK_LABEL_FOREGROUND,
+	STK_LABEL_BACKGROUND
 };
 
 typedef struct STK_Label {
@@ -32,21 +43,14 @@ typedef struct STK_Label {
 
 } STK_Label;
 
-enum STK_LabelPattern
-{
-    STK_LABEL_NORMAL,
-    STK_LABEL_BOUNCE,
-    STK_LABEL_SCROLL_LEFT,
-    STK_LABEL_SCROLL_RIGHT
-};
-
-STK_Widget* STK_LabelNew( char *str, Uint16 x, Uint16 y);
+STK_Label* STK_LabelNew( char *str, Uint16 x, Uint16 y);
 int STK_LabelClose(STK_Widget *widget);
-int STK_LabelRegisterType();
 void STK_LabelDraw(STK_Widget *widget);
+int STK_LabelRegisterType();
 
-int STK_LabelSetColor(STK_Widget *widget, int which, Uint32 color);
-int STK_LabelSetAlignment(STK_Widget *widget, int alignment);
-
+int STK_LabelSetColor(STK_Label *label, int which, Uint8 r, Uint8 g, Uint8 b);
+int STK_LabelSetAlignment(STK_Label *label, int alignment);
+int STK_LabelSetText(STK_Label *label, char *str);
+char *STK_LabelGetText(STK_Label *label);
 
 #endif /* _STK_LABEL_H_ */

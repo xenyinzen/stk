@@ -14,7 +14,7 @@
 static void STK_LabelCalculatePattern(STK_Label *label, SDL_Rect *rect);
 
 
-STK_Widget *STK_LabelNew( char *str, Uint16 x, Uint16 y )
+STK_Label *STK_LabelNew( char *str, Uint16 x, Uint16 y )
 {
 	STK_Widget *widget;
 	SDL_Rect rect;
@@ -30,9 +30,6 @@ STK_Widget *STK_LabelNew( char *str, Uint16 x, Uint16 y )
 	STK_Label *label = (STK_Label *)STK_Malloc(sizeof(STK_Label));
 	widget = (STK_Widget *)label;
 	STK_WidgetInitInstance(widget);
-	widget->bgcolor.r = 0x77;
-	widget->bgcolor.g = 0x99;
-	widget->bgcolor.b = 0x11;
 	
 	widget->name	= "Label";
 	widget->type	= STK_WIDGET_LABEL;
@@ -58,9 +55,9 @@ STK_Widget *STK_LabelNew( char *str, Uint16 x, Uint16 y )
 	label->alignment = STK_LABEL_TOPLEFT;
 	label->pattern	= STK_LABEL_NORMAL;
 	// set it as extended
-	label->fixed = 1;
+	label->fixed = 0;
 	
-	return (STK_Widget *)label;
+	return label;
 }
 
 int STK_LabelRegisterType()
@@ -98,17 +95,12 @@ void STK_LabelDraw(STK_Widget *widget)
 	SDL_FillRect(widget->surface, NULL, tmpcolor);
 	
 	if (label->caption) {
-		SDL_Color bg = { 0, 0xff, 0xff, 0 };
-		// set the background of label being transparent, magic num is for test only
-		Uint32 colorkey_label_bg = SDL_MapRGB(widget->surface->format, bg.r, bg.g, bg.b);
-		SDL_SetColorKey(widget->surface, SDL_SRCCOLORKEY, colorkey_label_bg);
-		
 		// calculate the rect area of font surface: 
 		// results are placed in rect as to alignment.
 		STK_LabelCalculatePattern(label, &rect);
 		
 		// draw text using widget's fgcolor and (local background only for test colorkey)
-		STK_FontDraw( STK_FontGetDefaultFontWithSize(), label->caption, widget, &rect, &widget->fgcolor, &bg );
+		STK_FontDraw( STK_FontGetDefaultFontWithSize(), label->caption, widget, &rect, &widget->fgcolor, &widget->bgcolor );
 	}
 	
 	// till now, the surface of label has been filled, but shall we blit it to window surface?
@@ -134,30 +126,6 @@ int STK_LabelClose(STK_Widget *widget)
 	return 0;
 }
 
-/*
-int STK_LabelSetColor(STK_Widget *widget, int which, Uint32 color)
-{
-	if (label == NULL) 
-		return 1;
-		
-	switch (which) {
-		case STK_LABEL_COLOR_FOREGROUND:
-			widget->fgcolor = color;
-			break;
-		case STK_LABEL_COLOR_BACKGROUND:
-			label->bgcolor = color;
-			break;
-		default:
-			break;
-	}
-	
-	// need to submit a redraw event
-	STK_WidgetEventRedraw(widget);
-
-	return 0;
-}
-*/
-
 static void STK_LabelCalculatePattern(STK_Label *label, SDL_Rect *rect)
 {
 	STK_Widget *widget = (STK_Widget *)label;
@@ -169,7 +137,7 @@ static void STK_LabelCalculatePattern(STK_Label *label, SDL_Rect *rect)
 	dw = widget->rect.w - dims.w;
 	dh = widget->rect.h - dims.h;
 	// if widget is too small, limit the drawing area in widget->rect
-	if (dw <= 0 && dh <= 0) {
+	if (dw <= 0 || dh <= 0) {
 		rect->x = 0;
 		rect->w = widget->rect.w;
 		rect->y = 0;
@@ -205,20 +173,17 @@ static void STK_LabelCalculatePattern(STK_Label *label, SDL_Rect *rect)
 	}
 }
 
-int STK_LabelSetAlignment(STK_Widget *widget, int alignment)
+int STK_LabelSetAlignment(STK_Label *label, int alignment)
 {
-	STK_Label *label = (STK_Label *)widget;
 	label->alignment = alignment;
 	
 	return 0;
 }
 
-int STK_LabelSetText(STK_Widget *widget, char * text)
+int STK_LabelSetText(STK_Label *label, char * text)
 {
-	STK_Label *label = (STK_Label *)widget;
-	
 	if (text == NULL)
-		return 1;
+		return -1;
 	
 	if (label->caption) {
 		free(label->caption);
@@ -229,15 +194,41 @@ int STK_LabelSetText(STK_Widget *widget, char * text)
 	// after this copy, the last char left in caption is 0
 	strcpy(label->caption, text);
 	
-	STK_WidgetEventRedraw(widget);
+	STK_WidgetEventRedraw((STK_Widget *)label);
 			
 	return 0;
 }
 
-char *STK_LabelGetText(STK_Widget *widget)
+char *STK_LabelGetText(STK_Label *label)
 {
-	STK_Label *label = (STK_Label *)widget;
-		
 	return label->caption;
 }
 
+
+int STK_LabelSetColor(STK_Label *label, int which, Uint8 r, Uint8 g, Uint8 b)
+{
+	STK_Widget *widget = (STK_Widget *)label;
+	
+	if (!widget) 
+		return -1;
+		
+	switch (which) {
+		case STK_LABEL_FOREGROUND:
+			widget->fgcolor.r = r;
+			widget->fgcolor.g = g;
+			widget->fgcolor.b = b;
+			break;
+		case STK_LABEL_BACKGROUND:
+			widget->bgcolor.r = r;
+			widget->bgcolor.g = g;
+			widget->bgcolor.b = b;
+			break;
+		default:
+			break;
+	}
+	
+	// need to submit a redraw event
+	STK_WidgetEventRedraw(widget);
+
+	return 0;
+}

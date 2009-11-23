@@ -3,6 +3,7 @@
 
 #include "stk_widget.h"
 #include "stk_image.h"
+#include "stk_label.h"
 
 typedef enum STK_RadioButtonState {
 	STK_RADIOBUTTON_RELEASE = 1,
@@ -13,7 +14,7 @@ typedef struct STK_RadioButton {
 	STK_Widget widget;
 	STK_Image image;
 	STK_RadioButtonState state;
-	STK_Widget *label;
+	STK_Label *label;
 
 	Uint32 interval;
 	Uint32 border;
