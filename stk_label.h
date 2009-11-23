@@ -2,53 +2,43 @@
 #define _STK_LABEL_H_
 
 #include "stk_widget.h"
-//#include "sdl_ttf.h"
+#include "stk_font.h"
 
-enum 
+enum STK_LabelAlignment
 {
-	TOPLEFT,
-	TOPCENTER,
-	TOPRIGHT,
-	CENTERLEFT,
-	CENTER,
-	CENTERRIGHT,
-	BOTTOMLEFT,
-	BOTTOMCENTER,
-	BOTTOMRIGHT
+	STK_LABEL_TOPLEFT,
+	STK_LABEL_TOPCENTER,
+	STK_LABEL_TOPRIGHT,
+	STK_LABEL_CENTERLEFT,
+	STK_LABEL_CENTER,
+	STK_LABEL_CENTERRIGHT,
+	STK_LABEL_BOTTOMLEFT,
+	STK_LABEL_BOTTOMCENTER,
+	STK_LABEL_BOTTOMRIGHT
 };
 
 typedef struct STK_Label {
 	STK_Widget widget;
-	int height;
-
-	SDL_TimerID redraw_timer;
+	STK_Font *font;
+	char *caption;
     
 	Uint32  bgcolor;
 	Uint32  fgcolor;
 
-	int visible;
-	int offset;
-	int increase;
 	int alignment;
-
 	int pattern;
 
-	char *caption;
-//	TTF_Font *font;
+	Uint32 fixed;
+
 } STK_Label;
 
-
-enum LabelPattern
+enum STK_LabelPattern
 {
-    LABEL_NORMAL,
-    LABEL_BOUNCE,
-    LABEL_SCROLL_LEFT,
-    LABEL_SCROLL_RIGHT
-} LabelPattern;
-
-#define TRANSPARANT	0x00000000
-#define FOREGROUND	1
-#define BACKGROUND	2
+    STK_LABEL_NORMAL,
+    STK_LABEL_BOUNCE,
+    STK_LABEL_SCROLL_LEFT,
+    STK_LABEL_SCROLL_RIGHT
+};
 
 STK_Widget* STK_LabelNew( char *str, Uint16 x, Uint16 y);
 int STK_LabelClose(STK_Widget *widget);

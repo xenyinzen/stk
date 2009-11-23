@@ -68,7 +68,7 @@ void STK_RadioButtonDraw(STK_Widget *widget)
                 || rect.y != widget->rect.y
                 || rect.w != widget->rect.w
                 || rect.h != widget->rect.h)
-                STK_WidgetSetDims(widget, widget->rect.x, widget->rect.y, widget->rect.w, widget->rect.h);
+                STK_WidgetSetDims(widget, &widget->rect);
 	
 	
 	if (widget->state == 1) {

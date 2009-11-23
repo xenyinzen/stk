@@ -17,6 +17,10 @@ typedef struct STK_Widget {
 	char *name;		// name of this widget
 	int type;		// identify the type of this widget, to index this type's other characters.
 	int inside;		// ??
+	
+	SDL_Color bgcolor;
+	SDL_Color fgcolor;
+	
 	Uint32 flags;		// important flag value variable
 	Uint32 state;
 } STK_Widget;
@@ -86,7 +90,7 @@ enum {
 int STK_WidgetInit();
 int STK_WidgetDrawAll();
 int STK_WidgetEvent(STK_Widget *widget, SDL_Event *event);
-int STK_WidgetSetDims(STK_Widget *widget, Sint16 x, Sint16 y, Sint16 w, Sint16 h);
+int STK_WidgetSetDims(STK_Widget *widget, SDL_Rect *r);
 int STK_WidgetClose(STK_Widget *widget);
 int STK_WidgetIsActive(STK_Widget *widget);
 int STK_WidgetDraw(STK_Widget *widget);

@@ -12,10 +12,10 @@
 STK_Widget *draw_label()
 {
 	
-	STK_Label *label = (STK_Label *)STK_LabelNew("我爱你中国，我爱你家乡！", 400, 100);
+	STK_Label *label = (STK_Label *)STK_LabelNew("I am Tang", 400, 100);
 //	STK_WidgetSetDims((STK_Widget *)label, 100, 100, 200, 100);
-	STK_LabelSetAlignment((STK_Widget *)label, CENTER);
-	STK_LabelSetColor((STK_Widget *)label, BACKGROUND, 0x00800080);
+	STK_LabelSetAlignment((STK_Widget *)label, STK_LABEL_CENTER);
+//	STK_LabelSetColor((STK_Widget *)label, BACKGROUND, 0x00800080);
 	STK_WidgetEventShow((STK_Widget *)label);
 	
 	return (STK_Widget *)label;
@@ -47,7 +47,7 @@ STK_Widget *draw_entry()
 
 STK_Widget *draw_radiobutton()
 {
-	STK_RadioButton *rbutton = (STK_RadioButton *)STK_RadioButtonNew("I am Tang Gang", 300, 300, 200, 30);
+	STK_RadioButton *rbutton = (STK_RadioButton *)STK_RadioButtonNew("I", 300, 300, 200, 30);
 	STK_WidgetEventShow((STK_Widget *)rbutton);
 	return (STK_Widget *)rbutton;
 
@@ -55,14 +55,14 @@ STK_Widget *draw_radiobutton()
 
 STK_Widget *draw_msgbox()
 {
-	STK_MsgBox *msgbox = (STK_MsgBox *)STK_MsgBoxNew(20, 250, 250, 150, "first line");
+	STK_MsgBox *msgbox = (STK_MsgBox *)STK_MsgBoxNew(20, 300, 250, 150, "first line");
 	STK_WidgetEventShow((STK_Widget *)msgbox);
 	
 	STK_MsgBoxAddMsg(msgbox, "The second line");
 	STK_MsgBoxAddMsg(msgbox, "The 3rd line");
-	STK_MsgBoxAddMsg(msgbox, "The 4th line");
-	STK_MsgBoxAddMsg(msgbox, "The 5th line");
-	STK_MsgBoxAddMsg(msgbox, "The 6th line");
+//	STK_MsgBoxAddMsg(msgbox, "The 4th line");
+//	STK_MsgBoxAddMsg(msgbox, "The 5th line");
+//	STK_MsgBoxAddMsg(msgbox, "The 6th line");
 	STK_MsgBoxAddMsg(msgbox, "The 7th line");
 	STK_MsgBoxAddMsg(msgbox, "The 8th line");
 	

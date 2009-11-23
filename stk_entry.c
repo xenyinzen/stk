@@ -99,10 +99,10 @@ void STK_EntryDraw(STK_Widget *widget)
 		r.w = 0;
 		r.h = 0;
 		
-                STK_FontDraw(widget, entry->text->data, &r, &fg, &bg);
+                STK_FontDraw(STK_FontGetDefaultFontWithSize(), entry->text->data, widget, &r, &fg, &bg);
 		
 //	}
-	if (STK_FontAdapter(&r, entry->text->data) == 0) {
+	if (STK_FontAdapter(STK_FontGetDefaultFontWithSize(), &r, entry->text->data) == 0) {
 		entry->cursor_pos = r.w + STK_ENTRY_BORDER_THICKNESS;
 		entry->cursor_height = r.h;
 	}

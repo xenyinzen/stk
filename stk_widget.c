@@ -116,21 +116,35 @@ int STK_WidgetEvent(STK_Widget *widget, SDL_Event *event)
 	return 0;
 }
 
+// initial a widget instance
+int STK_WidgetInitInstance(STK_Widget *widget)
+{
+	// colors
+	widget->bgcolor.r = 0xd4;
+	widget->bgcolor.g = 0xd4;
+	widget->bgcolor.b = 0xd4;
+	
+	widget->fgcolor.r = 0x00;
+	widget->fgcolor.g = 0x00;
+	widget->fgcolor.b = 0x00;
+}
+
+
 // set dimension rectagle for 'widget'
-int STK_WidgetSetDims(STK_Widget *widget, Sint16 x, Sint16 y, Sint16 w, Sint16 h)
+int STK_WidgetSetDims(STK_Widget *widget, SDL_Rect *r)
 {
 	STK_Window *win;
 	if (!widget)
-		return 1;
+		return -1;
 	win = STK_WindowGetTop();
 	if (!win) 
-		return 1;
+		return -1;
 	
 	// fill up rect structure
-	widget->rect.x = x;
-	widget->rect.y = y;
-	widget->rect.w = w;
-	widget->rect.h = h;
+	widget->rect.x = r->x;
+	widget->rect.y = r->y;
+	widget->rect.w = r->w;
+	widget->rect.h = r->h;
 	
 	// widget has a surface, then free it first
  	if (widget->surface)

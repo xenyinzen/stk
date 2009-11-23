@@ -132,7 +132,7 @@ void STK_RadioGroupDraw(STK_Widget *widget)
 	STK_BaseRectAdapter(&widget->rect, &rect_B);
         // if area has changed, need to reset dimensions of this label: free previous surface and alloc a new one
         if ( !STK_BaseRectEqual(&widget->rect, &rect) )
-                STK_WidgetSetDims(widget, widget->rect.x, widget->rect.y, widget->rect.w, widget->rect.h); // the last four arguments are rest
+                STK_WidgetSetDims(widget, &widget->rect);
 	
 	// fill child radio buttons
 	STK_RadioGroupFilling(rg);
