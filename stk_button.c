@@ -32,16 +32,15 @@ STK_Button *STK_ButtonNew(char *caption, Uint16 x, Uint16 y, Uint16 w, Uint16 h)
 	widget->type = STK_WIDGET_BUTTON;
 	widget->flags |= WIDGET_FOCUSABLE;
 	widget->border = STK_BUTTON_BORDER_THICKNESS;
-	widget->fixed = 1;
+	widget->fixed = 0;
 	
-	rect.x = x;
-	rect.y = y;
-	rect.w = w;
-	rect.h = h;
+	STK_BaseRectAssign(&rect, x, y, w, h);
 	STK_WidgetSetDims(widget, &rect);
 
 	// create label structure
 	button->label = STK_LabelNew(caption, x + STK_BUTTON_BORDER_THICKNESS, y + STK_BUTTON_BORDER_THICKNESS);
+	if (!widget->fixed)
+		STK_ButtonAdapterToChild(button);
 
 	button->state = STK_BUTTON_UP;
 
@@ -55,19 +54,8 @@ void STK_ButtonDraw(STK_Widget *widget)
 	SDL_Rect rect, rect_child;
 	
 	// if button is able to extend
-	if (!widget->fixed) {	
-        	STK_BaseRectCopy(&rect, &widget->rect);
-		
-		STK_BaseRectCopy(&rect_child, &child_widget->rect);
-		rect_child.w += 2 * widget->border;
-		rect_child.h += 2 * widget->border;
-        	
-        	if (child_widget)
-			STK_BaseRectAdapter(STK_FontGetDefaultFontWithSize(), &rect, &rect_child);
-	
-        	if (!STK_BaseRectEqual(&rect, &widget->rect))
-	                STK_WidgetSetDims(widget, &rect);
-	}
+	if (!widget->fixed)
+		STK_ButtonAdapterToChild(button);
 
 	// check status, these numbers are hard coded
 	// button down
@@ -166,12 +154,35 @@ int STK_ButtonRegisterType()
 
 int STK_ButtonSetText(STK_Button *button, char *str)
 {
+	STK_Widget *widget = (STK_Widget *)button;
 	STK_Label *label = button->label;
 	// here to set label's new size (but will trigger a redraw event on label)
 	STK_LabelSetText(label, str);
+	if (!widget->fixed)
+		STK_ButtonAdapterToChild(button);
 	
 	// trigger a redraw event on button
 	STK_WidgetEventRedraw((STK_Widget *)button);
+	
+	return 0;
+}
+
+int STK_ButtonAdapterToChild(STK_Button *button)
+{
+	STK_Widget *widget = (STK_Widget *)button;
+	STK_Widget *child_widget = (STK_Widget *)button->label;
+	SDL_Rect rect, rect_child;
+	
+	STK_BaseRectCopy(&rect, &widget->rect);
+	
+	STK_BaseRectCopy(&rect_child, &child_widget->rect);
+	rect_child.w += 2 * widget->border;
+	rect_child.h += 2 * widget->border;
+	
+	STK_BaseRectAdapter(&rect, &rect_child);
+
+	if (!STK_BaseRectEqual(&rect, &widget->rect))
+		STK_WidgetSetDims(widget, &rect);
 	
 	return 0;
 }

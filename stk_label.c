@@ -51,6 +51,11 @@ STK_Label *STK_LabelNew( char *str, Uint16 x, Uint16 y )
 		label->caption = (char *)STK_Malloc(strlen(str) + 1);
 		// after this copy, the last char left in caption is 0
 		strcpy(label->caption, str);
+		
+		// adaptered to string
+		if (!widget->fixed) {
+			STK_LabelAdapterToString(label);
+		}
 	}
 	else {
 		label->caption = NULL;
@@ -58,7 +63,8 @@ STK_Label *STK_LabelNew( char *str, Uint16 x, Uint16 y )
 		
 	label->alignment = STK_LABEL_TOPLEFT;
 	label->pattern	= STK_LABEL_NORMAL;
-	// set it as extended
+	
+//for test	STK_LabelSetColor(label, STK_COLOR_BACKGROUND, 0x00, 0xff, 0xff);
 	
 	return label;
 }
@@ -82,15 +88,7 @@ void STK_LabelDraw(STK_Widget *widget)
 	
 	// if label is extended, to adapter to the string
 	if (!widget->fixed) {
-		// backup widget's rect
-		STK_BaseRectCopy(&rect, &widget->rect);
-		// force rect to get eventual label->caption width and height 
-		STK_FontAdapter(STK_FontGetDefaultFontWithSize(), &rect, label->caption);
-		
-		// if areas don't equal, need to reset dimensions of this 
-		//   label: free previous surface and alloc a new one
-		if (!STK_BaseRectEqual(&rect, &widget->rect))
-			STK_WidgetSetDims(widget, &rect);
+		STK_LabelAdapterToString(label);
 	}
 	
 	// fill background
@@ -126,6 +124,24 @@ int STK_LabelClose(STK_Widget *widget)
 	// now ready to free label node
 	free(label);
 	
+	return 0;
+}
+
+int STK_LabelAdapterToString(STK_Label *label)
+{
+	SDL_Rect rect;
+	STK_Widget *widget = (STK_Widget *)label;
+	
+	// backup widget's rect
+	STK_BaseRectCopy(&rect, &widget->rect);
+	// force rect to get eventual label->caption width and height 
+	STK_FontAdapter(STK_FontGetDefaultFontWithSize(), &rect, label->caption);
+		
+	// if areas don't equal, need to reset dimensions of this 
+	//   label: free previous surface and alloc a new one
+ 	if (!STK_BaseRectEqual(&rect, &widget->rect))
+		STK_WidgetSetDims(widget, &rect);
+
 	return 0;
 }
 
@@ -188,6 +204,8 @@ int STK_LabelSetAlignment(STK_Label *label, int alignment)
 
 int STK_LabelSetText(STK_Label *label, char * text)
 {
+	STK_Widget *widget = (STK_Widget *)label;
+	
 	if (!label || !text)
 		return -1;
 	
@@ -199,6 +217,9 @@ int STK_LabelSetText(STK_Label *label, char * text)
 	label->caption = (char *)STK_Malloc(strlen(text) + 1);
 	// after this copy, the last char left in caption is 0
 	strcpy(label->caption, text);
+	
+	if (!widget->fixed)
+		STK_LabelAdapterToString(label);
 	
 	STK_WidgetEventRedraw((STK_Widget *)label);
 			

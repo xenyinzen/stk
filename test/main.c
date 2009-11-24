@@ -24,7 +24,8 @@ STK_Widget *draw_label()
 
 STK_Widget *draw_button()
 {
-	STK_Button *button = (STK_Button *)STK_ButtonNew("点我", 200, 240, 60, 40);
+	STK_Button *button = (STK_Button *)STK_ButtonNew("点我我我我我我我我", 200, 240, 60, 40);
+//	((STK_Widget *)button)->fixed = 0;
 //	STK_WindowAddWidget((STK_Widget *)button);
 	STK_WidgetEventShow((STK_Widget *)button);
 	return (STK_Widget *)button;
@@ -48,7 +49,7 @@ STK_Widget *draw_entry()
 
 STK_Widget *draw_radiobutton()
 {
-	STK_RadioButton *rbutton = (STK_RadioButton *)STK_RadioButtonNew("I", 300, 300, 200, 30);
+	STK_RadioButton *rbutton = (STK_RadioButton *)STK_RadioButtonNew("IgTf", 300, 300, 200, 10);
 	STK_WidgetEventShow((STK_Widget *)rbutton);
 	return (STK_Widget *)rbutton;
 
