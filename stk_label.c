@@ -38,6 +38,7 @@ STK_Label *STK_LabelNew( char *str, Uint16 x, Uint16 y )
 	// can't get focus
 	widget->flags	= 0;			
 	widget->border 	= 0;
+	widget->fixed	= 0;
 	
 	rect.x	= x;
 	rect.y 	= y;
@@ -54,12 +55,10 @@ STK_Label *STK_LabelNew( char *str, Uint16 x, Uint16 y )
 	else {
 		label->caption = NULL;
 	}
-	
-	
+		
 	label->alignment = STK_LABEL_TOPLEFT;
 	label->pattern	= STK_LABEL_NORMAL;
 	// set it as extended
-	label->fixed = 0;
 	
 	return label;
 }
@@ -82,7 +81,7 @@ void STK_LabelDraw(STK_Widget *widget)
 	Uint32 tmpcolor;
 	
 	// if label is extended, to adapter to the string
-	if (!label->fixed) {
+	if (!widget->fixed) {
 		// backup widget's rect
 		STK_BaseRectCopy(&rect, &widget->rect);
 		// force rect to get eventual label->caption width and height 

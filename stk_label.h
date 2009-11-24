@@ -33,9 +33,6 @@ typedef struct STK_Label {
 
 	int alignment;
 	int pattern;
-
-	Uint32 fixed;
-
 } STK_Label;
 
 STK_Label* STK_LabelNew( char *str, Uint16 x, Uint16 y);

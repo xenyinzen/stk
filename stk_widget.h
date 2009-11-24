@@ -21,6 +21,7 @@ typedef struct STK_Widget {
 	SDL_Color bgcolor;
 	SDL_Color fgcolor;
 	
+	Uint32 fixed;		// fixed or extended
 	Uint32 flags;		// important flag value variable
 	Uint32 state;
 } STK_Widget;

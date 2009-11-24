@@ -18,7 +18,6 @@ typedef struct STK_Button {
 	STK_ButtonState state;
 	STK_Label *label;
 	Uint32 flag;
-	Uint32 fixed;
 } STK_Button;
 
 STK_Button *STK_ButtonNew(char *caption, Uint16 x, Uint16 y, Uint16 w, Uint16 h);

@@ -32,6 +32,7 @@ STK_Button *STK_ButtonNew(char *caption, Uint16 x, Uint16 y, Uint16 w, Uint16 h)
 	widget->type = STK_WIDGET_BUTTON;
 	widget->flags |= WIDGET_FOCUSABLE;
 	widget->border = STK_BUTTON_BORDER_THICKNESS;
+	widget->fixed = 1;
 	
 	rect.x = x;
 	rect.y = y;
@@ -43,7 +44,6 @@ STK_Button *STK_ButtonNew(char *caption, Uint16 x, Uint16 y, Uint16 w, Uint16 h)
 	button->label = STK_LabelNew(caption, x + STK_BUTTON_BORDER_THICKNESS, y + STK_BUTTON_BORDER_THICKNESS);
 
 	button->state = STK_BUTTON_UP;
-	button->fixed = 1;
 
 	return button;	
 }
@@ -55,7 +55,7 @@ void STK_ButtonDraw(STK_Widget *widget)
 	SDL_Rect rect, rect_child;
 	
 	// if button is able to extend
-	if (!button->fixed) {	
+	if (!widget->fixed) {	
         	STK_BaseRectCopy(&rect, &widget->rect);
 		
 		STK_BaseRectCopy(&rect_child, &child_widget->rect);
@@ -89,25 +89,6 @@ void STK_ButtonDraw(STK_Widget *widget)
 	STK_ButtonFillLabel(widget);
 	
 	return;
-}
-
-void STK_ButtonFillLabel(STK_Button *button)
-{
-	STK_Widget *widget = (STK_Widget *)button;
-	STK_Widget *child = (STK_Widget *)button->label;
-	SDL_Rect rect;
-	F_Widget_Draw draw;
-	
-	// draw label first
-	draw = STK_WidgetGetDraw(child);
-	if (draw)
-		draw(child);
-	
-	STK_BaseRectAssign(&rect, 2, 2, widget->rect.w - 4, widget->rect.h - 4);
-
-	// blit label's surface to button's surface
-	SDL_BlitSurface(child->surface, &rect, widget->surface, NULL);
-
 }
 
 void STK_ButtonClose(STK_Widget *widget)
@@ -150,6 +131,28 @@ void STK_ButtonFilling(STK_Button *button, Uint32 pattern)
 
 	return;
 }
+
+void STK_ButtonFillLabel(STK_Button *button)
+{
+	STK_Widget *widget = (STK_Widget *)button;
+	STK_Widget *child = (STK_Widget *)button->label;
+	SDL_Rect rect;
+	F_Widget_Draw draw;
+	
+	if (widget->fixed) {
+		STK_BaseRectAssign(&rect, 2, 2, widget->rect.w - 4, widget->rect.h - 4);
+		STK_BaseRectAdapter(&child->rect, &rect);
+		STK_WidgetSetDims(child, &child->rect);
+		STK_LabelSetAlignment((STK_Label *)child, STK_LABEL_CENTER);
+		child->fixed = 1;
+	}
+	// draw label
+	draw = STK_WidgetGetDraw(child);
+	if (draw)
+		draw(child);
+
+}
+
 
 int STK_ButtonRegisterType()
 {

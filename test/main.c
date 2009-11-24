@@ -1,5 +1,6 @@
 
 #include "stk.h"
+#include "stk_color.h"
 #include "stk_label.h"
 #include "stk_button.h"
 #include "stk_slidebar.h"
@@ -14,8 +15,8 @@ STK_Widget *draw_label()
 	
 	STK_Label *label = (STK_Label *)STK_LabelNew("I am Tang", 400, 100);
 //	STK_WidgetSetDims((STK_Widget *)label, 100, 100, 200, 100);
-//	STK_LabelSetAlignment(label, STK_LABEL_CENTER);
-//	STK_LabelSetColor((STK_Widget *)label, BACKGROUND, 0x00800080);
+	STK_LabelSetAlignment(label, STK_LABEL_CENTER);
+	STK_LabelSetColor(label, STK_COLOR_BACKGROUND, 0x80, 0x00, 0x80);
 	STK_WidgetEventShow((STK_Widget *)label);
 	
 	return (STK_Widget *)label;
@@ -23,7 +24,7 @@ STK_Widget *draw_label()
 
 STK_Widget *draw_button()
 {
-	STK_Button *button = (STK_Button *)STK_ButtonNew("请点我哈哈哈哈哈", 200, 240, 100, 30);
+	STK_Button *button = (STK_Button *)STK_ButtonNew("点我", 200, 240, 60, 40);
 //	STK_WindowAddWidget((STK_Widget *)button);
 	STK_WidgetEventShow((STK_Widget *)button);
 	return (STK_Widget *)button;
