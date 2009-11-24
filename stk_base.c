@@ -20,6 +20,20 @@ int STK_BaseRectCopy(SDL_Rect *rect_A, SDL_Rect *rect_B)
 	return 0;
 }
 
+// assign value to rect
+int STK_BaseRectAssign(SDL_Rect *rect, Uint16 x, Uint16 y, Uint16 w, Uint16 h)
+{
+	if (!rect)
+		return -1;
+		
+	rect->x = x;
+	rect->y = y;
+	rect->w = w;
+	rect->h = h;
+	
+	return 0;
+}
+
 // judge if two rects are equal
 int STK_BaseRectEqual(SDL_Rect *rect_A, SDL_Rect *rect_B)
 {
@@ -73,4 +87,18 @@ int STK_BaseRectAdapter(SDL_Rect *rect_A, SDL_Rect *rect_B)
 	
 	return 0;
 }
+
+int STK_BaseColorAssign(SDL_Color *color, Uint8 r, Uint8 g, Uint8 b)
+{
+	if (!color)
+		return -1;
+	
+	color->r = r;
+	color->g = g;
+	color->b = b;
+
+	return 0;
+}
+
+
 

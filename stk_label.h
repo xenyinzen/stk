@@ -23,11 +23,6 @@ enum STK_LabelPattern {
     	STK_LABEL_SCROLL_RIGHT
 };
 
-enum STK_LabelColorType {
-	STK_LABEL_FOREGROUND,
-	STK_LABEL_BACKGROUND
-};
-
 typedef struct STK_Label {
 	STK_Widget widget;
 	STK_Font *font;

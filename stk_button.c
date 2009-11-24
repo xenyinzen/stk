@@ -10,85 +10,90 @@
 
 #define STK_BUTTON_BORDER_THICKNESS	2
 
-STK_Widget *STK_ButtonNew(char *caption, Uint16 x, Uint16 y, Uint16 w, Uint16 h)
+STK_Button *STK_ButtonNew(char *caption, Uint16 x, Uint16 y, Uint16 w, Uint16 h)
 {
 	STK_Button *button;
 	STK_Widget *widget;
 	STK_Object *object;
+	STK_Window *win;
+	SDL_Rect rect;
+	
+	win = STK_WindowGetTop();
+	if (!win)
+		return -1;
+	if (x >= win->widget.rect.w || y >= win->widget.rect.h)
+		return -1;
 	
 	button = (STK_Button *)STK_Malloc(sizeof(STK_Button));
-
 	widget = (STK_Widget *)button;
-	widget->type = STK_WIDGET_BUTTON;
-	widget->name = "Button";
-	widget->flags |= WIDGET_FOCUSABLE;
+	STK_WidgetInitInstance(widget);
 	
-	widget->rect.x = x;
-	widget->rect.y = y;
-	widget->rect.w = w;
-	widget->rect.h = h;
+	widget->name = "Button";
+	widget->type = STK_WIDGET_BUTTON;
+	widget->flags |= WIDGET_FOCUSABLE;
+	widget->border = STK_BUTTON_BORDER_THICKNESS;
+	
+	rect.x = x;
+	rect.y = y;
+	rect.w = w;
+	rect.h = h;
+	STK_WidgetSetDims(widget, &rect);
 
-	printf("Enter STK_ButtonNew\n");
 	// create label structure
 	button->label = STK_LabelNew(caption, x + STK_BUTTON_BORDER_THICKNESS, y + STK_BUTTON_BORDER_THICKNESS);
 
 	button->state = STK_BUTTON_UP;
-	button->image.fillstyle = STK_IMAGESTYLE_NORMAL;
+	button->fixed = 1;
 
-//	STK_WidgetEventShow(widget);	
-	//STK_WidgetEventRedraw(widget);
-
-	printf("Exit STK_ButtonNew\n");
-	return widget;	
+	return button;	
 }
 
 void STK_ButtonDraw(STK_Widget *widget)
 {
 	STK_Button *button = (STK_Button *)widget;
 	STK_Widget *child_widget = (STK_Widget *)button->label;
-	SDL_Rect rect;
+	SDL_Rect rect, rect_child;
 	
-	printf("Enter STK_ButtonDraw\n");	
+	// if button is able to extend
+	if (!button->fixed) {	
+        	STK_BaseRectCopy(&rect, &widget->rect);
+		
+		STK_BaseRectCopy(&rect_child, &child_widget->rect);
+		rect_child.w += 2 * widget->border;
+		rect_child.h += 2 * widget->border;
+        	
+        	if (child_widget)
+			STK_BaseRectAdapter(STK_FontGetDefaultFontWithSize(), &rect, &rect_child);
 	
-        rect.x = widget->rect.x;
-        rect.y = widget->rect.y;
-        rect.w = widget->rect.w;
-        rect.h = widget->rect.h;
-
-        if (child_widget) {
-		STK_ChildAdapter(&widget->rect, &child_widget->rect);
+        	if (!STK_BaseRectEqual(&rect, &widget->rect))
+	                STK_WidgetSetDims(widget, &rect);
 	}
-	
-        // if area has changed, need to reset dimensions of this label: free previous surface and alloc a new one
-        if (rect.x != widget->rect.x
-                || rect.y != widget->rect.y
-                || rect.w != widget->rect.w
-                || rect.h != widget->rect.h)
-                STK_WidgetSetDims(widget, &widget->rect);
-	
+
+	// check status, these numbers are hard coded
+	// button down
 	if (widget->state == 1)
 		button->state = STK_BUTTON_DOWN;
+	// button up
 	else if (widget->state == 2)
 		button->state = STK_BUTTON_UP;
 	
 	// draw button base
 	if (button->state == STK_BUTTON_UP) { 
-		STK_ButtonFilling(widget, 0);
+		STK_ButtonFilling(widget, STK_IMAGE_FRAME_CONVEX);
 	}
 	else if (button->state == STK_BUTTON_DOWN) {
-		STK_ButtonFilling(widget, 1);
+		STK_ButtonFilling(widget, STK_IMAGE_FRAME_CONCAVE);
 	}
 	
-	printf("Exit STK_ButtonDraw\n");	
-
 	// draw button's child widget: label
 	STK_ButtonFillLabel(widget);
 	
+	return;
 }
 
-void STK_ButtonFillLabel(STK_Widget *widget)
+void STK_ButtonFillLabel(STK_Button *button)
 {
-	STK_Button *button = (STK_Button *)widget;
+	STK_Widget *widget = (STK_Widget *)button;
 	STK_Widget *child = (STK_Widget *)button->label;
 	SDL_Rect rect;
 	F_Widget_Draw draw;
@@ -98,13 +103,10 @@ void STK_ButtonFillLabel(STK_Widget *widget)
 	if (draw)
 		draw(child);
 	
-	rect.x = STK_BUTTON_BORDER_THICKNESS;
-	rect.y = STK_BUTTON_BORDER_THICKNESS;
-	rect.w = widget->rect.w - 2*STK_BUTTON_BORDER_THICKNESS;
-	rect.h = widget->rect.h - 2*STK_BUTTON_BORDER_THICKNESS;
+	STK_BaseRectAssign(&rect, 2, 2, widget->rect.w - 4, widget->rect.h - 4);
 
 	// blit label's surface to button's surface
-	SDL_BlitSurface(child->surface, NULL, widget->surface, &rect);
+	SDL_BlitSurface(child->surface, &rect, widget->surface, NULL);
 
 }
 
@@ -132,86 +134,21 @@ void STK_ButtonClose(STK_Widget *widget)
 }
 
 
-STK_Widget *STK_ButtonFilling(STK_Widget *widget, Uint32 pattern)
+void STK_ButtonFilling(STK_Button *button, Uint32 pattern)
 {
-	STK_Button *button = (STK_Button *)widget;
+	STK_Widget *widget = (STK_Widget *)button;
 	SDL_Rect rect;
-	printf("Enter STK_ButtonFilling");
+	Uint32 tmpcolor;
+
+	// draw frame, in an other word: area 1~8
+	STK_ImageDrawFrame(widget->surface, pattern);
 		
 	// area 9
-	rect.x = STK_BUTTON_BORDER_THICKNESS;
-	rect.y = STK_BUTTON_BORDER_THICKNESS;
-	rect.w = widget->rect.w - 2*STK_BUTTON_BORDER_THICKNESS;
-	rect.h = widget->rect.h - 2*STK_BUTTON_BORDER_THICKNESS;
-	button->image.fillstyle = STK_IMAGESTYLE_NORMAL;
-	STK_ImageFillRect(widget->surface, &button->image, &rect, pattern, 0);
-	
-	// area 1
-	rect.x = STK_BUTTON_BORDER_THICKNESS;
-	rect.y = 0;
-	rect.w = widget->rect.w - 2*STK_BUTTON_BORDER_THICKNESS;
-	rect.h = STK_BUTTON_BORDER_THICKNESS;
-	button->image.fillstyle = STK_IMAGESTYLE_HORIZONTAL;
-	STK_ImageFillRect(widget->surface, &button->image, &rect, pattern, 0);
-	
-	// area 3
-	rect.x = STK_BUTTON_BORDER_THICKNESS;
-	rect.y = widget->rect.h - STK_BUTTON_BORDER_THICKNESS;
-	rect.w = widget->rect.w - 2*STK_BUTTON_BORDER_THICKNESS;
-	rect.h = STK_BUTTON_BORDER_THICKNESS;
-	button->image.fillstyle = STK_IMAGESTYLE_HORIZONTAL;
-	STK_ImageFillRect(widget->surface, &button->image, &rect, pattern, 1);
-	
-	// area 2
-	rect.x = widget->rect.w - STK_BUTTON_BORDER_THICKNESS;
-	rect.y = STK_BUTTON_BORDER_THICKNESS;
-	rect.w = STK_BUTTON_BORDER_THICKNESS;
-	rect.h = widget->rect.h - 2*STK_BUTTON_BORDER_THICKNESS;
-	button->image.fillstyle = STK_IMAGESTYLE_VERTICAL;
-	STK_ImageFillRect(widget->surface, &button->image, &rect, pattern, 0);
-	
-	// area 4
-	rect.x = 0;
-	rect.y = STK_BUTTON_BORDER_THICKNESS;
-	rect.w = STK_BUTTON_BORDER_THICKNESS;
-	rect.h = widget->rect.h - 2*STK_BUTTON_BORDER_THICKNESS;
-	button->image.fillstyle = STK_IMAGESTYLE_VERTICAL;
-	STK_ImageFillRect(widget->surface, &button->image, &rect, pattern, 1);
-	
-	// area 5
-	rect.x = 0;
-	rect.y = 0;
-	rect.w = STK_BUTTON_BORDER_THICKNESS;
-	rect.h = STK_BUTTON_BORDER_THICKNESS;
-	button->image.fillstyle = STK_IMAGESTYLE_MATRIX;
-	STK_ImageFillRect(widget->surface, &button->image, &rect, pattern, 0);
-	
-	// area 6
-	rect.x = widget->rect.w - STK_BUTTON_BORDER_THICKNESS;
-	rect.y = 0;
-	rect.w = STK_BUTTON_BORDER_THICKNESS;
-	rect.h = STK_BUTTON_BORDER_THICKNESS;
-	button->image.fillstyle = STK_IMAGESTYLE_MATRIX;
-	STK_ImageFillRect(widget->surface, &button->image, &rect, pattern, 1);
-	
-	// area 7
-	rect.x = widget->rect.w - STK_BUTTON_BORDER_THICKNESS;
-	rect.y = widget->rect.h - STK_BUTTON_BORDER_THICKNESS;
-	rect.w = STK_BUTTON_BORDER_THICKNESS;
-	rect.h = STK_BUTTON_BORDER_THICKNESS;
-	button->image.fillstyle = STK_IMAGESTYLE_MATRIX;
-	STK_ImageFillRect(widget->surface, &button->image, &rect, pattern, 2);
-	
-	// area 8
-	rect.x = 0;
-	rect.y = widget->rect.h - STK_BUTTON_BORDER_THICKNESS;
-	rect.w = STK_BUTTON_BORDER_THICKNESS;
-	rect.h = STK_BUTTON_BORDER_THICKNESS;
-	button->image.fillstyle = STK_IMAGESTYLE_MATRIX;
-	STK_ImageFillRect(widget->surface, &button->image, &rect, pattern, 3);
+	STK_BaseRectAssign(&rect, 2, 2, widget->rect.w - 4, widget->rect.h - 4);
+	tmpcolor = SDL_MapRGB(widget->surface->format, widget->bgcolor.r, widget->bgcolor.g, widget->bgcolor.b);
+	SDL_FillRect(widget->surface, &rect, tmpcolor);
 
-	printf("Exit STK_ButtonFilling");
-
+	return;
 }
 
 int STK_ButtonRegisterType()
@@ -224,46 +161,15 @@ int STK_ButtonRegisterType()
         return 0;
 }
 
-int STK_ChildAdapter(SDL_Rect *r0, SDL_Rect *r1)
+int STK_ButtonSetText(STK_Button *button, char *str)
 {
-	int width = r1->w + 2*STK_BUTTON_BORDER_THICKNESS;
-	int height = r1->h + 2*STK_BUTTON_BORDER_THICKNESS;
-	printf("Enter STK_ChildAdapter\n");
-	if (r0->w != width || r0->h != height) {
-		r0->w = width;
-		r0->h = height;
-	}
-
-	printf("Exit STK_ChildAdapter\n");
-	return 0;
-}
-
-int STK_ButtonSetText(STK_Widget *widget, char *str)
-{
-	STK_Button *button = (STK_Button *)widget;
-	STK_Widget *label = button->label;
+	STK_Label *label = button->label;
 	// here to set label's new size (but will trigger a redraw event on label)
 	STK_LabelSetText(label, str);
 	
 	// trigger a redraw event on button
-	STK_WidgetEventRedraw(widget);
+	STK_WidgetEventRedraw((STK_Widget *)button);
+	
 	return 0;
 }
 
-// not very needed
-int STK_ButtonSetSize(STK_Widget *widget, Uint16 width, Uint16 height)
-{
-	STK_Button *button = (STK_Button *)widget;
-	STK_Widget *label = button->label;
-	
-	
-
-	
-
-}
-
-
-
-
-
-  

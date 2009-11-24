@@ -9,12 +9,14 @@ typedef void *STK_Object;
 typedef struct STK_Widget {
 	SDL_Surface *surface;	// the surface drawn on is this widget
 	
+	char *name;		// name of this widget
+	int type;		// identify the type of this widget, to index this type's other characters.
+
 	SDL_Rect rect;		// the rect area this widget occupy
 //	SDL_Rect absolute;	// ??
 	SDL_Rect clip;		// ??
-	
-	char *name;		// name of this widget
-	int type;		// identify the type of this widget, to index this type's other characters.
+
+	Uint16 border;		// the border of a widget
 	
 	SDL_Color bgcolor;
 	SDL_Color fgcolor;

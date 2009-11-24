@@ -18,18 +18,17 @@ typedef struct STK_Button {
 	STK_ButtonState state;
 	STK_Label *label;
 	Uint32 flag;
+	Uint32 fixed;
 } STK_Button;
 
-STK_Widget *STK_ButtonNew(char *caption, Uint16 x, Uint16 y, Uint16 w, Uint16 h);
+STK_Button *STK_ButtonNew(char *caption, Uint16 x, Uint16 y, Uint16 w, Uint16 h);
 void STK_ButtonDraw(STK_Widget *widget);
-void STK_ButtonFillLabel(STK_Widget *widget);
 void STK_ButtonClose(STK_Widget *widget);
-STK_Widget *STK_ButtonFilling(STK_Widget *widget, Uint32 pattern);
+void STK_ButtonFilling(STK_Button *button, Uint32 pattern);
+void STK_ButtonFillLabel(STK_Button *button);
 
 int STK_ButtonRegisterType();
-int STK_ChildAdapter(SDL_Rect *r0, SDL_Rect *r1);
-int STK_ButtonSetText(STK_Widget *widget, char *str);
-int STK_ButtonSetSize(STK_Widget *widget, Uint16 width, Uint16 height);
+int STK_ButtonSetText(STK_Button *button, char *str);
 
 
 #endif /* _STK_BUTTON_H_ */

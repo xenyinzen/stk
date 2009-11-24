@@ -9,6 +9,8 @@
 //
 // supply for the border of button, frame, entry and so on
 //
+// pattern 1: convex
+// pattern 2: concave
 Uint32 g_image_dividing_horizontal[2][2][2] = {
 	{	// pattern 1
 		{ 0x00fefffd, 0x00d5d0ca }, // area 1, topcenter, two pixels
@@ -49,7 +51,7 @@ Uint32 g_image_dividing_matrix[2][4][4] = {
 //
 // supply for the radiobutton's header, 20x20 rectangle
 //
-Uint32 g_image_radiobutton_header[2][400] = {
+Uint32 g_image_box[2][400] = {
 	{	// pattern 1: release
 		0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
 		0x00000000, 0x00ffffff, 0x00ffffff, 0x00ffffff, 0x00ffffff, 0x00ffffff, 0x00ffffff, 0x00ffffff, 0x00ffffff, 0x00ffffff, 0x00ffffff, 0x00ffffff, 0x00ffffff, 0x00ffffff, 0x00ffffff, 0x00ffffff, 0x00ffffff, 0x00ffffff, 0x00ffffff, 0x00000000,
@@ -97,104 +99,147 @@ Uint32 g_image_radiobutton_header[2][400] = {
 	}	
 };
 
-
-// here, pattern need to vertify furtherly
-// we use n to take apart from different part of one kind of filling area.
-// we also use n to distinguish different widget, as to use different data arraies.
-// n: 	0~3 (0~9) 	g_image_dividing_xxxx[][][]  
-//    	10 (10~19)	g_image_radiobutton_header[][] 
-int STK_ImageFillRect(SDL_Surface *surface, STK_Image *image, SDL_Rect *rect, Uint32 pattern, Uint32 n)
+// surface: 	the surface to draw on
+// rect:	the rectagle to draw in
+// kind:	frame, or box, or other
+// pattern:	concave, convex, singleline, doubleline, solid, ....
+// image:	STK_IMAGESTYLE_NORMAL ...
+// index:	area part index in one kind of area
+int STK_ImageFillRect(SDL_Surface *surface, SDL_Rect *rect, Uint32 kind, Uint32 pattern, STK_Image *image, Uint32 index)
 {
 	// here miss something
-	Uint32 bgcolor = 0x00f4f400;
 	int style = image->fillstyle;
 	int i = 0, j = 0;
 	SDL_Rect r;
 	
-	switch (style) {
-	case STK_IMAGESTYLE_NORMAL:
-		if (pattern == 0)
-			SDL_FillRect(surface, rect, bgcolor);
-		else if (pattern == 1)
-			SDL_FillRect(surface, rect, 0x00808080);
-		break;
-	case STK_IMAGESTYLE_HORIZONTAL:
-		if (n < 4) {
+	switch (kind) {
+	case STK_IMAGE_KIND_FRAME:
+		switch (style) {
+		case STK_IMAGE_FILLSTYLE_NORMAL:
+			if (pattern == 0)
+				SDL_FillRect(surface, rect, 0x00000000);
+			else if (pattern == 1)
+				SDL_FillRect(surface, rect, 0x00ffffff);
+			break;
+		case STK_IMAGE_FILLSTYLE_HORIZONTAL:
 			for (i = 0; i < rect->h ; i++) {
 				r.x = rect->x;
 				r.y = rect->y + i;
 				r.w = rect->w;
 				r.h = 1;
-				SDL_FillRect(surface, &r, g_image_dividing_horizontal[pattern][n][i]);
+				SDL_FillRect(surface, &r, g_image_dividing_horizontal[pattern][index][i]);
 			}
-		}
-		break;
-	case STK_IMAGESTYLE_VERTICAL:
-		if (n < 4) {
+			break;
+		case STK_IMAGE_FILLSTYLE_VERTICAL:
 			for (i = 0; i < rect->w; i++) {
 				r.x = rect->x + i;
 				r.y = rect->y;
 				r.w = 1;
 				r.h = rect->h;
-				SDL_FillRect(surface, &r, g_image_dividing_vertical[pattern][n][i]);
+				SDL_FillRect(surface, &r, g_image_dividing_vertical[pattern][index][i]);
 			}
-		}
-		break;
-	case STK_IMAGESTYLE_MATRIX: { 
-		if (n < 4) {
+			break;
+		case STK_IMAGE_FILLSTYLE_MATRIX: { 
 			for (i = 0; i < rect->h; i++) {
 				for (j = 0; j < rect->w; j++) {
 					r.x = rect->x + j;
 					r.y = rect->y + i;
 					r.w = 1;
 					r.h = 1;
-					SDL_FillRect(surface, &r, g_image_dividing_matrix[pattern][n][rect->w*i+j]);
+					SDL_FillRect(surface, &r, g_image_dividing_matrix[pattern][index][rect->w*i+j]);
 				}
 			}
-		}
-		else if (n>=10 && n<=19) {
-			for (i = 0; i < rect->h; i++) {
-				for (j = 0; j < rect->w; j++) {
-					r.x = rect->x + j;
-					r.y = rect->y + i;
-					r.w = 1;
-					r.h = 1;
-					SDL_FillRect(surface, &r, g_image_radiobutton_header[pattern][rect->w*i+j]);
-				}
-			}
-		}
 
-/*		SDL_Surface *s;
-		s = SDL_CreateRGBSurfaceFrom((void *)g_image_dividing_matrix[pattern][n], 
-						2, 
-						2, 
-						32,
-						8,
-						0x00ff0000,
-						0x0000ff00,
-						0x000000ff,
-						0xff000000);
-		SDL_BlitSurface(s, NULL, surface, rect);
-*/
-		break;
+	/*		SDL_Surface *s;
+			s = SDL_CreateRGBSurfaceFrom((void *)g_image_dividing_matrix[pattern][n], 
+							2, 
+							2, 
+							32,
+							8,
+							0x00ff0000,
+							0x0000ff00,
+							0x000000ff,
+							0xff000000);
+			SDL_BlitSurface(s, NULL, surface, rect);
+	*/
+			break;
+			}
+		case STK_IMAGE_FILLSTYLE_PICTURE: {
+			SDL_Surface *s;
+			SDL_Rect r;
+			r.x = 0; 
+			r.y = 0;
+			r.w = rect->w;
+			r.h = rect->h;
+			s = SDL_LoadBMP(image->filename);
+			// Attention: the size of the picture should match the desired size
+			if (s) 
+				SDL_BlitSurface(s, &r, surface, rect);			
+			break;
+			}
+		default:
+			break;
+
 		}
-	case STK_IMAGESTYLE_PICTURE: {
-		SDL_Surface *s;
-		SDL_Rect r;
-		r.x = 0; 
-		r.y = 0;
-		r.w = rect->w;
-		r.h = rect->h;
-		s = SDL_LoadBMP(image->filename);
-		// Attention: the size of the picture should match the desired size
-		if (s) 
-			SDL_BlitSurface(s, &r, surface, rect);			
 		break;
+	case STK_IMAGE_KIND_BOX:
+		for (i = 0; i < rect->h; i++) {
+			for (j = 0; j < rect->w; j++) {
+				r.x = rect->x + j;
+				r.y = rect->y + i;
+				r.w = 1;
+				r.h = 1;
+				SDL_FillRect(surface, &r, g_image_box[pattern][rect->w*i+j]);
+			}
 		}
+		break;
 	default:
-		break;
-
+		break;	
 	}
 	
+	
+		
 	return 0;
 }
+
+
+int STK_ImageDrawFrame(SDL_Surface *s, int pattern)
+{
+	SDL_Rect rect;
+	STK_Image image;
+
+	// area 1
+	STK_BaseRectAssign(&rect, 2, 0, s->w-4, 2);
+	image.fillstyle = STK_IMAGE_FILLSTYLE_HORIZONTAL;	
+	STK_ImageFillRect(s, &rect, STK_IMAGE_KIND_FRAME, pattern, &image, 0);
+	// area 3
+	STK_BaseRectAssign(&rect, 2, s->h-2, s->w-4, 2);
+	image.fillstyle = STK_IMAGE_FILLSTYLE_HORIZONTAL;
+	STK_ImageFillRect(s, &rect, STK_IMAGE_KIND_FRAME, pattern, &image, 1);	
+	// area 2
+	STK_BaseRectAssign(&rect, s->w-2, 2, 2, s->h-4);
+	image.fillstyle = STK_IMAGE_FILLSTYLE_VERTICAL;
+	STK_ImageFillRect(s, &rect, STK_IMAGE_KIND_FRAME, pattern, &image, 0);	
+	// area 4
+	STK_BaseRectAssign(&rect, 0, 2, 2, s->h-4);
+	image.fillstyle = STK_IMAGE_FILLSTYLE_VERTICAL;
+	STK_ImageFillRect(s, &rect, STK_IMAGE_KIND_FRAME, pattern, &image, 1);	
+	// area 5
+	STK_BaseRectAssign(&rect, 0, 0, 2, 2);
+	image.fillstyle = STK_IMAGE_FILLSTYLE_MATRIX;
+	STK_ImageFillRect(s, &rect, STK_IMAGE_KIND_FRAME, pattern, &image, 0);	
+	// area 6
+	STK_BaseRectAssign(&rect, s->w-2, 0, 2, 2);
+	image.fillstyle = STK_IMAGE_FILLSTYLE_MATRIX;
+	STK_ImageFillRect(s, &rect, STK_IMAGE_KIND_FRAME, pattern, &image, 1);	
+	// area 7
+	STK_BaseRectAssign(&rect, s->w-2, s->h-2, 2, 2);
+	image.fillstyle = STK_IMAGE_FILLSTYLE_MATRIX;
+	STK_ImageFillRect(s, &rect, STK_IMAGE_KIND_FRAME, pattern, &image, 2);	
+	// area 8
+	STK_BaseRectAssign(&rect, 0, s->h-2, 2, 2);
+	image.fillstyle = STK_IMAGE_FILLSTYLE_MATRIX;
+	STK_ImageFillRect(s, &rect, STK_IMAGE_KIND_FRAME, pattern, &image, 3);	
+
+}
+

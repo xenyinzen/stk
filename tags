@@ -7,13 +7,6 @@
 AAbits	stk_prim.c	1668;"	d	file:
 AAlevels	stk_prim.c	1667;"	d	file:
 ABS	stk_prim.c	1426;"	d	file:
-BACKGROUND	stk_label.h	51;"	d
-BOTTOMCENTER	stk_label.h	/^	BOTTOMCENTER,$/;"	e	enum:__anon2
-BOTTOMLEFT	stk_label.h	/^	BOTTOMLEFT,$/;"	e	enum:__anon2
-BOTTOMRIGHT	stk_label.h	/^	BOTTOMRIGHT$/;"	e	enum:__anon2
-CENTER	stk_label.h	/^	CENTER,$/;"	e	enum:__anon2
-CENTERLEFT	stk_label.h	/^	CENTERLEFT,$/;"	e	enum:__anon2
-CENTERRIGHT	stk_label.h	/^	CENTERRIGHT,$/;"	e	enum:__anon2
 CLIP_ACCEPT	BAK/stk_prim.h	7;"	d
 CLIP_ACCEPT	stk_prim.c	1140;"	d	file:
 CLIP_BOTTOM_EDGE	BAK/stk_prim.h	14;"	d
@@ -30,78 +23,177 @@ CLIP_TOP_EDGE	BAK/stk_prim.h	13;"	d
 CLIP_TOP_EDGE	stk_prim.c	1137;"	d	file:
 CallbackListNode	stk_signal.h	/^typedef struct CallbackListNode {$/;"	s
 CallbackListNode	stk_signal.h	/^} CallbackListNode;$/;"	t	typeref:struct:CallbackListNode
-FONT_FILE	stk_font.c	10;"	d	file:
-FONT_SIZE	stk_font.c	9;"	d	file:
-FOREGROUND	stk_label.h	50;"	d
 F_Signal_Callback	stk_signal.h	/^typedef void (*F_Signal_Callback)(STK_Object *object, void *signaldata, void *userdata);$/;"	t
 F_Widget_Close	stk_widget.h	/^typedef void	(*F_Widget_Close)	(STK_Widget *widget);$/;"	t
-F_Widget_Draw	stk_widget.h	/^typedef void	(*F_Widget_Draw) 	(STK_Widget *widget, SDL_Rect *rect);$/;"	t
+F_Widget_Draw	stk_widget.h	/^typedef void	(*F_Widget_Draw) 	(STK_Widget *widget);$/;"	t
 HLineAlpha	stk_prim.c	/^int HLineAlpha(SDL_Surface * dst, Sint16 x1, Sint16 x2, Sint16 y, Uint32 color)$/;"	f
-LABEL_BOUNCE	stk_label.h	/^    LABEL_BOUNCE,$/;"	e	enum:LabelPattern
-LABEL_NORMAL	stk_label.h	/^    LABEL_NORMAL,$/;"	e	enum:LabelPattern
-LABEL_SCROLL_LEFT	stk_label.h	/^    LABEL_SCROLL_LEFT,$/;"	e	enum:LabelPattern
-LABEL_SCROLL_RIGHT	stk_label.h	/^    LABEL_SCROLL_RIGHT$/;"	e	enum:LabelPattern
-LabelPattern	stk_label.h	/^enum LabelPattern$/;"	g
-LabelPattern	stk_label.h	/^} LabelPattern;$/;"	v	typeref:enum:LabelPattern
-MAX_WIDGET_TYPE	stk_widget.h	68;"	d
+MAX_WIDGET_TYPE	stk_widget.h	84;"	d
+MEM_BLOCK_UNIT	stk_text.c	8;"	d	file:
 M_PI	stk_prim.h	6;"	d
-STK_BUTTON_BORDER_THICK	BAK/stk_button.c	10;"	d	file:
-STK_BUTTON_DOWN	BAK/stk_button.h	/^	STK_BUTTON_DOWN,$/;"	e	enum:STK_ButtonState
-STK_BUTTON_FOCUSED	BAK/stk_button.h	/^	STK_BUTTON_FOCUSED$/;"	e	enum:STK_ButtonState
-STK_BUTTON_HIGHLIGHTED	BAK/stk_button.h	/^	STK_BUTTON_HIGHLIGHTED,$/;"	e	enum:STK_ButtonState
-STK_BUTTON_UP	BAK/stk_button.h	/^	STK_BUTTON_UP,$/;"	e	enum:STK_ButtonState
-STK_Button	BAK/stk_button.h	/^typedef struct STK_Button {$/;"	s
-STK_Button	BAK/stk_button.h	/^} STK_Button;$/;"	t	typeref:struct:STK_Button
-STK_ButtonClose	BAK/stk_button.c	/^void STK_ButtonClose(STK_Widget *widget)$/;"	f
-STK_ButtonDraw	BAK/stk_button.c	/^void STK_ButtonDraw(STK_Widget *widget)$/;"	f
-STK_ButtonFillLabel	BAK/stk_button.c	/^void STK_ButtonFillLabel(STK_Widget *widget)$/;"	f
-STK_ButtonFilling	BAK/stk_button.c	/^STK_Widget *STK_ButtonFilling(STK_Widget *widget, Uint32 pattern)$/;"	f
-STK_ButtonNew	BAK/stk_button.c	/^STK_Widget *STK_ButtonNew(char *caption, Uint16 w, Uint16 h)$/;"	f
-STK_ButtonRegisterType	BAK/stk_button.c	/^int STK_ButtonRegisterType()$/;"	f
-STK_ButtonState	BAK/stk_button.h	/^typedef enum STK_ButtonState {$/;"	g
-STK_ButtonState	BAK/stk_button.h	/^} STK_ButtonState;$/;"	t	typeref:enum:STK_ButtonState
+STK_BUTTON_BORDER_THICKNESS	stk_button.c	11;"	d	file:
+STK_BUTTON_DOWN	stk_button.h	/^	STK_BUTTON_DOWN = 1,$/;"	e	enum:STK_ButtonState
+STK_BUTTON_FOCUSED	stk_button.h	/^	STK_BUTTON_FOCUSED$/;"	e	enum:STK_ButtonState
+STK_BUTTON_HIGHLIGHTED	stk_button.h	/^	STK_BUTTON_HIGHLIGHTED,$/;"	e	enum:STK_ButtonState
+STK_BUTTON_UP	stk_button.h	/^	STK_BUTTON_UP,$/;"	e	enum:STK_ButtonState
+STK_BaseRectAdapter	stk_base.c	/^int STK_BaseRectAdapter(SDL_Rect *rect_A, SDL_Rect *rect_B)$/;"	f
+STK_BaseRectAdapterHeight	stk_base.c	/^int STK_BaseRectAdapterHeight(SDL_Rect *rect_A, SDL_Rect *rect_B)$/;"	f
+STK_BaseRectAdapterWidth	stk_base.c	/^int STK_BaseRectAdapterWidth(SDL_Rect *rect_A, SDL_Rect *rect_B)$/;"	f
+STK_BaseRectCopy	stk_base.c	/^int STK_BaseRectCopy(SDL_Rect *rect_A, SDL_Rect *rect_B)$/;"	f
+STK_BaseRectEqual	stk_base.c	/^int STK_BaseRectEqual(SDL_Rect *rect_A, SDL_Rect *rect_B)$/;"	f
+STK_Button	stk_button.h	/^typedef struct STK_Button {$/;"	s
+STK_Button	stk_button.h	/^} STK_Button;$/;"	t	typeref:struct:STK_Button
+STK_ButtonClose	stk_button.c	/^void STK_ButtonClose(STK_Widget *widget)$/;"	f
+STK_ButtonDraw	stk_button.c	/^void STK_ButtonDraw(STK_Widget *widget)$/;"	f
+STK_ButtonFillLabel	stk_button.c	/^void STK_ButtonFillLabel(STK_Widget *widget)$/;"	f
+STK_ButtonFilling	stk_button.c	/^STK_Widget *STK_ButtonFilling(STK_Widget *widget, Uint32 pattern)$/;"	f
+STK_ButtonNew	stk_button.c	/^STK_Widget *STK_ButtonNew(char *caption, Uint16 x, Uint16 y, Uint16 w, Uint16 h)$/;"	f
+STK_ButtonRegisterType	stk_button.c	/^int STK_ButtonRegisterType()$/;"	f
+STK_ButtonSetSize	stk_button.c	/^int STK_ButtonSetSize(STK_Widget *widget, Uint16 width, Uint16 height)$/;"	f
+STK_ButtonSetText	stk_button.c	/^int STK_ButtonSetText(STK_Widget *widget, char *str)$/;"	f
+STK_ButtonState	stk_button.h	/^typedef enum STK_ButtonState {$/;"	g
+STK_ButtonState	stk_button.h	/^} STK_ButtonState;$/;"	t	typeref:enum:STK_ButtonState
+STK_ChildAdapter	stk_button.c	/^int STK_ChildAdapter(SDL_Rect *r0, SDL_Rect *r1)$/;"	f
 STK_DispatchEvent	stk.c	/^static int STK_DispatchEvent(SDL_Event *event)$/;"	f	file:
-STK_EVENT	stk.h	/^	STK_EVENT = SDL_USEREVENT$/;"	e	enum:__anon1
-STK_FontAdapter	stk_font.c	/^int STK_FontAdapter( SDL_Rect *rect, char *str)$/;"	f
-STK_FontDraw	stk_font.c	/^int STK_FontDraw( SDL_Rect *rect, char *str, SDL_Color *fg, SDL_Color *bg)$/;"	f
+STK_ENTRY_BORDER_THICKNESS	stk_entry.c	12;"	d	file:
+STK_ENTRY_CURSOR_WIDTH	stk_entry.c	13;"	d	file:
+STK_EVENT	stk_widget.h	/^	STK_EVENT = SDL_USEREVENT$/;"	e	enum:__anon2
+STK_Entry	stk_entry.h	/^typedef struct STK_Entry { $/;"	s
+STK_Entry	stk_entry.h	/^} STK_Entry;$/;"	t	typeref:struct:STK_Entry
+STK_EntryCalcTextareaRect	stk_entry.c	/^int STK_EntryCalcTextareaRect(STK_Entry *entry)$/;"	f
+STK_EntryClose	stk_entry.c	/^void STK_EntryClose(STK_Widget *widget)$/;"	f
+STK_EntryDraw	stk_entry.c	/^void STK_EntryDraw(STK_Widget *widget)$/;"	f
+STK_EntryDrawCursor	stk_entry.c	/^void STK_EntryDrawCursor(STK_Entry *entry)$/;"	f
+STK_EntryEventKeyDown	stk_entry.c	/^static void STK_EntryEventKeyDown(STK_Object *object, void *signaldata, void *userdata)$/;"	f	file:
+STK_EntryKeyBackspace	stk_entry.c	/^int STK_EntryKeyBackspace(STK_Entry *entry)$/;"	f
+STK_EntryKeyGeneral	stk_entry.c	/^int STK_EntryKeyGeneral(STK_Entry *entry)$/;"	f
+STK_EntryNew	stk_entry.c	/^STK_Widget *STK_EntryNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, Uint16 limited_num, char *initial_str)$/;"	f
+STK_EntryRegisterType	stk_entry.c	/^int STK_EntryRegisterType()$/;"	f
+STK_FONT_MAXSIZE	stk_font.c	11;"	d	file:
+STK_FONT_SIZENUM	stk_font.c	10;"	d	file:
+STK_Font	stk_font.h	/^typedef struct STK_Font {$/;"	s
+STK_Font	stk_font.h	/^} STK_Font;$/;"	t	typeref:struct:STK_Font
+STK_FontAdapter	stk_font.c	/^int STK_FontAdapter(STK_Font *font, SDL_Rect *rect, char *str)$/;"	f
+STK_FontDraw	stk_font.c	/^int STK_FontDraw(STK_Font *font, char *str, STK_Widget *widget, SDL_Rect *rect, SDL_Color *fg, SDL_Color *bg)$/;"	f
+STK_FontGetDefaultFont	stk_font.c	/^STK_Font *STK_FontGetDefaultFont(Uint32 num)$/;"	f
+STK_FontGetDefaultFontWithSize	stk_font.c	/^STK_Font *STK_FontGetDefaultFontWithSize()$/;"	f
+STK_FontGetHeight	stk_font.c	/^int STK_FontGetHeight(STK_Font *font)$/;"	f
 STK_FontInit	stk_font.c	/^int STK_FontInit()$/;"	f
+STK_FontLoad	stk_font.c	/^STK_Font *STK_FontLoad(char *name, Uint32 size)$/;"	f
+STK_FontLoadFontSizes	stk_font.c	/^int STK_FontLoadFontSizes(char *name)$/;"	f
 STK_Frame	BAK/stk_frame.h	/^typedef struct STK_Frame {$/;"	s
-STK_IMAGESTYLE_BORADER_THICK	BAK/stk_image.h	7;"	d
-STK_IMAGESTYLE_HORIZONTAL	BAK/stk_image.h	/^	STK_IMAGESTYLE_HORIZONTAL,$/;"	e	enum:STK_ImageStyle
-STK_IMAGESTYLE_MATRIX	BAK/stk_image.h	/^	STK_IMAGESTYLE_MATRIX,$/;"	e	enum:STK_ImageStyle
-STK_IMAGESTYLE_NORMAL	BAK/stk_image.h	/^	STK_IMAGESTYLE_NORMAL,$/;"	e	enum:STK_ImageStyle
-STK_IMAGESTYLE_PICTURE	BAK/stk_image.h	/^	STK_IMAGESTYLE_PICTURE,$/;"	e	enum:STK_ImageStyle
-STK_IMAGESTYLE_VERTICAL	BAK/stk_image.h	/^	STK_IMAGESTYLE_VERTICAL,$/;"	e	enum:STK_ImageStyle
-STK_IMAGE_EVENT	stk_widget.h	/^	STK_IMAGE_EVENT$/;"	e	enum:__anon3
-STK_IMAGE_USERDEFINE	BAK/stk_image.h	5;"	d
-STK_Image	BAK/stk_image.h	/^typedef struct STK_Image {$/;"	s
-STK_Image	BAK/stk_image.h	/^} STK_Image;$/;"	t	typeref:struct:STK_Image
-STK_ImageFillRect	BAK/stk_image.c	/^SDL_Surface *STK_ImageFillRect(SDL_Widget *widget, SDL_Image *image, SDL_Rect *rect, Uint32 pattern, Uint32 n)$/;"	f
-STK_ImageStyle	BAK/stk_image.h	/^typedef enum STK_ImageStyle {$/;"	g
-STK_ImageStyle	BAK/stk_image.h	/^} STK_ImageStyle;$/;"	t	typeref:enum:STK_ImageStyle
+STK_IMAGESTYLE_HORIZONTAL	stk_image.h	/^	STK_IMAGESTYLE_HORIZONTAL,$/;"	e	enum:STK_ImageStyle
+STK_IMAGESTYLE_MATRIX	stk_image.h	/^	STK_IMAGESTYLE_MATRIX,$/;"	e	enum:STK_ImageStyle
+STK_IMAGESTYLE_NORMAL	stk_image.h	/^	STK_IMAGESTYLE_NORMAL,$/;"	e	enum:STK_ImageStyle
+STK_IMAGESTYLE_PICTURE	stk_image.h	/^	STK_IMAGESTYLE_PICTURE,$/;"	e	enum:STK_ImageStyle
+STK_IMAGESTYLE_VERTICAL	stk_image.h	/^	STK_IMAGESTYLE_VERTICAL,$/;"	e	enum:STK_ImageStyle
+STK_IMAGE_EVENT	stk_widget.h	/^	STK_IMAGE_EVENT$/;"	e	enum:__anon1
+STK_IMAGE_USERDEFINE	stk_image.h	6;"	d
+STK_Image	stk_image.h	/^typedef struct STK_Image {$/;"	s
+STK_Image	stk_image.h	/^} STK_Image;$/;"	t	typeref:struct:STK_Image
+STK_ImageFillRect	stk_image.c	/^int STK_ImageFillRect(SDL_Surface *surface, STK_Image *image, SDL_Rect *rect, Uint32 pattern, Uint32 n)$/;"	f
+STK_ImageStyle	stk_image.h	/^typedef enum STK_ImageStyle {$/;"	g
+STK_ImageStyle	stk_image.h	/^} STK_ImageStyle;$/;"	t	typeref:enum:STK_ImageStyle
 STK_Init	stk.c	/^int STK_Init()$/;"	f
 STK_InternalEvent	stk.c	/^static void STK_InternalEvent(SDL_Event *event)$/;"	f	file:
+STK_LABEL_BACKGROUND	stk_label.h	/^	STK_LABEL_BACKGROUND$/;"	e	enum:STK_LabelColorType
+STK_LABEL_BOTTOMCENTER	stk_label.h	/^	STK_LABEL_BOTTOMCENTER,$/;"	e	enum:STK_LabelAlignment
+STK_LABEL_BOTTOMLEFT	stk_label.h	/^	STK_LABEL_BOTTOMLEFT,$/;"	e	enum:STK_LabelAlignment
+STK_LABEL_BOTTOMRIGHT	stk_label.h	/^	STK_LABEL_BOTTOMRIGHT$/;"	e	enum:STK_LabelAlignment
+STK_LABEL_BOUNCE	stk_label.h	/^    	STK_LABEL_BOUNCE,$/;"	e	enum:STK_LabelPattern
+STK_LABEL_CENTER	stk_label.h	/^	STK_LABEL_CENTER,$/;"	e	enum:STK_LabelAlignment
+STK_LABEL_CENTERLEFT	stk_label.h	/^	STK_LABEL_CENTERLEFT,$/;"	e	enum:STK_LabelAlignment
+STK_LABEL_CENTERRIGHT	stk_label.h	/^	STK_LABEL_CENTERRIGHT,$/;"	e	enum:STK_LabelAlignment
+STK_LABEL_DEFAULT_HEIGHT	stk_label.c	11;"	d	file:
+STK_LABEL_DEFAULT_WIDTH	stk_label.c	10;"	d	file:
+STK_LABEL_FOREGROUND	stk_label.h	/^	STK_LABEL_FOREGROUND,$/;"	e	enum:STK_LabelColorType
+STK_LABEL_NORMAL	stk_label.h	/^    	STK_LABEL_NORMAL,$/;"	e	enum:STK_LabelPattern
+STK_LABEL_SCROLL_LEFT	stk_label.h	/^    	STK_LABEL_SCROLL_LEFT,$/;"	e	enum:STK_LabelPattern
+STK_LABEL_SCROLL_RIGHT	stk_label.h	/^    	STK_LABEL_SCROLL_RIGHT$/;"	e	enum:STK_LabelPattern
+STK_LABEL_TOPCENTER	stk_label.h	/^	STK_LABEL_TOPCENTER,$/;"	e	enum:STK_LabelAlignment
+STK_LABEL_TOPLEFT	stk_label.h	/^	STK_LABEL_TOPLEFT,$/;"	e	enum:STK_LabelAlignment
+STK_LABEL_TOPRIGHT	stk_label.h	/^	STK_LABEL_TOPRIGHT,$/;"	e	enum:STK_LabelAlignment
 STK_Label	stk_label.h	/^typedef struct STK_Label {$/;"	s
 STK_Label	stk_label.h	/^} STK_Label;$/;"	t	typeref:struct:STK_Label
+STK_LabelAlignment	stk_label.h	/^enum STK_LabelAlignment {$/;"	g
 STK_LabelCalculatePattern	stk_label.c	/^static void STK_LabelCalculatePattern(STK_Label *label, SDL_Rect *rect)$/;"	f	file:
 STK_LabelClose	stk_label.c	/^int STK_LabelClose(STK_Widget *widget)$/;"	f
-STK_LabelDraw	stk_label.c	/^void STK_LabelDraw(STK_Widget *widget, SDL_Rect *area)$/;"	f
-STK_LabelGetText	stk_label.c	/^char *STK_LabelGetText(STK_Widget *widget)$/;"	f
-STK_LabelNew	stk_label.c	/^STK_Widget *STK_LabelNew( char *str, Uint16 x, Uint16 y )$/;"	f
+STK_LabelColorType	stk_label.h	/^enum STK_LabelColorType {$/;"	g
+STK_LabelDraw	stk_label.c	/^void STK_LabelDraw(STK_Widget *widget)$/;"	f
+STK_LabelGetText	stk_label.c	/^char *STK_LabelGetText(STK_Label *label)$/;"	f
+STK_LabelNew	stk_label.c	/^STK_Label *STK_LabelNew( char *str, Uint16 x, Uint16 y )$/;"	f
+STK_LabelPattern	stk_label.h	/^enum STK_LabelPattern {$/;"	g
 STK_LabelRegisterType	stk_label.c	/^int STK_LabelRegisterType()$/;"	f
-STK_LabelSetAlignment	stk_label.c	/^int STK_LabelSetAlignment(STK_Widget *widget, int alignment)$/;"	f
-STK_LabelSetColor	stk_label.c	/^int STK_LabelSetColor(STK_Widget *widget, int which, Uint32 color)$/;"	f
-STK_LabelSetText	stk_label.c	/^int STK_LabelSetText(STK_Widget *widget, char * text)$/;"	f
+STK_LabelSetAlignment	stk_label.c	/^int STK_LabelSetAlignment(STK_Label *label, int alignment)$/;"	f
+STK_LabelSetColor	stk_label.c	/^int STK_LabelSetColor(STK_Label *label, int which, Uint8 r, Uint8 g, Uint8 b)$/;"	f
+STK_LabelSetText	stk_label.c	/^int STK_LabelSetText(STK_Label *label, char * text)$/;"	f
+STK_MSGBOX_BORDER_THICKNESS	stk_msgbox.c	11;"	d	file:
+STK_MSGBOX_LINEBUF_NUM	stk_msgbox.h	7;"	d
 STK_Main	stk.c	/^int STK_Main()$/;"	f
 STK_Malloc	stk_mm.c	/^void *STK_Malloc( size_t n )$/;"	f
-STK_Object	stk_widget.h	/^typedef void* STK_Object;$/;"	t
+STK_MsgBox	stk_msgbox.h	/^typedef struct STK_MsgBox {$/;"	s
+STK_MsgBox	stk_msgbox.h	/^} STK_MsgBox;$/;"	t	typeref:struct:STK_MsgBox
+STK_MsgBoxAddMsg	stk_msgbox.c	/^int STK_MsgBoxAddMsg(STK_MsgBox *msgbox, char *str)$/;"	f
+STK_MsgBoxCalcDisplayLineWindow	stk_msgbox.c	/^int STK_MsgBoxCalcDisplayLineWindow(STK_MsgBox *msgbox, int font_height)$/;"	f
+STK_MsgBoxCalcTextArea	stk_msgbox.c	/^int STK_MsgBoxCalcTextArea(STK_MsgBox *msgbox)$/;"	f
+STK_MsgBoxClose	stk_msgbox.c	/^void STK_MsgBoxClose(STK_Widget *widget)$/;"	f
+STK_MsgBoxDraw	stk_msgbox.c	/^void STK_MsgBoxDraw(STK_Widget *widget)$/;"	f
+STK_MsgBoxNew	stk_msgbox.c	/^STK_Widget *STK_MsgBoxNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, char *str)$/;"	f
+STK_MsgBoxRegisterType	stk_msgbox.c	/^int STK_MsgBoxRegisterType()$/;"	f
+STK_Object	stk_widget.h	/^typedef void *STK_Object;$/;"	t
+STK_PROGRESSBAR_BORDER_THICKNESS	stk_progressbar.c	10;"	d	file:
 STK_PrimBoxColor	stk_prim.c	/^int STK_PrimBoxColor(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color)$/;"	f
 STK_PrimDrawCircle	stk_prim.c	/^int STK_PrimDrawCircle(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 r, Uint32 color)$/;"	f
 STK_PrimDrawLine	stk_prim.c	/^int STK_PrimDrawLine(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color)$/;"	f
 STK_PrimRectColor	stk_prim.c	/^int STK_PrimRectColor(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color)$/;"	f
+STK_ProgressBar	stk_progressbar.h	/^typedef struct STK_ProgressBar {$/;"	s
+STK_ProgressBar	stk_progressbar.h	/^} STK_ProgressBar;$/;"	t	typeref:struct:STK_ProgressBar
+STK_ProgressBarCheckValue	stk_progressbar.c	/^Uint32 STK_ProgressBarCheckValue(Uint32 interval, void *param)$/;"	f
+STK_ProgressBarClose	stk_progressbar.c	/^void STK_ProgressBarClose(STK_Widget *widget)$/;"	f
+STK_ProgressBarDraw	stk_progressbar.c	/^void STK_ProgressBarDraw(STK_Widget *widget)$/;"	f
+STK_ProgressBarNew	stk_progressbar.c	/^STK_Widget *STK_ProgressBarNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, Uint32 *pvalue)$/;"	f
+STK_ProgressBarRegisterType	stk_progressbar.c	/^int STK_ProgressBarRegisterType()$/;"	f
 STK_Quit	stk.c	/^int STK_Quit()$/;"	f
+STK_RADIOBUTTON_BORDER_THICKNESS	stk_radiobutton.c	11;"	d	file:
+STK_RADIOBUTTON_RELEASE	stk_radiobutton.h	/^	STK_RADIOBUTTON_RELEASE = 1,$/;"	e	enum:STK_RadioButtonState
+STK_RADIOBUTTON_TOGGLE	stk_radiobutton.h	/^	STK_RADIOBUTTON_TOGGLE$/;"	e	enum:STK_RadioButtonState
+STK_RADIOGROUP_BORDER_THICKNESS	stk_radiogroup.c	11;"	d	file:
+STK_RadioButton	stk_radiobutton.h	/^typedef struct STK_RadioButton {$/;"	s
+STK_RadioButton	stk_radiobutton.h	/^} STK_RadioButton;$/;"	t	typeref:struct:STK_RadioButton
+STK_RadioButtonClose	stk_radiobutton.c	/^void STK_RadioButtonClose(STK_Widget *widget)$/;"	f
+STK_RadioButtonDraw	stk_radiobutton.c	/^void STK_RadioButtonDraw(STK_Widget *widget)$/;"	f
+STK_RadioButtonFillLabel	stk_radiobutton.c	/^void STK_RadioButtonFillLabel(STK_Widget *widget)$/;"	f
+STK_RadioButtonFilling	stk_radiobutton.c	/^STK_Widget *STK_RadioButtonFilling(STK_Widget *widget, Uint32 pattern)$/;"	f
+STK_RadioButtonListNode	stk_radiogroup.h	/^typedef struct STK_RadioButtonListNode {$/;"	s
+STK_RadioButtonListNode	stk_radiogroup.h	/^} STK_RadioButtonListNode;$/;"	t	typeref:struct:STK_RadioButtonListNode
+STK_RadioButtonNew	stk_radiobutton.c	/^STK_Widget *STK_RadioButtonNew(char *caption, Uint16 x, Uint16 y, Uint16 w, Uint16 h)$/;"	f
+STK_RadioButtonRegisterType	stk_radiobutton.c	/^int STK_RadioButtonRegisterType()$/;"	f
+STK_RadioButtonSetText	stk_radiobutton.c	/^int STK_RadioButtonSetText(STK_Widget *widget, char *str)$/;"	f
+STK_RadioButtonState	stk_radiobutton.h	/^typedef enum STK_RadioButtonState {$/;"	g
+STK_RadioButtonState	stk_radiobutton.h	/^} STK_RadioButtonState;$/;"	t	typeref:enum:STK_RadioButtonState
+STK_RadioGroup	stk_radiogroup.h	/^typedef struct STK_RadioGroup {$/;"	s
+STK_RadioGroup	stk_radiogroup.h	/^} STK_RadioGroup;$/;"	t	typeref:struct:STK_RadioGroup
+STK_RadioGroupClose	stk_radiogroup.c	/^void STK_RadioGroupClose(STK_Widget *widget)$/;"	f
+STK_RadioGroupDraw	stk_radiogroup.c	/^void STK_RadioGroupDraw(STK_Widget *widget)$/;"	f
+STK_RadioGroupEventMouseButtonDown	stk_radiogroup.c	/^static void STK_RadioGroupEventMouseButtonDown(STK_Object *object, void *signaldata, void *userdata)$/;"	f	file:
+STK_RadioGroupFilling	stk_radiogroup.c	/^int STK_RadioGroupFilling(STK_RadioGroup *rg)$/;"	f
+STK_RadioGroupNew	stk_radiogroup.c	/^STK_Widget *STK_RadioGroupNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, char *radiostr[], int num)$/;"	f
+STK_RadioGroupRegisterType	stk_radiogroup.c	/^int STK_RadioGroupRegisterType()$/;"	f
 STK_RectIsInside	stk_widget.c	/^int STK_RectIsInside(const SDL_Rect *A, const SDL_Rect *B)$/;"	f
 STK_RectIsIntersect	stk_widget.c	/^int STK_RectIsIntersect(const SDL_Rect *A, const SDL_Rect *B, SDL_Rect *in)$/;"	f
+STK_SLIDEBAR_BORDER_THICKNESS	stk_slidebar.c	9;"	d	file:
+STK_SLIDEBAR_CURVALUE	stk_slidebar.h	/^	STK_SLIDEBAR_CURVALUE,$/;"	e	enum:__anon7
+STK_SLIDEBAR_DOWN	stk_slidebar.h	/^	STK_SLIDEBAR_DOWN$/;"	e	enum:__anon6
+STK_SLIDEBAR_DRAG	stk_slidebar.h	/^	STK_SLIDEBAR_DRAG$/;"	e	enum:__anon4
+STK_SLIDEBAR_HORIZONTAL	stk_slidebar.h	/^	STK_SLIDEBAR_HORIZONTAL,$/;"	e	enum:__anon5
+STK_SLIDEBAR_IDLE	stk_slidebar.h	/^	STK_SLIDEBAR_IDLE,$/;"	e	enum:__anon4
+STK_SLIDEBAR_LEFT	stk_slidebar.h	/^	STK_SLIDEBAR_LEFT,$/;"	e	enum:__anon6
+STK_SLIDEBAR_MAXVALUE	stk_slidebar.h	/^	STK_SLIDEBAR_MAXVALUE,$/;"	e	enum:__anon7
+STK_SLIDEBAR_MINVALUE	stk_slidebar.h	/^	STK_SLIDEBAR_MINVALUE,$/;"	e	enum:__anon7
+STK_SLIDEBAR_RIGHT	stk_slidebar.h	/^	STK_SLIDEBAR_RIGHT,$/;"	e	enum:__anon6
+STK_SLIDEBAR_STEP	stk_slidebar.h	6;"	d
+STK_SLIDEBAR_STEPVALUE	stk_slidebar.h	/^	STK_SLIDEBAR_STEPVALUE$/;"	e	enum:__anon7
+STK_SLIDEBAR_UP	stk_slidebar.h	/^	STK_SLIDEBAR_UP,$/;"	e	enum:__anon6
+STK_SLIDEBAR_VERTICAL	stk_slidebar.h	/^	STK_SLIDEBAR_VERTICAL$/;"	e	enum:__anon5
 STK_SignalConnect	stk_signal.c	/^int STK_SignalConnect(STK_Widget *widget, char *signal, F_Signal_Callback callback, void *userdata)$/;"	f
 STK_SignalConnectToObject	stk_signal.c	/^static int STK_SignalConnectToObject(STK_Object *object, char *signal, F_Signal_Callback callback, void *userdata)$/;"	f	file:
 STK_SignalEmit	stk_signal.c	/^int STK_SignalEmit(STK_Widget *widget, char *signal, void *signaldata)$/;"	f
@@ -109,15 +201,48 @@ STK_SignalEmitToObject	stk_signal.c	/^static int STK_SignalEmitToObject(STK_Obje
 STK_SignalGetListHead	stk_signal.c	/^SignalListNode *STK_SignalGetListHead()$/;"	f
 STK_SignalInit	stk_signal.c	/^int STK_SignalInit()$/;"	f
 STK_SignalNew	stk_signal.c	/^int STK_SignalNew( char *signal )$/;"	f
-STK_WIDGET_BUTTON	stk_widget.h	/^	STK_WIDGET_BUTTON$/;"	e	enum:__anon4
-STK_WIDGET_HIDE	stk_widget.h	/^	STK_WIDGET_HIDE = 1,$/;"	e	enum:__anon3
-STK_WIDGET_LABEL	stk_widget.h	/^	STK_WIDGET_LABEL = 0,$/;"	e	enum:__anon4
-STK_WIDGET_MOVE	stk_widget.h	/^	STK_WIDGET_MOVE,$/;"	e	enum:__anon3
-STK_WIDGET_REDRAW	stk_widget.h	/^	STK_WIDGET_REDRAW,$/;"	e	enum:__anon3
-STK_WIDGET_RESIZE	stk_widget.h	/^	STK_WIDGET_RESIZE,$/;"	e	enum:__anon3
-STK_WIDGET_SHOW	stk_widget.h	/^	STK_WIDGET_SHOW,$/;"	e	enum:__anon3
-STK_WINDOW_REALIZE	stk_widget.h	/^	STK_WINDOW_REALIZE,$/;"	e	enum:__anon3
-STK_WINDOW_REDRAW	stk_widget.h	/^	STK_WINDOW_REDRAW,$/;"	e	enum:__anon3
+STK_Slidebar	stk_slidebar.h	/^typedef struct STK_Slidebar {$/;"	s
+STK_Slidebar	stk_slidebar.h	/^} STK_Slidebar;$/;"	t	typeref:struct:STK_Slidebar
+STK_SlidebarClose	stk_slidebar.c	/^int STK_SlidebarClose(STK_Widget *widget)$/;"	f
+STK_SlidebarDraw	stk_slidebar.c	/^void STK_SlidebarDraw(STK_Widget *widget)$/;"	f
+STK_SlidebarEventMouseButtonDown	stk_slidebar.c	/^static void STK_SlidebarEventMouseButtonDown(STK_Object *object, void *signaldata, void *userdata)$/;"	f	file:
+STK_SlidebarEventMouseButtonUp	stk_slidebar.c	/^static void STK_SlidebarEventMouseButtonUp(STK_Object *object, void *signaldata, void *userdata)$/;"	f	file:
+STK_SlidebarEventMouseMotion	stk_slidebar.c	/^static void STK_SlidebarEventMouseMotion(STK_Object *object, void *signaldata, void *userdata)$/;"	f	file:
+STK_SlidebarGetCurrentValue	stk_slidebar.c	/^Uint32 STK_SlidebarGetCurrentValue(STK_Slidebar *slider)$/;"	f
+STK_SlidebarNew	stk_slidebar.c	/^STK_Widget *STK_SlidebarNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h)$/;"	f
+STK_SlidebarPixelToValue	stk_slidebar.c	/^static void STK_SlidebarPixelToValue(STK_Slidebar *slider)$/;"	f	file:
+STK_SlidebarRegisterType	stk_slidebar.c	/^int STK_SlidebarRegisterType()$/;"	f
+STK_SlidebarSetValue	stk_slidebar.c	/^int STK_SlidebarSetValue(STK_Slidebar *slider, int type, int value)$/;"	f
+STK_SlidebarStep	stk_slidebar.c	/^static void STK_SlidebarStep(STK_Slidebar *slider, int dir, int step)$/;"	f	file:
+STK_SlidebarValueToPixel	stk_slidebar.c	/^static void STK_SlidebarValueToPixel(STK_Slidebar *slider)$/;"	f	file:
+STK_Text	stk_text.h	/^typedef struct STK_Text {$/;"	s
+STK_Text	stk_text.h	/^} STK_Text;$/;"	t	typeref:struct:STK_Text
+STK_TextAppendStr	stk_text.c	/^int STK_TextAppendStr(STK_Text *text, char *str)$/;"	f
+STK_TextDeleteStr	stk_text.c	/^int STK_TextDeleteStr(STK_Text *text, int pos, int count)$/;"	f
+STK_TextFree	stk_text.c	/^int STK_TextFree(STK_Text *text)$/;"	f
+STK_TextGetLength	stk_text.c	/^Uint32 STK_TextGetLength(STK_Text *text)$/;"	f
+STK_TextInsertStr	stk_text.c	/^int STK_TextInsertStr(STK_Text *text, char *str, int pos)$/;"	f
+STK_TextNew	stk_text.c	/^STK_Text *STK_TextNew(char *str)$/;"	f
+STK_TextPara	stk_text.h	/^typedef struct STK_TextPara {$/;"	s
+STK_TextPara	stk_text.h	/^} STK_TextPara;$/;"	t	typeref:struct:STK_TextPara
+STK_TextRemoveStr	stk_text.c	/^int STK_TextRemoveStr(STK_Text *text, int count)$/;"	f
+STK_TextSetText	stk_text.c	/^int STK_TextSetText(STK_Text *text, char *str)$/;"	f
+STK_TextSubText	stk_text.c	/^STK_Text *STK_TextSubText(STK_Text *text, int start, Uint32 count)$/;"	f
+STK_WIDGET_BUTTON	stk_widget.h	/^	STK_WIDGET_BUTTON,$/;"	e	enum:__anon3
+STK_WIDGET_ENTRY	stk_widget.h	/^	STK_WIDGET_ENTRY,$/;"	e	enum:__anon3
+STK_WIDGET_HIDE	stk_widget.h	/^	STK_WIDGET_HIDE = 1,$/;"	e	enum:__anon1
+STK_WIDGET_LABEL	stk_widget.h	/^	STK_WIDGET_LABEL = 0,$/;"	e	enum:__anon3
+STK_WIDGET_MOVE	stk_widget.h	/^	STK_WIDGET_MOVE,$/;"	e	enum:__anon1
+STK_WIDGET_MSGBOX	stk_widget.h	/^	STK_WIDGET_MSGBOX$/;"	e	enum:__anon3
+STK_WIDGET_PROGRESSBAR	stk_widget.h	/^	STK_WIDGET_PROGRESSBAR,$/;"	e	enum:__anon3
+STK_WIDGET_RADIOBUTTON	stk_widget.h	/^	STK_WIDGET_RADIOBUTTON,$/;"	e	enum:__anon3
+STK_WIDGET_RADIOGROUP	stk_widget.h	/^	STK_WIDGET_RADIOGROUP,$/;"	e	enum:__anon3
+STK_WIDGET_REDRAW	stk_widget.h	/^	STK_WIDGET_REDRAW,$/;"	e	enum:__anon1
+STK_WIDGET_RESIZE	stk_widget.h	/^	STK_WIDGET_RESIZE,$/;"	e	enum:__anon1
+STK_WIDGET_SHOW	stk_widget.h	/^	STK_WIDGET_SHOW,$/;"	e	enum:__anon1
+STK_WIDGET_SLIDEBAR	stk_widget.h	/^	STK_WIDGET_SLIDEBAR,$/;"	e	enum:__anon3
+STK_WINDOW_REALIZE	stk_widget.h	/^	STK_WINDOW_REALIZE,$/;"	e	enum:__anon1
+STK_WINDOW_REDRAW	stk_widget.h	/^	STK_WINDOW_REDRAW,$/;"	e	enum:__anon1
 STK_Widget	stk_widget.h	/^typedef struct STK_Widget {$/;"	s
 STK_Widget	stk_widget.h	/^} STK_Widget;$/;"	t	typeref:struct:STK_Widget
 STK_WidgetClose	stk_widget.c	/^int STK_WidgetClose(STK_Widget *widget)$/;"	f
@@ -136,13 +261,14 @@ STK_WidgetGetName	stk_widget.c	/^char *STK_WidgetGetName( STK_Widget *widget )$/
 STK_WidgetGetType	stk_widget.c	/^int STK_WidgetGetType(STK_Widget *widget)$/;"	f
 STK_WidgetGetTypeByName	stk_widget.c	/^int STK_WidgetGetTypeByName( char *id )$/;"	f
 STK_WidgetInit	stk_widget.c	/^int STK_WidgetInit()$/;"	f
+STK_WidgetInitInstance	stk_widget.c	/^int STK_WidgetInitInstance(STK_Widget *widget)$/;"	f
 STK_WidgetInitType	stk_widget.c	/^int STK_WidgetInitType()$/;"	f
 STK_WidgetIsActive	stk_widget.c	/^int STK_WidgetIsActive(STK_Widget *widget)$/;"	f
 STK_WidgetIsInside	stk_widget.c	/^int STK_WidgetIsInside(STK_Widget *widget, int x, int y)$/;"	f
 STK_WidgetListNode	stk_widget.h	/^typedef struct STK_WidgetListNode {$/;"	s
 STK_WidgetListNode	stk_widget.h	/^} STK_WidgetListNode;$/;"	t	typeref:struct:STK_WidgetListNode
 STK_WidgetRegisterType	stk_widget.c	/^int STK_WidgetRegisterType( char *id, STK_WidgetFuncs **f )$/;"	f
-STK_WidgetSetDims	stk_widget.c	/^int STK_WidgetSetDims(STK_Widget *widget, Sint16 x, Sint16 y, Sint16 w, Sint16 h)$/;"	f
+STK_WidgetSetDims	stk_widget.c	/^int STK_WidgetSetDims(STK_Widget *widget, SDL_Rect *r)$/;"	f
 STK_WidgetType	stk_widget.h	/^typedef struct STK_WidgetType {$/;"	s
 STK_WidgetType	stk_widget.h	/^} STK_WidgetType;$/;"	t	typeref:struct:STK_WidgetType
 STK_Window	stk_window.h	/^typedef struct STK_Window {$/;"	s
@@ -175,29 +301,36 @@ STK_WindowSetWidgetList	stk_window.c	/^int STK_WindowSetWidgetList(STK_WidgetLis
 STK_WindowUpdateRect	stk_window.c	/^int STK_WindowUpdateRect( Sint16 x, Sint16 y, Sint16 w, Sint16 h)$/;"	f
 SignalListNode	stk_signal.h	/^typedef struct SignalListNode {$/;"	s
 SignalListNode	stk_signal.h	/^} SignalListNode;$/;"	t	typeref:struct:SignalListNode
-TOPCENTER	stk_label.h	/^	TOPCENTER,$/;"	e	enum:__anon2
-TOPLEFT	stk_label.h	/^	TOPLEFT,$/;"	e	enum:__anon2
-TOPRIGHT	stk_label.h	/^	TOPRIGHT,$/;"	e	enum:__anon2
-TRANSPARANT	stk_label.h	49;"	d
 VLineAlpha	stk_prim.c	/^int VLineAlpha(SDL_Surface * dst, Sint16 x, Sint16 y1, Sint16 y2, Uint32 color)$/;"	f
-WIDGET_DESTROY	stk_widget.h	65;"	d
-WIDGET_FOCUSABLE	stk_widget.h	62;"	d
-WIDGET_REALIZED	stk_widget.h	63;"	d
-WIDGET_VISIBLE	stk_widget.h	64;"	d
+WIDGET_DESTROY	stk_widget.h	80;"	d
+WIDGET_DRAGABLE	stk_widget.h	79;"	d
+WIDGET_FOCUSABLE	stk_widget.h	75;"	d
+WIDGET_HIDDEN	stk_widget.h	78;"	d
+WIDGET_REALIZED	stk_widget.h	76;"	d
+WIDGET_VISIBLE	stk_widget.h	77;"	d
 _SDL_PRIM_H_	stk_prim.h	2;"	d
-_STK_BUTTON_H_	BAK/stk_button.h	2;"	d
+_STK_BASE_H_	stk_base.h	2;"	d
+_STK_BUTTON_H_	stk_button.h	2;"	d
+_STK_ENTRY_H_	stk_entry.h	2;"	d
 _STK_FONT_H_	stk_font.h	2;"	d
 _STK_FRAME_H_	BAK/stk_frame.h	2;"	d
 _STK_H_	stk.h	2;"	d
-_STK_IMAGE_H_	BAK/stk_image.h	2;"	d
+_STK_IMAGE_H_	stk_image.h	2;"	d
 _STK_LABEL_H_	stk_label.h	2;"	d
 _STK_MM_H_	stk_mm.h	2;"	d
+_STK_MSGBOX_H_	stk_msgbox.h	2;"	d
 _STK_PRIM_H_	BAK/stk_prim.h	2;"	d
+_STK_PROGRESSBAR_H_	stk_progressbar.h	2;"	d
+_STK_RADIOBUTTON_H_	stk_radiobutton.h	2;"	d
+_STK_RADIOGROUP_H_	stk_radiogroup.h	2;"	d
 _STK_SIGNAL_H_	stk_signal.h	2;"	d
+_STK_SLIDEBAR_H_	stk_slidebar.h	2;"	d
+_STK_TEXT_H_	stk_text.h	2;"	d
 _STK_WIDGET_H_	stk_widget.h	2;"	d
 _STK_WINDOW_H_	stk_window.h	2;"	d
 _filledRectAlpha	stk_prim.c	/^int _filledRectAlpha(SDL_Surface * surface, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color, Uint8 alpha)$/;"	f
 _putPixelAlpha	stk_prim.c	/^int _putPixelAlpha(SDL_Surface * surface, Sint16 x, Sint16 y, Uint32 color, Uint8 alpha)$/;"	f
+a	test/halftest/1.c	/^char *a[] = {$/;"	v
 aacircleColor	stk_prim.c	/^int aacircleColor(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 r, Uint32 color)$/;"	f
 aacircleRGBA	stk_prim.c	/^int aacircleRGBA(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rad, Uint8 r, Uint8 g, Uint8 b, Uint8 a)$/;"	f
 aaellipseColor	stk_prim.c	/^int aaellipseColor(SDL_Surface * dst, Sint16 xc, Sint16 yc, Sint16 rx, Sint16 ry, Uint32 color)$/;"	f
@@ -209,22 +342,32 @@ aapolygonColor	stk_prim.c	/^int aapolygonColor(SDL_Surface * dst, Sint16 * vx, S
 aapolygonRGBA	stk_prim.c	/^int aapolygonRGBA(SDL_Surface * dst, Sint16 * vx, Sint16 * vy, int n, Uint8 r, Uint8 g, Uint8 b, Uint8 a)$/;"	f
 aatrigonColor	stk_prim.c	/^int aatrigonColor(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Sint16 x3, Sint16 y3, Uint32 color)$/;"	f
 aatrigonRGBA	stk_prim.c	/^int aatrigonRGBA(SDL_Surface * dst,  Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Sint16 x3, Sint16 y3,$/;"	f
-absolute	stk_widget.h	/^	SDL_Rect absolute;	\/\/ ??$/;"	m	struct:STK_Widget
 alignment	stk_label.h	/^	int alignment;$/;"	m	struct:STK_Label
 area	BAK/stk_frame.h	/^	STK_Image *area[8];$/;"	m	struct:STK_Frame
+b_height	stk_slidebar.h	/^	Uint32 b_height;	\/\/ button height$/;"	m	struct:STK_Slidebar
+b_width	stk_slidebar.h	/^	Uint32 b_width;		\/\/ button width$/;"	m	struct:STK_Slidebar
 bezierColor	stk_prim.c	/^int bezierColor(SDL_Surface * dst, Sint16 * vx, Sint16 * vy, int n, int s, Uint32 color)$/;"	f
 bezierRGBA	stk_prim.c	/^int bezierRGBA(SDL_Surface * dst, Sint16 * vx, Sint16 * vy, int n, int s, Uint8 r, Uint8 g, Uint8 b, Uint8 a)$/;"	f
-bgcolor	BAK/stk_image.h	/^	Uint32 bgcolor;$/;"	m	struct:STK_Image
+bgcolor	stk_entry.h	/^	Uint32 bgcolor;$/;"	m	struct:STK_Entry
+bgcolor	stk_image.h	/^	Uint32 bgcolor;$/;"	m	struct:STK_Image
 bgcolor	stk_label.h	/^	Uint32  bgcolor;$/;"	m	struct:STK_Label
+bgcolor	stk_widget.h	/^	SDL_Color bgcolor;$/;"	m	struct:STK_Widget
 bgcolor	stk_window.h	/^	Uint32 bgcolor;$/;"	m	struct:STK_Window
-bm	stk_widget.h	/^	int lm, rm, tm, bm;$/;"	m	struct:STK_Widget
+border	stk_msgbox.h	/^	Uint32 border;			\/\/ border thickness $/;"	m	struct:STK_MsgBox
+border	stk_progressbar.h	/^	Uint16 border;			\/\/ the border of the progress bar$/;"	m	struct:STK_ProgressBar
+border	stk_radiobutton.h	/^	Uint32 border;$/;"	m	struct:STK_RadioButton
+border	stk_radiogroup.h	/^	Uint32 border;			\/\/ border thickness $/;"	m	struct:STK_RadioGroup
+border_on	stk_radiogroup.h	/^	int border_on;			\/\/ flag: if have border displayed?$/;"	m	struct:STK_RadioGroup
 boxRGBA	stk_prim.c	/^int boxRGBA(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a)$/;"	f
 call_list	stk_signal.h	/^	struct CallbackListNode *call_list;$/;"	m	struct:SignalListNode	typeref:struct:SignalListNode::CallbackListNode
 callback	stk_signal.h	/^	F_Signal_Callback callback;$/;"	m	struct:CallbackListNode
 caption	stk_label.h	/^	char *caption;$/;"	m	struct:STK_Label
+changed	stk_slidebar.h	/^	int changed;		\/\/ represent whether the state of the slidebar has been changed$/;"	m	struct:STK_Slidebar
+charcount	stk_text.h	/^	Uint32 charcount;	\/\/ the char numbers (may containing ASCII char and Chinese character)$/;"	m	struct:STK_Text
+charwidth	stk_entry.h	/^	Uint16 charwidth[255];		\/\/ used to record char's width map$/;"	m	struct:STK_Entry
 child	stk_widget.h	/^	struct STK_Widget *child;		\/\/ point to the child widget of this widget$/;"	m	struct:STK_WidgetListNode	typeref:struct:STK_WidgetListNode::STK_Widget
 circleRGBA	stk_prim.c	/^int circleRGBA(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rad, Uint8 r, Uint8 g, Uint8 b, Uint8 a)$/;"	f
-cleanup	stk_font.c	/^static void cleanup(int exitcode)$/;"	f	file:
+cleanup	stk_font.c	/^static void cleanup(TTF_Font *font, int exitcode)$/;"	f	file:
 clip	stk_widget.h	/^	SDL_Rect clip;		\/\/ ??$/;"	m	struct:STK_Widget
 clipEncode	BAK/stk_prim.c	/^static int clipEncode(Sint16 x, Sint16 y, Sint16 left, Sint16 top, Sint16 right, Sint16 bottom)$/;"	f	file:
 clipEncode	stk_prim.c	/^static int clipEncode(Sint16 x, Sint16 y, Sint16 left, Sint16 top, Sint16 right, Sint16 bottom)$/;"	f	file:
@@ -235,18 +378,38 @@ clip_xmin	stk_prim.c	11;"	d	file:
 clip_ymax	stk_prim.c	14;"	d	file:
 clip_ymin	stk_prim.c	13;"	d	file:
 close	stk_widget.h	/^	F_Widget_Close		close;$/;"	m	struct:STK_WidgetFuncs
+cur_x	stk_msgbox.h	/^	Uint16 cur_x;			\/\/ current x coordinate$/;"	m	struct:STK_MsgBox
+cur_y	stk_msgbox.h	/^	Uint16 cur_y;			\/\/ current y coordinate$/;"	m	struct:STK_MsgBox
+curpixel	stk_slidebar.h	/^	float curpixel;		\/\/ Unit: pixel$/;"	m	struct:STK_Slidebar
+cursor_color	stk_entry.h	/^	Uint32 cursor_color;$/;"	m	struct:STK_Entry
+cursor_height	stk_entry.h	/^	Uint32 cursor_height;$/;"	m	struct:STK_Entry
+cursor_pos	stk_entry.h	/^	Uint32 cursor_pos;		\/\/ current cursor position (pixel value)$/;"	m	struct:STK_Entry
+curvalue	stk_slidebar.h	/^	Uint32 curvalue;	\/\/ Unit: percentage$/;"	m	struct:STK_Slidebar
+data	stk_text.h	/^	char *data;$/;"	m	struct:STK_Text
+default_font	stk_font.c	/^char *default_font = "msyh.ttf";$/;"	v
+default_fontsize_index	stk_font.c	/^Uint32 default_fontsize_index = 1;$/;"	v
 draw	stk_widget.h	/^	F_Widget_Draw 		draw;$/;"	m	struct:STK_WidgetFuncs
+draw_button	test/main.c	/^STK_Widget *draw_button()$/;"	f
+draw_entry	test/main.c	/^STK_Widget *draw_entry()$/;"	f
 draw_label	test/main.c	/^STK_Widget *draw_label()$/;"	f
+draw_msgbox	test/main.c	/^STK_Widget *draw_msgbox()$/;"	f
+draw_progressbar	test/main.c	/^STK_Widget *draw_progressbar(Uint32 *p)$/;"	f
+draw_radiobutton	test/main.c	/^STK_Widget *draw_radiobutton()$/;"	f
+draw_radiogroup	test/main.c	/^STK_Widget *draw_radiogroup()$/;"	f
+draw_slidebar	test/main.c	/^STK_Widget *draw_slidebar()$/;"	f
 ellipseColor	stk_prim.c	/^int ellipseColor(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Uint32 color)$/;"	f
 ellipseRGBA	stk_prim.c	/^int ellipseRGBA(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Uint8 r, Uint8 g, Uint8 b, Uint8 a)$/;"	f
+end_line	stk_msgbox.h	/^	Uint16 end_line;		\/\/ end line to draw$/;"	m	struct:STK_MsgBox
 evaluateBezier	stk_prim.c	/^double evaluateBezier (double *data, int ndata, double t) $/;"	f
 fastPixelColor	stk_prim.c	/^int fastPixelColor(SDL_Surface * dst, Sint16 x, Sint16 y, Uint32 color)$/;"	f
 fastPixelColorNolock	stk_prim.c	/^int fastPixelColorNolock(SDL_Surface * dst, Sint16 x, Sint16 y, Uint32 color)$/;"	f
 fastPixelColorNolockNoclip	stk_prim.c	/^int fastPixelColorNolockNoclip(SDL_Surface * dst, Sint16 x, Sint16 y, Uint32 color)$/;"	f
 fastPixelRGBA	stk_prim.c	/^int fastPixelRGBA(SDL_Surface * dst, Sint16 x, Sint16 y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)$/;"	f
 fastPixelRGBANolock	stk_prim.c	/^int fastPixelRGBANolock(SDL_Surface * dst, Sint16 x, Sint16 y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)$/;"	f
+fgcolor	stk_entry.h	/^	Uint32 fgcolor;$/;"	m	struct:STK_Entry
 fgcolor	stk_label.h	/^	Uint32  fgcolor;$/;"	m	struct:STK_Label
-filename	BAK/stk_image.h	/^	char *filename;		\/\/ filename to load a picture$/;"	m	struct:STK_Image
+fgcolor	stk_widget.h	/^	SDL_Color fgcolor;$/;"	m	struct:STK_Widget
+filename	stk_image.h	/^	char *filename;		\/\/ filename to load a picture$/;"	m	struct:STK_Image
 filledEllipseColor	stk_prim.c	/^int filledEllipseColor(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Uint32 color)$/;"	f
 filledEllipseRGBA	stk_prim.c	/^int filledEllipseRGBA(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Uint8 r, Uint8 g, Uint8 b, Uint8 a)$/;"	f
 filledPolygonColor	stk_prim.c	/^int filledPolygonColor(SDL_Surface * dst, Sint16 * vx, Sint16 * vy, int n, int color)$/;"	f
@@ -256,43 +419,71 @@ filledTrigonColor	stk_prim.c	/^int filledTrigonColor(SDL_Surface * dst, Sint16 x
 filledTrigonRGBA	stk_prim.c	/^int filledTrigonRGBA(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Sint16 x3, Sint16 y3,$/;"	f
 filledpieColor	stk_prim.c	/^int filledpieColor(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rad, Sint16 start, Sint16 end, Uint32 color)$/;"	f
 filledpieRGBA	stk_prim.c	/^int filledpieRGBA(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rad,$/;"	f
-fillstyle	BAK/stk_image.h	/^	STK_ImageStyle fillstyle;	$/;"	m	struct:STK_Image
-flag	BAK/stk_button.h	/^	Uint32 flag;$/;"	m	struct:STK_Button
-flags	BAK/stk_image.h	/^	Uint32 flags;$/;"	m	struct:STK_Image
+fillstyle	stk_image.h	/^	STK_ImageStyle fillstyle;	$/;"	m	struct:STK_Image
+fixed	stk_label.h	/^	Uint32 fixed;$/;"	m	struct:STK_Label
+fixed	stk_radiogroup.h	/^	int fixed;			\/\/ flag: fixed or extended?$/;"	m	struct:STK_RadioGroup
+flag	stk_button.h	/^	Uint32 flag;$/;"	m	struct:STK_Button
+flag	stk_radiobutton.h	/^	Uint32 flag;$/;"	m	struct:STK_RadioButton
+flags	stk_image.h	/^	Uint32 flags;$/;"	m	struct:STK_Image
 flags	stk_widget.h	/^	Uint32 flags;		\/\/ important flag value variable$/;"	m	struct:STK_Widget
 focus_widget	stk_window.h	/^	STK_Widget *focus_widget;$/;"	m	struct:STK_Window
-font	stk_font.c	/^TTF_Font *font;$/;"	v
+font	stk_font.h	/^	TTF_Font *font;$/;"	m	struct:STK_Font
+font	stk_label.h	/^	STK_Font *font;$/;"	m	struct:STK_Label
+font0	stk_font.c	/^STK_Font font0[STK_FONT_SIZENUM] = { 0 };$/;"	v
+font1	stk_font.c	/^STK_Font font1[STK_FONT_SIZENUM] = { 0 };$/;"	v
+font_height	stk_font.h	/^	Uint32 font_height;$/;"	m	struct:STK_Font
+fontsize_array	stk_font.c	/^Uint32 fontsize_array[STK_FONT_SIZENUM] = {12, 16, 24, 36};$/;"	v
 funcs	stk_widget.h	/^	STK_WidgetFuncs	funcs;$/;"	m	struct:STK_WidgetType
-g_image_dividing_horizontal	BAK/stk_image.c	/^Uint32 g_image_dividing_horizontal[2][2][2] = {$/;"	v
-g_image_dividing_matrix	BAK/stk_image.c	/^Uint32 g_image_dividing_matrix[2][4][4] = {$/;"	v
-g_image_dividing_vertical	BAK/stk_image.c	/^Uint32 g_image_dividing_vertical[2][2][2] = {$/;"	v
+g_image_dividing_horizontal	stk_image.c	/^Uint32 g_image_dividing_horizontal[2][2][2] = {$/;"	v
+g_image_dividing_matrix	stk_image.c	/^Uint32 g_image_dividing_matrix[2][4][4] = {$/;"	v
+g_image_dividing_vertical	stk_image.c	/^Uint32 g_image_dividing_vertical[2][2][2] = {$/;"	v
+g_image_radiobutton_header	stk_image.c	/^Uint32 g_image_radiobutton_header[2][400] = {$/;"	v
 g_window	stk_window.c	/^static STK_Window *g_window = NULL;$/;"	v	file:
 g_wlist	stk_widget.c	/^static struct STK_WidgetType g_wlist[MAX_WIDGET_TYPE];$/;"	v	typeref:struct:STK_WidgetType	file:
 gfxPrimitivesCompareInt	stk_prim.c	/^int gfxPrimitivesCompareInt(const void *a, const void *b)$/;"	f
 gfxPrimitivesPolyAllocated	stk_prim.c	/^static int gfxPrimitivesPolyAllocated = 0;$/;"	v	file:
 gfxPrimitivesPolyInts	stk_prim.c	/^static int *gfxPrimitivesPolyInts = NULL;$/;"	v	file:
-height	stk_label.h	/^	int height;$/;"	m	struct:STK_Label
+header_height	stk_radiobutton.h	/^	Uint32 header_height;$/;"	m	struct:STK_RadioButton
 hlineColor	BAK/stk_prim.c	/^int hlineColor(SDL_Surface *dst, Sint16 x1, Sint16 x2, Sint16 y, Uint32 color)$/;"	f
 hlineColor	stk_prim.c	/^int hlineColor(SDL_Surface * dst, Sint16 x1, Sint16 x2, Sint16 y, Uint32 color)$/;"	f
 hlineColorStore	stk_prim.c	/^int hlineColorStore(SDL_Surface * dst, Sint16 x1, Sint16 x2, Sint16 y, Uint32 color)$/;"	f
 hlineRGBA	stk_prim.c	/^int hlineRGBA(SDL_Surface * dst, Sint16 x1, Sint16 x2, Sint16 y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)$/;"	f
 hlineRGBAStore	stk_prim.c	/^int hlineRGBAStore(SDL_Surface * dst, Sint16 x1, Sint16 x2, Sint16 y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)$/;"	f
 id	stk_widget.h	/^	char *id;$/;"	m	struct:STK_WidgetType
-image	BAK/stk_button.h	/^	STK_Image image;$/;"	m	struct:STK_Button
-increase	stk_label.h	/^	int increase;$/;"	m	struct:STK_Label
-inside	stk_widget.h	/^	int inside;		\/\/ ??$/;"	m	struct:STK_Widget
-label	BAK/stk_button.h	/^	STK_Widget *label;$/;"	m	struct:STK_Button
+image	stk_button.h	/^	STK_Image image;$/;"	m	struct:STK_Button
+image	stk_radiobutton.h	/^	STK_Image image;$/;"	m	struct:STK_RadioButton
+inputkey	stk_entry.h	/^	Uint16 inputkey[4];		\/\/ used to store input char at every input$/;"	m	struct:STK_Entry
+interval	stk_msgbox.h	/^	Uint32 interval;		\/\/ the interval between text$/;"	m	struct:STK_MsgBox
+interval	stk_radiobutton.h	/^	Uint32 interval;$/;"	m	struct:STK_RadioButton
+interval	stk_radiogroup.h	/^	Uint32 interval;		\/\/ the interval between radio buttons$/;"	m	struct:STK_RadioGroup
+label	stk_button.h	/^	STK_Label *label;$/;"	m	struct:STK_Button
+label	stk_radiobutton.h	/^	STK_Label *label;$/;"	m	struct:STK_RadioButton
+length	stk_text.h	/^	Uint32 length;		\/\/ the length of string$/;"	m	struct:STK_Text
 lineRGBA	stk_prim.c	/^int lineRGBA(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a)$/;"	f
-lm	stk_widget.h	/^	int lm, rm, tm, bm;$/;"	m	struct:STK_Widget
+linebuf	stk_msgbox.h	/^	STK_Text *linebuf[STK_MSGBOX_LINEBUF_NUM];	\/\/ point to line bufs$/;"	m	struct:STK_MsgBox
+linenum	stk_text.h	/^	int linenum;$/;"	m	struct:STK_TextPara
+main	test/halftest/1.c	/^int main()$/;"	f
+main	test/halftest/test2.c	/^int main(int argc,char **argv)$/;"	f
+main	test/halftest/test_timer.c	/^int main(int argc,char **argv)$/;"	f
 main	test/main.c	/^int main(int argc,char **argv)$/;"	f
-main	test/test2/test2.c	/^int main(int argc,char **argv)$/;"	f
+maxpixel	stk_slidebar.h	/^	float maxpixel;		\/\/ Unit: pixel$/;"	m	struct:STK_Slidebar
+maxvalue	stk_slidebar.h	/^	Uint32 maxvalue;	\/\/ Unit: percentage$/;"	m	struct:STK_Slidebar
+minpixel	stk_slidebar.h	/^	float minpixel;		\/\/ Unit: pixel$/;"	m	struct:STK_Slidebar
+minvalue	stk_slidebar.h	/^	Uint32 minvalue;	\/\/ Unit: percentage$/;"	m	struct:STK_Slidebar
+mono	stk_radiogroup.h	/^	int mono;			\/\/ flag: mononical or multiple choice$/;"	m	struct:STK_RadioGroup
 my_mutex	stk_widget.c	/^static SDL_mutex *my_mutex;$/;"	v	file:
+n	stk_radiogroup.h	/^	Uint32 n;			\/\/ the number of radio buttons$/;"	m	struct:STK_RadioGroup
+name	stk_font.h	/^	char *name;$/;"	m	struct:STK_Font
+name	stk_radiogroup.h	/^	char **name;			\/\/ the pointer to radio buttons' names$/;"	m	struct:STK_RadioGroup
 name	stk_widget.h	/^	char *name;		\/\/ name of this widget$/;"	m	struct:STK_Widget
+nchoice	stk_radiogroup.h	/^	Uint32 nchoice;			\/\/ record how many have chose$/;"	m	struct:STK_RadioGroup
+next	stk_radiogroup.h	/^	struct STK_RadioButtonListNode *next;$/;"	m	struct:STK_RadioButtonListNode	typeref:struct:STK_RadioButtonListNode::STK_RadioButtonListNode
 next	stk_signal.h	/^	struct CallbackListNode *next;$/;"	m	struct:CallbackListNode	typeref:struct:CallbackListNode::CallbackListNode
 next	stk_signal.h	/^	struct SignalListNode *next;$/;"	m	struct:SignalListNode	typeref:struct:SignalListNode::SignalListNode
+next	stk_text.h	/^	struct STK_TextPara *next;$/;"	m	struct:STK_TextPara	typeref:struct:STK_TextPara::STK_TextPara
 next	stk_widget.h	/^	struct STK_WidgetListNode *next;	\/\/ point to the next widget of this widget (on the same window)$/;"	m	struct:STK_WidgetListNode	typeref:struct:STK_WidgetListNode::STK_WidgetListNode
 object	stk_signal.h	/^	STK_Object *object;$/;"	m	struct:CallbackListNode
-offset	stk_label.h	/^	int offset;$/;"	m	struct:STK_Label
+orientation	stk_slidebar.h	/^	Uint32 orientation;	\/\/ horizontal or vertical$/;"	m	struct:STK_Slidebar
 parent	stk_widget.h	/^	struct STK_Widget *parent;		\/\/ point to the parent widget of this widget$/;"	m	struct:STK_WidgetListNode	typeref:struct:STK_WidgetListNode::STK_Widget
 pattern	stk_label.h	/^	int pattern;$/;"	m	struct:STK_Label
 pixelColor	stk_prim.c	/^int pixelColor(SDL_Surface * dst, Sint16 x, Sint16 y, Uint32 color)$/;"	f
@@ -300,33 +491,60 @@ pixelColorNolock	stk_prim.c	/^int pixelColorNolock(SDL_Surface * dst, Sint16 x, 
 pixelColorWeight	stk_prim.c	/^int pixelColorWeight(SDL_Surface * dst, Sint16 x, Sint16 y, Uint32 color, Uint32 weight)$/;"	f
 pixelColorWeightNolock	stk_prim.c	/^int pixelColorWeightNolock(SDL_Surface * dst, Sint16 x, Sint16 y, Uint32 color, Uint32 weight)$/;"	f
 pixelRGBA	stk_prim.c	/^int pixelRGBA(SDL_Surface * dst, Sint16 x, Sint16 y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)$/;"	f
+pixelstep	stk_slidebar.h	/^	float pixelstep;	\/\/ pixels on screen, should be accurate, otherwise will introduce in big residuals.$/;"	m	struct:STK_Slidebar
 polygonColor	stk_prim.c	/^int polygonColor(SDL_Surface * dst, Sint16 * vx, Sint16 * vy, int n, Uint32 color)$/;"	f
 polygonRGBA	stk_prim.c	/^int polygonRGBA(SDL_Surface * dst, Sint16 * vx, Sint16 * vy, int n, Uint8 r, Uint8 g, Uint8 b, Uint8 a)$/;"	f
+pos	stk_radiogroup.h	/^	Uint32 pos;			\/\/ current position on radio arrays$/;"	m	struct:STK_RadioGroup
+pressed	stk_window.h	/^	int pressed;		\/\/ for global drag effects.$/;"	m	struct:STK_Window
+prev	stk_text.h	/^	struct STK_TextPara *prev;$/;"	m	struct:STK_TextPara	typeref:struct:STK_TextPara::STK_TextPara
+print	test/halftest/test_timer.c	/^Uint32 print(Uint32 interval, void *parm)$/;"	f
+pvalue	stk_progressbar.h	/^	Uint32 *pvalue;			\/\/ the pointer of the binding variable$/;"	m	struct:STK_ProgressBar
+r_x	stk_slidebar.h	/^	int r_x;		\/\/ relative x distance between mouse and button left top corner$/;"	m	struct:STK_Slidebar
+r_y	stk_slidebar.h	/^	int r_y;		\/\/ relative y distance between mouse and button left top corner$/;"	m	struct:STK_Slidebar
+rb	stk_radiogroup.h	/^	STK_RadioButton *rb;$/;"	m	struct:STK_RadioButtonListNode
+rblist_head	stk_radiogroup.h	/^	STK_RadioButtonListNode *rblist_head;	\/\/ point to the head of radio button array$/;"	m	struct:STK_RadioGroup
 rect	stk_widget.h	/^	SDL_Rect rect;		\/\/ the rect area this widget occupy$/;"	m	struct:STK_Widget
 rectangleRGBA	stk_prim.c	/^int rectangleRGBA(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a)$/;"	f
-redraw_timer	stk_label.h	/^	SDL_TimerID redraw_timer;$/;"	m	struct:STK_Label
-rm	stk_widget.h	/^	int lm, rm, tm, bm;$/;"	m	struct:STK_Widget
 signal	stk_signal.h	/^	char *signal;$/;"	m	struct:SignalListNode
+size	stk_font.h	/^	Uint32 size;$/;"	m	struct:STK_Font
+size	stk_text.h	/^	Uint32 size;		\/\/ the size of the string buffer$/;"	m	struct:STK_Text
 slist_head	stk_signal.c	/^static SignalListNode *slist_head = NULL;$/;"	v	file:
-state	BAK/stk_button.h	/^	STK_ButtonState state;$/;"	m	struct:STK_Button
+start_line	stk_msgbox.h	/^	Uint16 start_line;		\/\/ start line to draw$/;"	m	struct:STK_MsgBox
+state	stk_button.h	/^	STK_ButtonState state;$/;"	m	struct:STK_Button
+state	stk_radiobutton.h	/^	STK_RadioButtonState state;$/;"	m	struct:STK_RadioButton
+state	stk_slidebar.h	/^	int state;		\/\/ store the state of the slidebar$/;"	m	struct:STK_Slidebar
+state	stk_widget.h	/^	Uint32 state;$/;"	m	struct:STK_Widget
+step	stk_slidebar.h	/^	Uint32 step;		\/\/ percentage$/;"	m	struct:STK_Slidebar
 stk_frame_new	BAK/stk_frame.c	/^int stk_frame_new(STk_Widget *widget)$/;"	f
 stk_prim_drawCircle	BAK/stk_prim.c	/^int stk_prim_drawCircle(SDL_Surface *dst, Sint16 x, Sint16 y, Sint16 r, Uint32 color)$/;"	f
 stk_prim_drawLine	BAK/stk_prim.c	/^int stk_prim_drawLine(SDL_Surface *dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color)$/;"	f
+str	test/main.c	/^char *str[] = {"aaaaaaaaaaaaaaaaaaaaaaaa", "BBBbbbbbbbbbbbbb", "CDdddddddddddddddd", "EFGHfffffffffffffffffffffff" };$/;"	v
 surface	stk_widget.h	/^	SDL_Surface *surface;	\/\/ the surface drawn on is this widget$/;"	m	struct:STK_Widget
-tm	stk_widget.h	/^	int lm, rm, tm, bm;$/;"	m	struct:STK_Widget
+text	stk_entry.h	/^	STK_Text *text;$/;"	m	struct:STK_Entry
+text	stk_text.h	/^	STK_Text text;$/;"	m	struct:STK_TextPara
+textarea	stk_entry.h	/^	SDL_Rect textarea;$/;"	m	struct:STK_Entry
+textarea	stk_msgbox.h	/^	SDL_Rect textarea;		\/\/ area to fill up text$/;"	m	struct:STK_MsgBox
+timer	stk_progressbar.h	/^	SDL_TimerID timer;		\/\/ the timer id$/;"	m	struct:STK_ProgressBar
 trigonColor	stk_prim.c	/^int trigonColor(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Sint16 x3, Sint16 y3, Uint32 color)$/;"	f
 trigonRGBA	stk_prim.c	/^int trigonRGBA(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Sint16 x3, Sint16 y3,$/;"	f
 type	stk_signal.h	/^	int type;$/;"	m	struct:SignalListNode
 type	stk_widget.h	/^	int type;		\/\/ identify the type of this widget, to index this type's other characters.$/;"	m	struct:STK_Widget
 type	stk_window.h	/^	Uint8 type;$/;"	m	struct:STK_Window
 userdata	stk_signal.h	/^	void *userdata;$/;"	m	struct:CallbackListNode
-visible	stk_label.h	/^	int visible;$/;"	m	struct:STK_Label
+value	stk_progressbar.h	/^	Uint32 value;			\/\/ the current progress value$/;"	m	struct:STK_ProgressBar
+value_locked	stk_slidebar.h	/^	Uint32 value_locked;$/;"	m	struct:STK_Slidebar
 visible	stk_window.h	/^	int visible;$/;"	m	struct:STK_Window
 vlineColor	BAK/stk_prim.c	/^int vlineColor(SDL_Surface *dst, Sint16 x1, Sint16 y1, Sint16 y2, Uint32 color)$/;"	f
 vlineColor	stk_prim.c	/^int vlineColor(SDL_Surface * dst, Sint16 x, Sint16 y1, Sint16 y2, Uint32 color)$/;"	f
 vlineRGBA	stk_prim.c	/^int vlineRGBA(SDL_Surface * dst, Sint16 x, Sint16 y1, Sint16 y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a)$/;"	f
-widget	BAK/stk_button.h	/^	STK_Widget widget;$/;"	m	struct:STK_Button
+widget	stk_button.h	/^	STK_Widget widget;$/;"	m	struct:STK_Button
+widget	stk_entry.h	/^	STK_Widget widget;$/;"	m	struct:STK_Entry
 widget	stk_label.h	/^	STK_Widget widget;$/;"	m	struct:STK_Label
+widget	stk_msgbox.h	/^	STK_Widget widget;$/;"	m	struct:STK_MsgBox
+widget	stk_progressbar.h	/^	STK_Widget widget;$/;"	m	struct:STK_ProgressBar
+widget	stk_radiobutton.h	/^	STK_Widget widget;$/;"	m	struct:STK_RadioButton
+widget	stk_radiogroup.h	/^	STK_Widget widget;$/;"	m	struct:STK_RadioGroup
+widget	stk_slidebar.h	/^	STK_Widget widget;$/;"	m	struct:STK_Slidebar
 widget	stk_widget.h	/^	STK_Widget *widget;			\/\/ point to a widget$/;"	m	struct:STK_WidgetListNode
 widget	stk_window.h	/^	STK_Widget widget;$/;"	m	struct:STK_Window
 widget_list	stk_window.h	/^	STK_WidgetListNode *widget_list;$/;"	m	struct:STK_Window

@@ -4,6 +4,7 @@
 #include "SDL.h"
 #include "stk_widget.h"
 #include "stk_window.h"
+#include "stk_color.h"
 #include "stk_label.h"
 #include "stk_button.h"
 #include "stk_slidebar.h"
@@ -120,13 +121,10 @@ int STK_WidgetEvent(STK_Widget *widget, SDL_Event *event)
 int STK_WidgetInitInstance(STK_Widget *widget)
 {
 	// colors
-	widget->bgcolor.r = 0xd4;
-	widget->bgcolor.g = 0xd4;
-	widget->bgcolor.b = 0xd4;
-	
-	widget->fgcolor.r = 0x00;
-	widget->fgcolor.g = 0x00;
-	widget->fgcolor.b = 0x00;
+	STK_BaseColorAssign(&widget->bgcolor, STK_COLOR_GLOBAL_BACKGROUND);
+	STK_BaseColorAssign(&widget->fgcolor, STK_COLOR_GLOBAL_FOREGROUND);
+
+	return 0;
 }
 
 

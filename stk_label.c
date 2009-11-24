@@ -5,6 +5,8 @@
 #include "stk_base.h"
 #include "stk_widget.h"
 #include "stk_window.h"
+#include "stk_base.h"
+#include "stk_color.h"
 #include "stk_label.h"
 
 #define STK_LABEL_DEFAULT_WIDTH		60
@@ -35,6 +37,7 @@ STK_Label *STK_LabelNew( char *str, Uint16 x, Uint16 y )
 	widget->type	= STK_WIDGET_LABEL;
 	// can't get focus
 	widget->flags	= 0;			
+	widget->border 	= 0;
 	
 	rect.x	= x;
 	rect.y 	= y;
@@ -51,6 +54,7 @@ STK_Label *STK_LabelNew( char *str, Uint16 x, Uint16 y )
 	else {
 		label->caption = NULL;
 	}
+	
 	
 	label->alignment = STK_LABEL_TOPLEFT;
 	label->pattern	= STK_LABEL_NORMAL;
@@ -175,6 +179,9 @@ static void STK_LabelCalculatePattern(STK_Label *label, SDL_Rect *rect)
 
 int STK_LabelSetAlignment(STK_Label *label, int alignment)
 {
+	if (!label)
+		return -1;
+	
 	label->alignment = alignment;
 	
 	return 0;
@@ -182,7 +189,7 @@ int STK_LabelSetAlignment(STK_Label *label, int alignment)
 
 int STK_LabelSetText(STK_Label *label, char * text)
 {
-	if (text == NULL)
+	if (!label || !text)
 		return -1;
 	
 	if (label->caption) {
@@ -213,15 +220,11 @@ int STK_LabelSetColor(STK_Label *label, int which, Uint8 r, Uint8 g, Uint8 b)
 		return -1;
 		
 	switch (which) {
-		case STK_LABEL_FOREGROUND:
-			widget->fgcolor.r = r;
-			widget->fgcolor.g = g;
-			widget->fgcolor.b = b;
+		case STK_COLOR_FOREGROUND:
+			STK_BaseColorAssign(&widget->fgcolor, r, g, b);
 			break;
-		case STK_LABEL_BACKGROUND:
-			widget->bgcolor.r = r;
-			widget->bgcolor.g = g;
-			widget->bgcolor.b = b;
+		case STK_COLOR_BACKGROUND:
+			STK_BaseColorAssign(&widget->bgcolor, r, g, b);
 			break;
 		default:
 			break;

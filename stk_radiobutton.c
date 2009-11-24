@@ -5,6 +5,8 @@
 #include "SDL.h"
 #include "stk_widget.h"
 #include "stk_window.h"
+#include "stk_base.h"
+#include "stk_color.h"
 #include "stk_label.h"
 #include "stk_radiobutton.h"
 
@@ -29,7 +31,6 @@ STK_Widget *STK_RadioButtonNew(char *caption, Uint16 x, Uint16 y, Uint16 w, Uint
 	widget->rect.h = h;
 
 	radiobutton->state = STK_RADIOBUTTON_RELEASE;
-	radiobutton->image.fillstyle = STK_IMAGESTYLE_NORMAL;
 	radiobutton->border = STK_RADIOBUTTON_BORDER_THICKNESS;
 	radiobutton->interval = 2*STK_RADIOBUTTON_BORDER_THICKNESS;
 	radiobutton->header_height = 20;	// temporarily	
@@ -60,7 +61,7 @@ void STK_RadioButtonDraw(STK_Widget *widget)
 	
 	// before drawing, we need to do some computation.
         if (child_widget) {
-		STK_ChildAdapter(&widget->rect, &child_widget->rect);
+		STK_BaseRectAdapter(&widget->rect, &child_widget->rect);
 	}
 	
         // if area has changed, need to reset dimensions of this label: free previous surface and alloc a new one
@@ -148,16 +149,17 @@ STK_Widget *STK_RadioButtonFilling(STK_Widget *widget, Uint32 pattern)
 	rect.y = radiobutton->border;
 	rect.w = radiobutton->header_height;
 	rect.h = radiobutton->header_height;
-	radiobutton->image.fillstyle = STK_IMAGESTYLE_MATRIX;
-	STK_ImageFillRect(widget->surface, &radiobutton->image, &rect, pattern, 10);
+	radiobutton->image.fillstyle = STK_IMAGE_FILLSTYLE_MATRIX;
+	STK_ImageFillRect(widget->surface, &rect, STK_IMAGE_KIND_BOX, pattern, &radiobutton->image, 0);
 	
 	// area 2: label background area, fill mono color
 	rect.x = radiobutton->border + radiobutton->header_height + radiobutton->interval;
 	rect.y = radiobutton->border;
 	rect.w = widget->rect.w - rect.x - radiobutton->border;
 	rect.h = widget->rect.h - 2 * radiobutton->border;
-	radiobutton->image.fillstyle = STK_IMAGESTYLE_NORMAL;
-	STK_ImageFillRect(widget->surface, &radiobutton->image, &rect, pattern, 10);
+	radiobutton->image.fillstyle = STK_IMAGE_FILLSTYLE_NORMAL;
+
+//	STK_ImageFillRect(widget->surface, &rect, STK_IMAGE_KIND_BOX, pattern, &radiobutton->image, 0);
 	
 	printf("Exit STK_RadioButtonFilling");
 	return widget;
