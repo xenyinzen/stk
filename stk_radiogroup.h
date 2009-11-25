@@ -4,8 +4,14 @@
 #include "SDL.h"
 #include "stk_radiobutton.h"
 
+enum STK_RadioGroupMode {
+	STK_RADIOGROUP_MODE_MONO,
+	STK_RADIOGROUP_MODE_MULT
+};
+
 typedef struct STK_RadioButtonListNode {
 	STK_RadioButton *rb;
+	Uint32 i;
 	struct STK_RadioButtonListNode *next;
 } STK_RadioButtonListNode;
 
@@ -22,7 +28,7 @@ typedef struct STK_RadioGroup {
 	Uint32 interval;		// the interval between radio buttons
 	Uint32 nchoice;			// record how many have chose
 	
-	Uint32 mono;			// flag: mononical or multiple choice
+	Uint32 mode;			// flag: mononical or multiple choice
 
 } STK_RadioGroup;
 

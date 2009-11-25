@@ -54,7 +54,7 @@ STK_RadioGroup *STK_RadioGroupNew(char *radiostr[], int num, Uint16 x, Uint16 y,
 	rg->name = radiostr;
 	rg->interval = 2 * widget->border;
 	rg->nchoice = 0;
-	rg->mono = 0;			// multiple choices
+	rg->mode = 1;			// multiple choices
 	rg->item_height = STK_RADIOBUTTON_DEFAULT_HEIGHT;
 
 	STK_SignalConnect(widget, "mousebuttondown", STK_RadioGroupEventMouseButtonDown, widget);
@@ -75,6 +75,7 @@ STK_RadioGroup *STK_RadioGroupNew(char *radiostr[], int num, Uint16 x, Uint16 y,
 						rg->item_height );
 		// put radio button object into each list node
 		ahead->rb = rb;
+		ahead->i = i;
 		ahead->next = NULL;
 		// if first sub widget
 		if (rg->rblist_head == NULL) {
@@ -117,6 +118,7 @@ int STK_RadioGroupAdapterToChild(STK_RadioGroup *rg)
 		child_widget = child_list->rb;
 		if (child_widget->rect.w > width)
 			width = child_widget->rect.w;
+		
 		// go next
 		child_list = child_list->next;
 	}
@@ -127,6 +129,9 @@ int STK_RadioGroupAdapterToChild(STK_RadioGroup *rg)
 		// if child_list if true, we consider child_list->rb is also true
 		child_widget = (STK_Widget *)child_list->rb;
 		child_widget->rect.w = width;
+		// recalc the y location of a radiobutton
+		child_widget->rect.y = widget->rect.y + widget->border
+					 + child_list->i * (rg->interval + rg->item_height);	
 		// do really scaling action
 		STK_WidgetSetDims(child_widget, &child_widget->rect);
 		// go next
@@ -136,7 +141,7 @@ int STK_RadioGroupAdapterToChild(STK_RadioGroup *rg)
 	// calculate total height
 	height = rg->item_height * rg->n + widget->border * 2 + rg->interval * (rg->n - 1);
 	
-	widget->rect.w = width;
+	widget->rect.w = width + widget->border * 2;
 	widget->rect.h = height;
 
 	STK_WidgetSetDims(widget, &widget->rect);	
@@ -155,6 +160,9 @@ void STK_RadioGroupDraw(STK_Widget *widget)
 //	if (!widget->fixed)
 //		STK_RadioGroupAdapterToChild(rg);
 
+	if (widget->showborder)
+		STK_ImageDrawFrame(widget->surface, STK_IMAGE_FRAME_SINGLELINE);
+	
 	// fill child radio buttons
 	STK_RadioGroupFilling(rg);
 
@@ -288,7 +296,7 @@ static void STK_RadioGroupEventMouseButtonDown(STK_Object *object, void *signald
 		}		
 
 		// Mutex case: here we process other radiobutton according if setting is mutex
-		if (rg->mono && rg->nchoice >= 1) {
+		if (rg->mode && rg->nchoice >= 1) {
 			child_list = rg->rblist_head;
 			// all item clean
 			while (child_list) {
@@ -304,5 +312,13 @@ static void STK_RadioGroupEventMouseButtonDown(STK_Object *object, void *signald
 	}
 	
 	return;
+}
+
+int STK_RadioGroupSetMode(STK_RadioGroup *rg, Uint32 m)
+{
+	if (!rg)
+		return -1;
+			
+	rg->mode = m;
 }
 

@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "SDL.h"
+#include "stk_base.h"
 #include "stk_widget.h"
 #include "stk_image.h"
 
@@ -114,72 +115,101 @@ int STK_ImageFillRect(SDL_Surface *surface, SDL_Rect *rect, Uint32 kind, Uint32 
 	
 	switch (kind) {
 	case STK_IMAGE_KIND_FRAME:
-		switch (style) {
-		case STK_IMAGE_FILLSTYLE_NORMAL:
-			if (pattern == 0)
-				SDL_FillRect(surface, rect, 0x00000000);
-			else if (pattern == 1)
-				SDL_FillRect(surface, rect, 0x00ffffff);
-			break;
-		case STK_IMAGE_FILLSTYLE_HORIZONTAL:
-			for (i = 0; i < rect->h ; i++) {
-				r.x = rect->x;
-				r.y = rect->y + i;
-				r.w = rect->w;
-				r.h = 1;
-				SDL_FillRect(surface, &r, g_image_dividing_horizontal[pattern][index][i]);
-			}
-			break;
-		case STK_IMAGE_FILLSTYLE_VERTICAL:
-			for (i = 0; i < rect->w; i++) {
-				r.x = rect->x + i;
-				r.y = rect->y;
-				r.w = 1;
-				r.h = rect->h;
-				SDL_FillRect(surface, &r, g_image_dividing_vertical[pattern][index][i]);
-			}
-			break;
-		case STK_IMAGE_FILLSTYLE_MATRIX: { 
-			for (i = 0; i < rect->h; i++) {
-				for (j = 0; j < rect->w; j++) {
-					r.x = rect->x + j;
+		switch (pattern) {
+		case STK_IMAGE_FRAME_CONVEX:
+		case STK_IMAGE_FRAME_CONCAVE:
+			switch (style) {
+			case STK_IMAGE_FILLSTYLE_NORMAL:
+				if (pattern == 0)
+					SDL_FillRect(surface, rect, 0x00000000);
+				else if (pattern == 1)
+					SDL_FillRect(surface, rect, 0x00ffffff);
+				break;
+			case STK_IMAGE_FILLSTYLE_HORIZONTAL:
+				for (i = 0; i < rect->h ; i++) {
+					r.x = rect->x;
 					r.y = rect->y + i;
-					r.w = 1;
+					r.w = rect->w;
 					r.h = 1;
-					SDL_FillRect(surface, &r, g_image_dividing_matrix[pattern][index][rect->w*i+j]);
+					SDL_FillRect(surface, &r, g_image_dividing_horizontal[pattern][index][i]);
 				}
-			}
+				break;
+			case STK_IMAGE_FILLSTYLE_VERTICAL:
+				for (i = 0; i < rect->w; i++) {
+					r.x = rect->x + i;
+					r.y = rect->y;
+					r.w = 1;
+					r.h = rect->h;
+					SDL_FillRect(surface, &r, g_image_dividing_vertical[pattern][index][i]);
+				}
+				break;
+			case STK_IMAGE_FILLSTYLE_MATRIX: { 
+				for (i = 0; i < rect->h; i++) {
+					for (j = 0; j < rect->w; j++) {
+						r.x = rect->x + j;
+						r.y = rect->y + i;
+						r.w = 1;
+						r.h = 1;
+						SDL_FillRect(surface, &r, g_image_dividing_matrix[pattern][index][rect->w*i+j]);
+					}
+				}
 
-	/*		SDL_Surface *s;
-			s = SDL_CreateRGBSurfaceFrom((void *)g_image_dividing_matrix[pattern][n], 
-							2, 
-							2, 
-							32,
-							8,
-							0x00ff0000,
-							0x0000ff00,
-							0x000000ff,
-							0xff000000);
-			SDL_BlitSurface(s, NULL, surface, rect);
-	*/
-			break;
+		/*		SDL_Surface *s;
+				s = SDL_CreateRGBSurfaceFrom((void *)g_image_dividing_matrix[pattern][n], 
+								2, 
+								2, 
+								32,
+								8,
+								0x00ff0000,
+								0x0000ff00,
+								0x000000ff,
+								0xff000000);
+				SDL_BlitSurface(s, NULL, surface, rect);
+		*/
+				break;
+				}
+			case STK_IMAGE_FILLSTYLE_PICTURE: {
+				SDL_Surface *s;
+				SDL_Rect r;
+				r.x = 0; 
+				r.y = 0;
+				r.w = rect->w;
+				r.h = rect->h;
+				s = SDL_LoadBMP(image->filename);
+				// Attention: the size of the picture should match the desired size
+				if (s) 
+					SDL_BlitSurface(s, &r, surface, rect);			
+				break;
+				}
+			default:
+				break;
+
 			}
-		case STK_IMAGE_FILLSTYLE_PICTURE: {
-			SDL_Surface *s;
+			break;
+		case STK_IMAGE_FRAME_SINGLELINE: {
 			SDL_Rect r;
-			r.x = 0; 
-			r.y = 0;
-			r.w = rect->w;
-			r.h = rect->h;
-			s = SDL_LoadBMP(image->filename);
-			// Attention: the size of the picture should match the desired size
-			if (s) 
-				SDL_BlitSurface(s, &r, surface, rect);			
-			break;
+			STK_BaseRectAssign(&r, 0, 0, surface->w, 1);
+			SDL_FillRect(surface, &r, 0x00303030);
+			STK_BaseRectAssign(&r, 0, surface->h - 1, surface->w, 1);
+			SDL_FillRect(surface, &r, 0x00303030);
+			STK_BaseRectAssign(&r, 0, 0, 1, surface->h);
+			SDL_FillRect(surface, &r, 0x00303030);
+			STK_BaseRectAssign(&r, surface->w - 1, 0, 1, surface->h);
+			SDL_FillRect(surface, &r, 0x00303030);
 			}
-		default:
 			break;
-
+		case STK_IMAGE_FRAME_DOUBLELINE: {
+			SDL_Rect r;
+			STK_BaseRectAssign(&r, 0, 0, surface->w, 2);
+			SDL_FillRect(surface, &r, 0x00303030);
+			STK_BaseRectAssign(&r, 0, surface->h - 2, surface->w, 2);
+			SDL_FillRect(surface, &r, 0x00303030);
+			STK_BaseRectAssign(&r, 0, 0, 2, surface->h);
+			SDL_FillRect(surface, &r, 0x00303030);
+			STK_BaseRectAssign(&r, surface->w - 2, 0, 2, surface->h);
+			SDL_FillRect(surface, &r, 0x00303030);
+			}
+			break;	
 		}
 		break;
 	case STK_IMAGE_KIND_BOX:
