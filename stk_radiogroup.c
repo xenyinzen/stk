@@ -123,7 +123,16 @@ int STK_RadioGroupAdapterToChild(STK_RadioGroup *rg)
 		child_list = child_list->next;
 	}
 	
-	// scale all radiobutton's width to this maxmun width
+	// calculate total height
+	height = rg->item_height * rg->n + widget->border * 2 + rg->interval * (rg->n - 1);
+	
+	widget->rect.w = width + widget->border * 2;
+	widget->rect.h = height;
+
+	STK_WidgetSetDims(widget, &widget->rect);	
+
+/*	// scale all radiobutton's width to this maxmun width, not useful, because radiobutton will autoscale
+	// when draw in STK_RadioButtonDraw
 	child_list = rg->rblist_head;
 	while (child_list) {
 		// if child_list if true, we consider child_list->rb is also true
@@ -137,15 +146,7 @@ int STK_RadioGroupAdapterToChild(STK_RadioGroup *rg)
 		// go next
 		child_list = child_list->next;
 	}
-	
-	// calculate total height
-	height = rg->item_height * rg->n + widget->border * 2 + rg->interval * (rg->n - 1);
-	
-	widget->rect.w = width + widget->border * 2;
-	widget->rect.h = height;
-
-	STK_WidgetSetDims(widget, &widget->rect);	
-
+*/	
 	return 0;
 }
 
@@ -239,9 +240,13 @@ int STK_RadioGroupFilling(STK_RadioGroup *rg)
 		child_widget = (STK_Widget *)child_list->rb;
 
 		if (widget->fixed) {
+			if (child_widget->rect.y - widget->rect.y + child_widget->rect.h 
+						+ widget->border > widget->rect.h)
+				break;
 			// here, we consider only fixed width of RadioGroup, don't consider height of it,
 			// because that is not sense.
 			child_widget->rect.w = widget->rect.w - 2 * widget->border;
+			// if RadioGroup can't contain too many item, ignore the rest
 			STK_WidgetSetDims(child_widget, &child_widget->rect);				
 			child_widget->fixed = 1;
 		}

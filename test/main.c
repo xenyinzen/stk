@@ -76,7 +76,7 @@ char *str[] = {"aaaaaaaaaaaaaaaaaaaaaaaa", "BBBbbbbbbbbbbbbb", "CDdddddddddddddd
 
 STK_Widget *draw_radiogroup()
 {
-	STK_RadioGroup *rg = (STK_RadioGroup *)STK_RadioGroupNew(str, sizeof(str)/sizeof(char *), 300, 350, 200, 100);
+	STK_RadioGroup *rg = (STK_RadioGroup *)STK_RadioGroupNew(str, sizeof(str)/sizeof(char *), 300, 350, 300, 100);
 	STK_WidgetEventShow((STK_Widget *)rg);
 	
 	return (STK_Widget *)rg;
