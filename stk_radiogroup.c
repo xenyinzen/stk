@@ -5,11 +5,13 @@
 #include "SDL.h"
 #include "stk_base.h"
 #include "stk_widget.h"
+#include "stk_window.h"
 #include "stk_radiobutton.h"
 #include "stk_radiogroup.h"
 
 #define STK_RADIOGROUP_BORDER_THICKNESS	2
-
+#define STK_RADIOBUTTON_DEFAULT_WIDTH		100
+#define STK_RADIOBUTTON_DEFAULT_HEIGHT		25
 
 
 static void STK_RadioGroupEventMouseButtonDown(STK_Object *object, void *signaldata, void *userdata);
@@ -18,36 +20,42 @@ static void STK_RadioGroupEventMouseButtonDown(STK_Object *object, void *signald
 //
 // char *radiostr[] = {"A", "AB", "ABC", "ABCD", "ABDEFGFFDSF"};
 //
-STK_Widget *STK_RadioGroupNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, char *radiostr[], int num)
+STK_RadioGroup *STK_RadioGroupNew(char *radiostr[], int num, Uint16 x, Uint16 y, Uint16 w, Uint16 h)
 {	
 	STK_RadioGroup *rg;
 	STK_RadioButton *rb;
 	STK_RadioButtonListNode *rbln, *ahead;
 	STK_Widget *widget;
-	
+	STK_Window *win;
+	SDL_Rect rect;
 	int i = 0;
+
+	win = STK_WindowGetTop();
+	if (!win)
+		return -1;
+	if (x >= win->widget.rect.w || y >= win->widget.rect.h)
+		return -1;
 	
 	rg = (STK_RadioGroup *)STK_Malloc(sizeof(STK_RadioGroup));
 	widget = (STK_Widget *)rg;
+	STK_WidgetInitInstance(widget);
 	
-	widget->type = STK_WIDGET_RADIOGROUP;
 	widget->name = "RadioGroup";
+	widget->type = STK_WIDGET_RADIOGROUP;
 	widget->flags |= WIDGET_FOCUSABLE;
+	widget->border = STK_RADIOGROUP_BORDER_THICKNESS;
+	widget->fixed = 0;
+	widget->showborder = 1;
 
-	widget->rect.x = x;
-	widget->rect.y = y;	
-	widget->rect.w = w;
-	widget->rect.h = h;
-	
+	STK_BaseRectAssign(&rect, x, y, w, h);
+	STK_WidgetSetDims(widget, &rect);
+		
 	rg->n = num;
 	rg->name = radiostr;
-	rg->border = STK_RADIOGROUP_BORDER_THICKNESS;
-	rg->interval = 2 * rg->border;
-	
+	rg->interval = 2 * widget->border;
 	rg->nchoice = 0;
-	rg->mono = 0;
-	rg->fixed = 0;
-	rg->border_on = 0;
+	rg->mono = 0;			// multiple choices
+	rg->item_height = STK_RADIOBUTTON_DEFAULT_HEIGHT;
 
 	STK_SignalConnect(widget, "mousebuttondown", STK_RadioGroupEventMouseButtonDown, widget);
 	
@@ -61,10 +69,10 @@ STK_Widget *STK_RadioGroupNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, char *radi
 		// , but not radiogroup right now, may be we need have a filter procedure to change this
 		rb = (STK_RadioButton *)STK_RadioButtonNew(
 						radiostr[i], 
-						x + rg->border, 
-						y + rg->border + i*(30 + rg->interval),
-						100,
-						30 );
+						x + widget->border, 
+						y + widget->border + i*(rg->item_height + rg->interval),
+						STK_RADIOBUTTON_DEFAULT_WIDTH,
+						rg->item_height );
 		// put radio button object into each list node
 		ahead->rb = rb;
 		ahead->next = NULL;
@@ -79,61 +87,74 @@ STK_Widget *STK_RadioGroupNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, char *radi
 		rbln = ahead;
 	}
 	
-	return widget;
+	if (!widget->fixed)
+		STK_RadioGroupAdapterToChild(rg); 
+	
+	return rg;
 }
 
-void STK_RadioGroupDraw(STK_Widget *widget)
-{
-	STK_RadioGroup *rg = (STK_RadioGroup *)widget;
+int STK_RadioGroupAdapterToChild(STK_RadioGroup *rg)
+{	
 	STK_RadioButtonListNode *child_list = rg->rblist_head;
+	STK_Widget *widget = (STK_Widget *)rg;
 	STK_Widget *child_widget;
-	
+
 	SDL_Rect rect, rect_B;
 	int i;
 	Uint16 width, height;
 	
 	// if have nothing to draw
 	if (!rg->rblist_head)
-		return;
+		return -1;
 	
 	child_widget = rg->rblist_head->rb;
 	// we must calculate the max length of child radio buttons
 	width = child_widget->rect.w;
+	rg->item_height = child_widget->rect.h;
+
 	while (child_list) {
 		// if child_list if true, we consider child_list->rb is also true
 		child_widget = child_list->rb;
 		if (child_widget->rect.w > width)
 			width = child_widget->rect.w;
-		
+		// go next
 		child_list = child_list->next;
 	}
+	
 	// scale all radiobutton's width to this maxmun width
 	child_list = rg->rblist_head;
 	while (child_list) {
 		// if child_list if true, we consider child_list->rb is also true
 		child_widget = (STK_Widget *)child_list->rb;
 		child_widget->rect.w = width;
-		
+		// do really scaling action
+		STK_WidgetSetDims(child_widget, &child_widget->rect);
+		// go next
 		child_list = child_list->next;
 	}
 	
-	// calculate height
-	height = rg->border*2 + 30*rg->n + rg->interval*(rg->n - 1);
+	// calculate total height
+	height = rg->item_height * rg->n + widget->border * 2 + rg->interval * (rg->n - 1);
 	
-	// set adapter reference
-	rect_B.x = widget->rect.x;
-	rect_B.y = widget->rect.y;
-	rect_B.w = width;
-	rect_B.h = height;		
+	widget->rect.w = width;
+	widget->rect.h = height;
 
-	// backup
-	STK_BaseRectCopy(&rect, &widget->rect);
-	// before drawing, we need to do some computation.
-	STK_BaseRectAdapter(&widget->rect, &rect_B);
-        // if area has changed, need to reset dimensions of this label: free previous surface and alloc a new one
-        if ( !STK_BaseRectEqual(&widget->rect, &rect) )
-                STK_WidgetSetDims(widget, &widget->rect);
+	STK_WidgetSetDims(widget, &widget->rect);	
+
+	return 0;
+}
+
+void STK_RadioGroupDraw(STK_Widget *widget)
+{
+	STK_RadioGroup *rg = (STK_RadioGroup *)widget;
 	
+	if (!rg->rblist_head)
+		return;
+
+	// Because RadioGroup have relative fixed size to label and radiobutton, so need not adapter every time	
+//	if (!widget->fixed)
+//		STK_RadioGroupAdapterToChild(rg);
+
 	// fill child radio buttons
 	STK_RadioGroupFilling(rg);
 
@@ -204,33 +225,27 @@ int STK_RadioGroupFilling(STK_RadioGroup *rg)
 	STK_Widget *child_widget;
 	SDL_Rect rect;
 	F_Widget_Draw draw;
-	
-	printf("Enter STK_RadioGroupFilling...\n");
-	printf("n == %d\n", rg->n);
+
 	// draw one by one
 	while (child_list) {
 		child_widget = (STK_Widget *)child_list->rb;
+
+		if (widget->fixed) {
+			// here, we consider only fixed width of RadioGroup, don't consider height of it,
+			// because that is not sense.
+			child_widget->rect.w = widget->rect.w - 2 * widget->border;
+			STK_WidgetSetDims(child_widget, &child_widget->rect);				
+			child_widget->fixed = 1;
+		}
 		
 		draw = STK_WidgetGetDraw(child_widget);
 		if (draw)
 			draw(child_widget);
-	
-		// calculate the relative coordination
-		rect.x = child_widget->rect.x - widget->rect.x;
-		rect.y = child_widget->rect.y - widget->rect.y;
-		rect.w = widget->rect.w;
-		rect.h = widget->rect.h;
-
-		printf("Ready to blit...\n");
-		// blit label's surface to radio button's surface
-		SDL_BlitSurface(child_widget->surface, NULL, widget->surface, &rect);
 
 		child_list = child_list->next;
 	}
-	printf("Exit STK_RadioGroupFilling...\n");
-	
+		
 	return 0;
-
 }
 
 
@@ -254,26 +269,32 @@ static void STK_RadioGroupEventMouseButtonDown(STK_Object *object, void *signald
 		while (child_list) {
 			child_widget = (STK_Widget *)child_list->rb;
 			if (STK_WidgetIsInside(child_widget, mx, my)) {
+				// only need to change status, redraw action can be done in draw function
 				child_widget->state = 1;
-				STK_WidgetEventRedraw(child_widget);
-				break;			
+				break;
 			}
 			child_list = child_list->next;		
 		}		
 		// record the child radiobutton chosen
 		child_chosen = child_list;
 		
+		// count n choices
+		child_list = rg->rblist_head;
+		rg->nchoice = 0;
+		while (child_list) {
+			if (child_list->rb->state == STK_RADIOBUTTON_TOGGLE)
+				rg->nchoice++;
+			child_list = child_list->next;		
+		}		
+
 		// Mutex case: here we process other radiobutton according if setting is mutex
 		if (rg->mono && rg->nchoice >= 1) {
 			child_list = rg->rblist_head;
 			// all item clean
-			while (child_list && child_list != child_chosen) {
-				// if the radiobutton is chosen already, then we imtate mouse button down effect
-				if (child_list->rb->state == STK_RADIOBUTTON_TOGGLE) {
+			while (child_list) {
+				if (child_list != child_chosen && child_list->rb->state == STK_RADIOBUTTON_TOGGLE) {
 					child_widget = (STK_Widget *)child_list->rb;
-					// seems mouse button down
 					child_widget->state = 1;
-					STK_WidgetEventRedraw(child_widget);
 				}
 				child_list = child_list->next;		
 			}		
@@ -281,8 +302,7 @@ static void STK_RadioGroupEventMouseButtonDown(STK_Object *object, void *signald
 		
 		}	
 	}
-
+	
+	return;
 }
-
-
 

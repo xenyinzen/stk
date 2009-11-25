@@ -350,12 +350,10 @@ int STK_WindowEvent( SDL_Event *event )
 					STK_WindowSetFocusWidget(w);
 					// update state
 					w->state = 1;
-					printf("In STK_WindowEvent. Ready to redraw widget.\n");
-					// do a redraw, for change the widget's appearance to let people to see an effect.
-					STK_WidgetEventRedraw(w);
-					printf("Ready to enter widget event processing.\n");
 					// call the deeper event dispatcher function, to call the callback function of that widget
 					STK_WidgetEvent(w, event);
+					// do a redraw, for change the widget's appearance to let people to see an effect.
+					STK_WidgetEventRedraw(w);
 					break;
 				}
 			
@@ -388,12 +386,10 @@ int STK_WindowEvent( SDL_Event *event )
 					// STK_WindowSetFocusWidget(w);
 					// update state
 					w->state = 2;
-					printf("In STK_WindowEvent. Ready to redraw widget.\n");
-					// do a redraw, for change the widget's appearance to let people to see an effect.
-					STK_WidgetEventRedraw(w);
-					printf("Ready to enter widget event processing.\n");
 					// call the deeper event dispatcher function, to call the callback function of that widget
 					STK_WidgetEvent(w, event);
+					// do a redraw, for change the widget's appearance to let people to see an effect.
+					STK_WidgetEventRedraw(w);
 					break;
 				}
 			

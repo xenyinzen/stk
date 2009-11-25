@@ -119,7 +119,7 @@ static void STK_InternalEvent(SDL_Event *event)
 		break;
 	case STK_WIDGET_REDRAW:
 		widget = event->user.data1;
-		if (STK_WidgetIsActive(widget))
+		if (STK_WidgetIsActive(widget))	
 			STK_WidgetDraw(widget);
 		break;
 	case STK_WINDOW_REDRAW:

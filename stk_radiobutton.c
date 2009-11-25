@@ -68,6 +68,7 @@ void STK_RadioButtonDraw(STK_Widget *widget)
 		rb->state 
 			= (rb->state == STK_RADIOBUTTON_RELEASE? STK_RADIOBUTTON_TOGGLE: STK_RADIOBUTTON_RELEASE);
 	}
+	
 	// draw radio button base
 	if (rb->state == STK_RADIOBUTTON_RELEASE) { 
 		STK_RadioButtonFilling(widget, STK_IMAGE_BOX_HOLLOW);
@@ -115,8 +116,10 @@ void STK_RadioButtonFilling(STK_RadioButton *rb, Uint32 pattern)
 	STK_BaseRectAssign(&rect, widget->border, widget->border, rb->header_size, rb->header_size);
 //	rb->image.fillstyle = STK_IMAGE_FILLSTYLE_MATRIX;
 	STK_ImageFillRect(widget->surface, &rect, STK_IMAGE_KIND_BOX, pattern, &rb->image, 0);
-	
-	// area 2: label background area, fill mono color
+
+	// clear this state, very important
+	widget->state = 0;	
+/*	// area 2: label background area, fill mono color
 	STK_BaseRectAssign(
 		&rect, 
 		widget->border + rb->header_size + rb->interval, 
@@ -129,7 +132,7 @@ void STK_RadioButtonFilling(STK_RadioButton *rb, Uint32 pattern)
 		widget->bgcolor.g,
 		widget->bgcolor.b );
 	SDL_FillRect(widget->surface, &rect, tmpcolor);
-
+*/
 	return widget;
 }
 

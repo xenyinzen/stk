@@ -16,11 +16,12 @@ typedef struct STK_Widget {
 //	SDL_Rect absolute;	// ??
 	SDL_Rect clip;		// ??
 
-	Uint16 border;		// the border of a widget
+	Uint32 border;		// the border size of a widget
 	
 	SDL_Color bgcolor;
 	SDL_Color fgcolor;
 	
+	Uint32 showborder;	// display the border line or not
 	Uint32 fixed;		// fixed or extended
 	Uint32 flags;		// important flag value variable
 	Uint32 state;

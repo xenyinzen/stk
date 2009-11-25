@@ -33,7 +33,7 @@ STK_Widget *STK_ProgressBarNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, Uint32 *p
 	pb->value = *(pb->pvalue);
 	
 	
-	pb->timer = SDL_AddTimer(500, STK_ProgressBarCheckValue, (void *)pb);
+	pb->timer = SDL_AddTimer(100, STK_ProgressBarCheckValue, (void *)pb);
 	
 	return widget;
 
@@ -97,18 +97,18 @@ Uint32 STK_ProgressBarCheckValue(Uint32 interval, void *param)
 {
 	STK_ProgressBar *pb = (STK_ProgressBar *)param;
 	
-	printf("I am a timer, haha...\n");
+//	printf("I am a timer, haha...\n");
 
 	if (pb->value != *(pb->pvalue)) {
 		pb->value = *(pb->pvalue);
 		STK_WidgetEventRedraw((STK_Widget *)pb);	
 		
-		printf("in timer, hmm...\n");
+//		printf("in timer, hmm...\n");
 	}
 	
 	// for test only
-	SDL_Delay(200);
-	(*pb->pvalue) += 2;
+	SDL_Delay(100);
+	(*pb->pvalue) += 1;
 	if (*pb->pvalue >= 100)
 		(*pb->pvalue) = 0; 
 	

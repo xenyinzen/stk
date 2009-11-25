@@ -76,7 +76,7 @@ char *str[] = {"aaaaaaaaaaaaaaaaaaaaaaaa", "BBBbbbbbbbbbbbbb", "CDdddddddddddddd
 
 STK_Widget *draw_radiogroup()
 {
-	STK_RadioGroup *rg = (STK_RadioGroup *)STK_RadioGroupNew(300, 350, 200, 100, str, sizeof(str)/sizeof(char *));
+	STK_RadioGroup *rg = (STK_RadioGroup *)STK_RadioGroupNew(str, sizeof(str)/sizeof(char *), 300, 350, 200, 100);
 	STK_WidgetEventShow((STK_Widget *)rg);
 	
 	return (STK_Widget *)rg;
@@ -100,7 +100,8 @@ int main(int argc,char **argv)
 	
     	Uint32 value = 10;
     	
-    	SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER);
+//    	SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER);
+    	SDL_Init(SDL_INIT_VIDEO);
 
     	video=SDL_SetVideoMode(640, 480, 32, SDL_HWSURFACE);
 	if ( video ==  NULL ) {
