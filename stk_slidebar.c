@@ -128,7 +128,7 @@ void STK_SlidebarDraw(STK_Widget *widget)
 	SDL_Surface *s = widget->surface;
 	Uint32 tmpcolor;
 	int bx, by;
-	
+
 	if (slider->orientation == STK_SLIDEBAR_VERTICAL) {
 		bx = widget->border;
 		by = slider->curpixel;
@@ -137,7 +137,7 @@ void STK_SlidebarDraw(STK_Widget *widget)
 		bx = slider->curpixel;
 		by = widget->border;		
 	}
-	
+
 	// fill background
 	tmpcolor = SDL_MapRGB(widget->surface->format, widget->bgcolor.r, widget->bgcolor.g, widget->bgcolor.b);
 	SDL_FillRect(s, NULL, tmpcolor);

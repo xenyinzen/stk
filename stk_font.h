@@ -3,6 +3,7 @@
 
 #include "SDL.h"
 #include "SDL_ttf.h"
+#include "stk_widget.h"
 
 typedef struct STK_Font {
 	char *name;

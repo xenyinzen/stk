@@ -17,14 +17,14 @@ typedef struct STK_MsgBox {
 	Uint16 cur_x;			// current x coordinate
 	Uint16 cur_y;			// current y coordinate
 	
-	Uint32 border;			// border thickness 
 	Uint32 interval;		// the interval between text
 } STK_MsgBox;
 
-STK_Widget *STK_MsgBoxNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, char *str);
+STK_MsgBox *STK_MsgBoxNew(char *str, Uint16 x, Uint16 y, Uint16 w, Uint16 h);
 void STK_MsgBoxDraw(STK_Widget *widget);
 void STK_MsgBoxClose(STK_Widget *widget);
 int STK_MsgBoxRegisterType();
+
 int STK_MsgBoxAddMsg(STK_MsgBox *msgbox, char *str);
 
 #endif /* _STK_MSGBOX_H_ */

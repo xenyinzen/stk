@@ -57,7 +57,7 @@ STK_Widget *draw_radiobutton()
 
 STK_Widget *draw_msgbox()
 {
-	STK_MsgBox *msgbox = (STK_MsgBox *)STK_MsgBoxNew(20, 300, 250, 150, "first line");
+	STK_MsgBox *msgbox = (STK_MsgBox *)STK_MsgBoxNew("first line", 20, 300, 250, 150);
 	STK_WidgetEventShow((STK_Widget *)msgbox);
 	
 	STK_MsgBoxAddMsg(msgbox, "The second line");

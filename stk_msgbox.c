@@ -3,44 +3,64 @@
 #include <string.h>
 
 #include "SDL.h"
-#include "stk_base.h"
-#include "stk_widget.h"
 #include "stk_text.h"
+#include "stk_base.h"
+#include "stk_image.h"
+#include "stk_color.h"
+#include "stk_font.h"
+#include "stk_widget.h"
+#include "stk_window.h"
 #include "stk_msgbox.h"
 
-#define STK_MSGBOX_BORDER_THICKNESS	2
-
-
+#define STK_MSGBOX_BORDER_THICKNESS	4
 
 int STK_MsgBoxCalcDisplayLineWindow(STK_MsgBox *msgbox, int font_height);
 int STK_MsgBoxCalcTextArea(STK_MsgBox *msgbox);
 
 
-STK_Widget *STK_MsgBoxNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, char *str)
+STK_MsgBox *STK_MsgBoxNew(char *str, Uint16 x, Uint16 y, Uint16 w, Uint16 h)
 {
 	STK_MsgBox *msgbox;
 	STK_Widget *widget;
+	STK_Window *win;
+	SDL_Rect rect;	
 	int i = 0;
+	int width, height;
+	
+	win = STK_WindowGetTop();
+	if (!win)
+		return -1;
+	if (x >= win->widget.rect.w || y >= win->widget.rect.h)
+		return -1;
 	
 	msgbox = (STK_MsgBox *)STK_Malloc(sizeof(STK_MsgBox));
 	widget = (STK_Widget *)msgbox;
+	STK_WidgetInitInstance(widget);
 	
-	widget->type = STK_WIDGET_MSGBOX;
 	widget->name = "MsgBox";
+	widget->type = STK_WIDGET_MSGBOX;
 	widget->flags = 0;
+	widget->border = STK_MSGBOX_BORDER_THICKNESS;
+	STK_BaseColorAssign(&widget->bgcolor, STK_COLOR_MSGBOX_BACKGROUND);
+	STK_BaseColorAssign(&widget->fgcolor, STK_COLOR_MSGBOX_FOREGROUND);
 	
-	widget->rect.x = x;
-	widget->rect.y = y;
-	widget->rect.w = w;
-	widget->rect.h = h;
-	
+	width = 60;
+	height = STK_FontGetHeight(STK_FontGetDefaultFontWithSize()) + 2 * widget->border;
+	if (width < w)
+		width = w;
+	if (height < h)
+		height = h;
+	STK_BaseRectAssign(&rect, x, y, width, height);	
+	STK_WidgetSetDims(widget, &rect);
+
 	msgbox->start_line = 0;
 	msgbox->end_line = 0;
-	msgbox->border = STK_MSGBOX_BORDER_THICKNESS;
-	msgbox->interval = 2*STK_MSGBOX_BORDER_THICKNESS;
-	
-	STK_MsgBoxCalcTextArea(msgbox);
-	
+	msgbox->interval = 4;
+	STK_BaseRectAssign(	&msgbox->textarea, 
+				widget->border, 
+				widget->border,
+				widget->rect.w - 2 * widget->border,
+				widget->rect.h - 2 * widget->border );
 	msgbox->cur_x = 0;
 	msgbox->cur_y = 0;
 	
@@ -49,43 +69,41 @@ STK_Widget *STK_MsgBoxNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, char *str)
 		msgbox->end_line++;
 	}	
 
-	return widget;
+	return msgbox;
 }
 
 void STK_MsgBoxDraw(STK_Widget *widget)
 {
 	STK_MsgBox *msgbox = (STK_MsgBox *)widget;
 	SDL_Rect rect;
-	int font_height;
-	SDL_Color fg, bg;
+	STK_Font *font;
+	Uint32 tmpcolor;
+	Uint32 font_height;
 	int i;
 		
 	// fillup background
-	SDL_FillRect(widget->surface, NULL, 0x00f0f0f0);
-	
-	font_height = STK_FontGetHeight();
+	tmpcolor = SDL_MapRGB(widget->surface->format, widget->bgcolor.r, widget->bgcolor.g, widget->bgcolor.b);
+	SDL_FillRect(widget->surface, NULL, tmpcolor);
+	STK_ImageDrawFrame(widget->surface, STK_IMAGE_FRAME_SINGLELINE);
+
+	font = STK_FontGetDefaultFont(0);
+	font_height = STK_FontGetHeight(font);
 	STK_MsgBoxCalcDisplayLineWindow(msgbox, font_height);
 	
-	// fill text using font
-	fg.r = (Uint8)((0x00101010 >> 16) & 0xff);
-	fg.g = (Uint8)((0x00101010 >> 8) & 0xff);
-	fg.b = (Uint8)((0x00101010 >> 0) & 0xff);
-	
-	bg.r = (Uint8)((0x00f0f0f0 >> 16) & 0xff);
-	bg.g = (Uint8)((0x00f0f0f0 >> 8) & 0xff);
-	bg.b = (Uint8)((0x00f0f0f0 >> 0) & 0xff);
-	
-	printf("In MsgBoxDraw\n");
-	printf("msgbox->start_line is: %d.\n", msgbox->start_line);
-	printf("msgbox->end_line is: %d.\n", msgbox->end_line);
 	if (msgbox->start_line < msgbox->end_line) {
 		for (i = 0; i<msgbox->end_line - msgbox->start_line; i++) {
-
 			rect.x = msgbox->textarea.x;
-			rect.y = msgbox->textarea.y + i*font_height + (i>0? (i-1)*msgbox->interval: 0);
+			rect.y = msgbox->textarea.y + i*font_height + i * msgbox->interval;
+			rect.w = msgbox->textarea.w - rect.x;
+			rect.h = msgbox->textarea.h - rect.y;
 			// here, we must ensure that linebuf[i]->data is valid
-			STK_FontDraw(STK_FontGetDefaultFontWithSize(), msgbox->linebuf[i+msgbox->start_line]->data, widget, &rect, &fg, &bg);
-		
+			STK_FontDraw(	font,
+					//STK_FontGetDefaultFontWithSize(),
+					msgbox->linebuf[i+msgbox->start_line]->data, 
+					widget, 
+					&rect, 
+					&widget->fgcolor, 
+					&widget->bgcolor );
 		}	
 	}
 }
@@ -123,16 +141,6 @@ int STK_MsgBoxRegisterType()
 
 
 
-int STK_MsgBoxCalcTextArea(STK_MsgBox *msgbox)
-{
-	STK_Widget *widget = (STK_Widget *)msgbox;
-	
-	msgbox->textarea.x = msgbox->border;
-	msgbox->textarea.y = msgbox->border;
-	msgbox->textarea.w = widget->rect.w - 2*msgbox->border;
-	msgbox->textarea.h = widget->rect.h - 2*msgbox->border;
-}
-
 
 // now, we only use linear array to store output message, not circle array
 int STK_MsgBoxCalcDisplayLineWindow(STK_MsgBox *msgbox, int font_height)
@@ -145,14 +153,10 @@ int STK_MsgBoxCalcDisplayLineWindow(STK_MsgBox *msgbox, int font_height)
 	
 	sum = font_height*d + msgbox->interval*(d - 1);
 	
-	printf("sum = %d\n", sum);
-	printf("In msgbox: msgbox->textarea.h = %d\n", msgbox->textarea.h );
 	while (sum >= msgbox->textarea.h) {
 		sum -= (font_height + msgbox->interval);
 		// move the top line up
 		msgbox->start_line++;
-		printf("sum = %d\n", sum);
-		printf("msgbox->start_line = %d\n", msgbox->start_line);
 	}
 
 	return 0;
