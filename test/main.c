@@ -41,7 +41,7 @@ STK_Widget *draw_slidebar()
 
 STK_Widget *draw_entry()
 {
-	STK_Entry *entry = (STK_Entry *)STK_EntryNew(150, 30, 200, 50, 0, "hehe");
+	STK_Entry *entry = (STK_Entry *)STK_EntryNew("", 20, 150, 30, 200, 50);
 	STK_WidgetEventShow((STK_Widget *)entry);
 	return (STK_Widget *)entry;
 

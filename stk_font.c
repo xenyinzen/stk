@@ -148,7 +148,7 @@ int STK_FontAdapter(STK_Font *font, SDL_Rect *rect, char *str)
 	int h = 0;
 	
 	if (!str || !strcmp(str, ""))
-		return 1;
+		return -1;
 	
 	TTF_SizeUTF8(font->font, str, &w, &h);
 	if (!rect->w || rect->w != w ) {

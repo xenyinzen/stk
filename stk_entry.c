@@ -1,12 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
-
-#include <ctype.h>
+#include <string.h>
 
 #include "stk_mm.h"
 #include "stk_text.h"
 #include "stk_signal.h"
+#include "stk_base.h"
+#include "stk_image.h"
+#include "stk_color.h"
 #include "stk_widget.h"
+#include "stk_window.h"
 #include "stk_entry.h"
 
 #define STK_ENTRY_BORDER_THICKNESS	3
@@ -19,31 +22,58 @@ int STK_EntryCalcTextareaRect(STK_Entry *entry);
 int STK_EntryKeyGeneral(STK_Entry *entry);
 int STK_EntryKeyBackspace(STK_Entry *entry);
 
-STK_Widget *STK_EntryNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, Uint16 limited_num, char *initial_str)
+STK_Entry *STK_EntryNew(char *initial_str, Uint16 limited_num, Uint16 x, Uint16 y, Uint16 w, Uint16 h)
 {
+        STK_Entry *entry;
         STK_Widget *widget;
-        STK_Entry *entry = (STK_Entry *)STK_Malloc(sizeof(STK_Entry));
-
-        // here, need to check x and y's reasonablity
+        
+        STK_Window *win;
+        SDL_Rect rect;
+        int height;
+        
+        win = STK_WindowGetTop();
+        if (!win)
+        	return -1;
+        if (x >= win->widget.rect.w || y >= win->widget.rect.h)
+        	return -1;
+        
+        entry = (STK_Entry *)STK_Malloc(sizeof(STK_Entry));
         widget = (STK_Widget *)entry;
+	STK_WidgetInitInstance(widget);
+	
         widget->name    = "Entry";
         widget->type    = STK_WIDGET_ENTRY;
-        widget->rect.x  = x;
-        widget->rect.y  = y;
-        widget->rect.w  = w;
-        widget->rect.h  = h;
-        widget->flags |= WIDGET_FOCUSABLE;
-
-        entry->text = STK_TextNew(initial_str);
-	entry->fgcolor = 0x00404040;
-	entry->bgcolor = 0x00f0f0f0;
+        widget->flags  |= WIDGET_FOCUSABLE;
+	widget->fixed	= 1;
+	widget->border 	= STK_ENTRY_BORDER_THICKNESS;
+	STK_BaseColorAssign(&widget->bgcolor, STK_COLOR_ENTRY_BACKGROUND);
+	STK_BaseColorAssign(&widget->fgcolor, STK_COLOR_ENTRY_FOREGROUND);
 	
-	STK_EntryCalcTextareaRect(entry);
+	height = STK_FontGetHeight(STK_FontGetDefaultFontWithSize()) + 2 * widget->border;
+	
+	STK_BaseRectAssign(&rect, x, y, w, height);
+	STK_WidgetSetDims(widget, &rect);
 
 	// connect the keydown event
 	STK_SignalConnect(widget, "keydown", STK_EntryEventKeyDown, widget);
+	
+        entry->text = STK_TextNew(initial_str);
+	if (limited_num > 0)
+		entry->limits = limited_num;
+	else
+		entry->limits = 0;
+	
+	
+	// assign textarea, record relative values
+	STK_BaseRectAssign( &entry->textarea,
+				widget->border,
+				widget->border,
+				widget->rect.w - 2 * (widget->border),
+				widget->rect.h - 2 * (widget->border)  );
 			
-	return widget;
+	entry->cursor_height = entry->textarea.h;
+
+	return entry;
 }
 
 int STK_EntryRegisterType()
@@ -71,48 +101,41 @@ void STK_EntryClose(STK_Widget *widget)
         
         // now ready to free slidebar structure  
         free(entry);
+        
+        return;
 }
 
 void STK_EntryDraw(STK_Widget *widget)
 {
 	STK_Entry *entry = (STK_Entry *)widget;
-        SDL_Color fg = {0};
-        SDL_Color bg = {0};
 	SDL_Rect r;
+	Uint32 tmpcolor;
 	
 	// fillup background
-	SDL_FillRect(widget->surface, NULL, 0x00f0f0f0);
+	tmpcolor = SDL_MapRGB(widget->surface->format, widget->bgcolor.r, widget->bgcolor.g, widget->bgcolor.b);
+	SDL_FillRect(widget->surface, NULL, tmpcolor);
+	STK_ImageDrawFrame(widget->surface, STK_IMAGE_FRAME_SINGLELINE);
+	
+	// draw text
+	if ( entry->text && entry->text->data && entry->text->length > 0)
+		STK_FontDraw(	STK_FontGetDefaultFontWithSize(), 
+			entry->text->data, 
+			widget, 
+			&entry->textarea, 
+			&widget->fgcolor, 
+			&widget->bgcolor);
+	
+	// calculate the end pixels of the text	
+	if (STK_FontAdapter(STK_FontGetDefaultFontWithSize(), &r, entry->text->data) == 0)
+		entry->cursor_pos = r.w + entry->textarea.x;
+	else
+		entry->cursor_pos = entry->textarea.x;
 
-	// draw texts, draw all once
-//	if (entry->text) {
-		// calculate the rect area of font surface: results are placed in rect.
-                fg.r = (Uint8)((entry->fgcolor >> 16) & 0xff);
-                fg.g = (Uint8)((entry->fgcolor >> 8) & 0xff); 
-                fg.b = (Uint8)((entry->fgcolor >> 0) & 0xff); 
-                
-                bg.r = (Uint8)((entry->bgcolor >> 16) & 0xff);
-                bg.g = (Uint8)((entry->bgcolor >> 8) & 0xff); 
-                bg.b = (Uint8)((entry->bgcolor >> 0) & 0xff); 
-		
-		r.x = STK_ENTRY_BORDER_THICKNESS;
-		r.y = STK_ENTRY_BORDER_THICKNESS;
-		r.w = 0;
-		r.h = 0;
-		
-                STK_FontDraw(STK_FontGetDefaultFontWithSize(), entry->text->data, widget, &r, &fg, &bg);
-		
-//	}
-	if (STK_FontAdapter(STK_FontGetDefaultFontWithSize(), &r, entry->text->data) == 0) {
-		entry->cursor_pos = r.w + STK_ENTRY_BORDER_THICKNESS;
-		entry->cursor_height = r.h;
-	}
-	else {
-		entry->cursor_pos = STK_ENTRY_BORDER_THICKNESS;
-		entry->cursor_height = entry->cursor_height;
-	}
 	// fillup cursor: need to clean previous black line and draw new line in new position
 	// every time need to redraw cursor, but not background, and chars on textarea 
 	STK_EntryDrawCursor(entry);
+	
+	return;
 }
 
 void STK_EntryDrawCursor(STK_Entry *entry)
@@ -120,15 +143,10 @@ void STK_EntryDrawCursor(STK_Entry *entry)
 	STK_Widget *widget = (STK_Widget *)entry;
 	SDL_Rect r;
 	
-	r.x = entry->cursor_pos;
-	r.y = STK_ENTRY_BORDER_THICKNESS;
-	r.w = 2;
-	r.h = entry->cursor_height;
-	//
-	// ......
-	//
-	SDL_FillRect(widget->surface, &r, 0x00000000);
+	STK_BaseRectAssign(&r, entry->cursor_pos, widget->border, 2, entry->cursor_height);
+	SDL_FillRect(widget->surface, &r, SDL_MapRGB(widget->surface->format, STK_COLOR_ENTRY_CURSOR));
 	
+	return;
 }
 
 
@@ -179,8 +197,10 @@ static void STK_EntryEventKeyDown(STK_Object *object, void *signaldata, void *us
 			if (key < 127) {
 				// now, only process ASCII char
 				entry->inputkey[0] = key;
-				STK_EntryKeyGeneral(entry);
-				STK_SignalEmit(widget, "changed", NULL);
+				if (entry->text->length < entry->limits) {
+					STK_EntryKeyGeneral(entry);
+					STK_SignalEmit(widget, "changed", NULL);
+				}
 			}
 		
 		}
@@ -191,21 +211,19 @@ static void STK_EntryEventKeyDown(STK_Object *object, void *signaldata, void *us
 	return ;
 }
 
-int STK_EntryCalcTextareaRect(STK_Entry *entry)
-{
-	entry->textarea.x = entry->widget.rect.x + STK_ENTRY_BORDER_THICKNESS + 1;
-	entry->textarea.y = entry->widget.rect.y + STK_ENTRY_BORDER_THICKNESS + 1;
-	entry->textarea.w = entry->widget.rect.w - 2*(STK_ENTRY_BORDER_THICKNESS + 1);
-	entry->textarea.h = entry->widget.rect.h - 2*(STK_ENTRY_BORDER_THICKNESS + 1);
-	
-	return 0;
-}
-
 // input a char, shift display window and redraw window
 int STK_EntryKeyGeneral(STK_Entry *entry)
 {
+	STK_Widget *widget = (STK_Widget *)entry;
+	SDL_Rect r;
+	
 	// insert input key into text buffer
 	STK_TextAppendStr(entry->text, entry->inputkey);
+
+	// check if excced the edge of textarea
+	STK_FontAdapter(STK_FontGetDefaultFontWithSize(), &r, entry->text->data);
+	if (widget->fixed && r.w > entry->textarea.w)
+		STK_TextRemoveStr(entry->text, 1);
 
 	return 0;
 }

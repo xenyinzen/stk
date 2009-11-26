@@ -189,25 +189,25 @@ int STK_ImageFillRect(SDL_Surface *surface, SDL_Rect *rect, Uint32 kind, Uint32 
 		case STK_IMAGE_FRAME_SINGLELINE: {
 			SDL_Rect r;
 			STK_BaseRectAssign(&r, 0, 0, surface->w, 1);
-			SDL_FillRect(surface, &r, 0x00303030);
+			SDL_FillRect(surface, &r, 0x00505050);
 			STK_BaseRectAssign(&r, 0, surface->h - 1, surface->w, 1);
-			SDL_FillRect(surface, &r, 0x00303030);
+			SDL_FillRect(surface, &r, 0x00505050);
 			STK_BaseRectAssign(&r, 0, 0, 1, surface->h);
-			SDL_FillRect(surface, &r, 0x00303030);
+			SDL_FillRect(surface, &r, 0x00505050);
 			STK_BaseRectAssign(&r, surface->w - 1, 0, 1, surface->h);
-			SDL_FillRect(surface, &r, 0x00303030);
+			SDL_FillRect(surface, &r, 0x00505050);
 			}
 			break;
 		case STK_IMAGE_FRAME_DOUBLELINE: {
 			SDL_Rect r;
 			STK_BaseRectAssign(&r, 0, 0, surface->w, 2);
-			SDL_FillRect(surface, &r, 0x00303030);
+			SDL_FillRect(surface, &r, 0x00505050);
 			STK_BaseRectAssign(&r, 0, surface->h - 2, surface->w, 2);
-			SDL_FillRect(surface, &r, 0x00303030);
+			SDL_FillRect(surface, &r, 0x00505050);
 			STK_BaseRectAssign(&r, 0, 0, 2, surface->h);
-			SDL_FillRect(surface, &r, 0x00303030);
+			SDL_FillRect(surface, &r, 0x00505050);
 			STK_BaseRectAssign(&r, surface->w - 2, 0, 2, surface->h);
-			SDL_FillRect(surface, &r, 0x00303030);
+			SDL_FillRect(surface, &r, 0x00505050);
 			}
 			break;	
 		}

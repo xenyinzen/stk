@@ -22,9 +22,8 @@ typedef struct STK_Entry {
 //	Uint32 cursor_pos_old;		// the old cursor position (pixel value)
 //	Uint32 distance;		// the relative position of char rect on drawing start
 //	Uint32 charskip;		// the dividing space between two chars in a line
+	Uint32 limits;			// limits the number of input char
 	
-	Uint32 fgcolor;
-	Uint32 bgcolor;
 	Uint32 cursor_color;
 	
 	Uint16 charwidth[255];		// used to record char's width map
@@ -33,7 +32,7 @@ typedef struct STK_Entry {
 } STK_Entry;
 
 
-STK_Widget *STK_EntryNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, Uint16 limited_num, char *initial_str);
+STK_Entry *STK_EntryNew(char *initial_str, Uint16 limited_num, Uint16 x, Uint16 y, Uint16 w, Uint16 h);
 int STK_EntryRegisterType();
 void STK_EntryDraw(STK_Widget *widget);
 void STK_EntryClose(STK_Widget *widget);
