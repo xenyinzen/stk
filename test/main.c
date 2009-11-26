@@ -84,7 +84,7 @@ STK_Widget *draw_radiogroup()
 
 STK_Widget *draw_progressbar(Uint32 *p)
 {
-	STK_ProgressBar *pb = (STK_ProgressBar *)STK_ProgressBarNew(400, 20, 200, 50, p);
+	STK_ProgressBar *pb = (STK_ProgressBar *)STK_ProgressBarNew(p, 400, 20, 200, 50);
 	STK_WidgetEventShow((STK_Widget *)pb);
 	
 	return (STK_Widget *)pb;
@@ -100,8 +100,8 @@ int main(int argc,char **argv)
 	
     	Uint32 value = 10;
     	
-//    	SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER);
-    	SDL_Init(SDL_INIT_VIDEO);
+    	SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER);
+//    	SDL_Init(SDL_INIT_VIDEO);
 
     	video=SDL_SetVideoMode(640, 480, 32, SDL_HWSURFACE);
 	if ( video ==  NULL ) {

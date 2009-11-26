@@ -56,7 +56,7 @@ typedef struct STK_Slidebar {
 } STK_Slidebar;
 
 
-STK_Widget *STK_SlidebarNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h);
+STK_Slidebar *STK_SlidebarNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h);
 int STK_SlidebarRegisterType();
 int STK_SlidebarClose(STK_Widget *widget);
 void STK_SlidebarDraw(STK_Widget *widget);

@@ -3,10 +3,14 @@
 #include <string.h>
 
 #include "stk_mm.h"
+#include "stk_base.h"
+#include "stk_color.h"
+#include "stk_image.h"
 #include "stk_widget.h"
+#include "stk_window.h"
 #include "stk_slidebar.h"
 
-#define STK_SLIDEBAR_BORDER_THICKNESS 3
+#define STK_SLIDEBAR_BORDER_THICKNESS 2
 
 // Getting functions
 static void STK_SlidebarValueToPixel(STK_Slidebar *slider);
@@ -22,29 +26,36 @@ static void STK_SlidebarEventMouseMotion(STK_Object *object, void *signaldata, v
 
 
 // New function define
-STK_Widget *STK_SlidebarNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h)
+STK_Slidebar *STK_SlidebarNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h)
 {
 	STK_Object *object;
 	STK_Widget *widget;
 	STK_Slidebar *slider;
-	int orientation;
+	
+	STK_Window *win;
+	SDL_Rect rect;
+	
+	win = STK_WindowGetTop();
+	if (!win)
+		return -1;
+	if (x >= win->widget.rect.w || y >= win->widget.rect.h)
+		return -1;
 	
 	slider = (STK_Slidebar *)STK_Malloc(sizeof(STK_Slidebar));
 	widget = (STK_Widget *)slider;
 	object = (STK_Object *)slider;
+	STK_WidgetInitInstance(widget);
 	
 	widget->name = "Slidebar";
 	widget->type = STK_WIDGET_SLIDEBAR;
-	widget->rect.x = x;
-	widget->rect.y = y;
-	widget->rect.w = w;
-	widget->rect.h = h;
 	widget->flags |= WIDGET_FOCUSABLE+WIDGET_DRAGABLE;
+	widget->fixed = 1;
+	widget->border = STK_SLIDEBAR_BORDER_THICKNESS;
+	STK_BaseColorAssign(&widget->bgcolor, STK_COLOR_SLIDEBAR_BACKGROUND);
+	STK_BaseColorAssign(&widget->fgcolor, STK_COLOR_SLIDEBAR_FOREGROUND);
 	
-	if (w > h)
-		orientation = STK_SLIDEBAR_HORIZONTAL;
-	else
-		orientation = STK_SLIDEBAR_VERTICAL;
+	STK_BaseRectAssign(&rect, x, y, w, h);
+	STK_WidgetSetDims(widget, &rect);
 	
 	// connect three mouse events
 	STK_SignalConnect(widget, "mousebuttondown", STK_SlidebarEventMouseButtonDown, widget);
@@ -56,20 +67,25 @@ STK_Widget *STK_SlidebarNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h)
 	slider->curvalue = 0;
 	slider->value_locked = 0;
 	
-	slider->orientation = orientation;
-	// interval
-	slider->minpixel = STK_SLIDEBAR_BORDER_THICKNESS;
+	if (w > h)
+		slider->orientation = STK_SLIDEBAR_HORIZONTAL;
+	else
+		slider->orientation = STK_SLIDEBAR_VERTICAL;
+	
+	// internal
+	slider->minpixel = widget->border;
 	slider->curpixel = slider->minpixel;
-	// 6 is 2*3, the interval between bar border and button border
+	
+	// the interval between bar border and button border
 	if (slider->orientation == STK_SLIDEBAR_VERTICAL) {
-		slider->b_width = w - 2*STK_SLIDEBAR_BORDER_THICKNESS;
+		slider->b_width = widget->rect.w - 2 * widget->border;
 		slider->b_height = slider->b_width * 3 / 4;
-		slider->maxpixel = h - slider->b_height - STK_SLIDEBAR_BORDER_THICKNESS;
+		slider->maxpixel = widget->rect.h - slider->b_height - widget->border;
 	}
 	else {
-		slider->b_height = h - 2*STK_SLIDEBAR_BORDER_THICKNESS;
+		slider->b_height = widget->rect.h - 2 * widget->border;
 		slider->b_width = slider->b_height * 3 / 4;
-		slider->maxpixel = w - slider->b_width - STK_SLIDEBAR_BORDER_THICKNESS;
+		slider->maxpixel = widget->rect.w - slider->b_width - widget->border;
 	}
 	
 	slider->step = STK_SLIDEBAR_STEP;
@@ -78,7 +94,7 @@ STK_Widget *STK_SlidebarNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h)
 	slider->r_x = -1;
 	slider->r_y = -1;
 
-	return widget;
+	return slider;
 }
 
 int STK_SlidebarRegisterType()
@@ -108,74 +124,37 @@ int STK_SlidebarClose(STK_Widget *widget)
 void STK_SlidebarDraw(STK_Widget *widget)
 {
 	STK_Slidebar *slider = (STK_Slidebar *)widget;
+	SDL_Rect r;
+	SDL_Surface *s = widget->surface;
+	Uint32 tmpcolor;
+	int bx, by;
 	
-	// vertical
 	if (slider->orientation == STK_SLIDEBAR_VERTICAL) {
-		SDL_Rect r;
-		SDL_Surface *s = widget->surface;
-		
-		// the background color of slidebar, temporarily
-		r.x = 0;
-		r.y = 0;
-		r.w = widget->rect.w;
-		r.h = widget->rect.h;
-		SDL_FillRect(s, &r, SDL_MapRGB(s->format, 0xf4, 0xf0, 0xe8));
-		
-		// fill the button background color
-		r.x = STK_SLIDEBAR_BORDER_THICKNESS;
-		r.y = slider->curpixel + STK_SLIDEBAR_BORDER_THICKNESS;
-		r.w = widget->rect.w - 2 * STK_SLIDEBAR_BORDER_THICKNESS;
-		// we define the button's w:h is 4:3
-		r.h = r.w * 3 / 4;
-		SDL_FillRect(s, &r, SDL_MapRGB(s->format, 0xd4, 0xd0, 0xc8));
-		
-		if (r.h < 10)
-			r.h = 10;
-/*		
-		// fill the border of the button
-		STK_DrawLine(s, r.x, r.y+r.h-1, r.x+r.w-1, r.y+r.h-1, 0x404040ff);	// bottom line 1
-		STK_DrawLine(s, r.x+r.w-1, r.y, r.x+r.w-1, r.y+r.h-1, 0x404040ff);	// right line 1
-		STK_DrawLine(s, r.x+1, r.y+r.h-2, r.x+r.w-2, r.y+r.h-2, 0x808080ff);	// bottom line 2
-		STK_DrawLine(s, r.x+r.w-2, r.y+1, r.x+r.w-2, r.y+r.h-2, 0x808080ff);	// right line 2
-		
-		STK_DrawLine(s, r.x+1, r.y+1, r.x+r.w-2, r.y+1, 0xffffffff);		// top line 2
-		STK_DrawLine(s, r.x+1, r.y+1, r.x+1, r.y+r.h-2, 0xffffffff);		// left line 2
-		STK_DrawLine(s, r.x, r.y, r.x+r.w-1, r.y, 0xd4d0c8ff);			// top line 1
-		STK_DrawLine(s, r.x, r.y, r.x, r.y+r.h-1, 0xd4d0c8ff);			// left line 1
-*/
-	} 
-	// horizontal
-	else {
-		SDL_Rect r;
-		SDL_Surface *s = widget->surface;
-		
-		r.x = 0;
-		r.y = 0;
-		r.w = widget->rect.w;
-		r.h = widget->rect.h;
-		SDL_FillRect(s, &r, SDL_MapRGB(s->format, 0xf4, 0xf0, 0xe8));
-		
-		r.x = slider->curpixel + STK_SLIDEBAR_BORDER_THICKNESS;
-		r.y = STK_SLIDEBAR_BORDER_THICKNESS;
-		r.h = widget->rect.h - 2 * STK_SLIDEBAR_BORDER_THICKNESS;
-		r.w = r.h * 3 / 4;
-		SDL_FillRect(s, &r, SDL_MapRGB(s->format, 0xd4, 0xd0, 0xc8));
-		
-		if (r.w < 10)
-			r.w = 10;
-/*		
-		// fill the border of the inner button
-		STK_DrawLine(s, r.x, r.y+r.h-1, r.x+r.w-1, r.y+r.h-1, 0x404040ff);
-		STK_DrawLine(s, r.x+r.w-1, r.y, r.x+r.w-1, r.y+r.h-1, 0x404040ff);
-		STK_DrawLine(s, r.x+1, r.y+r.h-2, r.x+r.w-2, r.y+r.h-2, 0x808080ff);
-		STK_DrawLine(s, r.x+r.w-2, r.y+1, r.x+r.w-2, r.y+r.h-2, 0x808080ff);
-		
-		STK_DrawLine(s, r.x+1, r.y+1, r.x+r.w-2, r.y+1, 0xffffffff);
-		STK_DrawLine(s, r.x+1, r.y+1, r.x+1, r.y+r.h-2, 0xffffffff);
-		STK_DrawLine(s, r.x, r.y, r.x+r.w-1, r.y, 0xd4d0c8ff);
-		STK_DrawLine(s, r.x, r.y, r.x, r.y+r.h-1, 0xd4d0c8ff);		
-*/	
+		bx = widget->border;
+		by = slider->curpixel;
 	}
+	else {
+		bx = slider->curpixel;
+		by = widget->border;		
+	}
+	
+	// fill background
+	tmpcolor = SDL_MapRGB(widget->surface->format, widget->bgcolor.r, widget->bgcolor.g, widget->bgcolor.b);
+	SDL_FillRect(s, NULL, tmpcolor);
+	
+	STK_BaseRectAssign(	&r, 
+				bx,
+				by,
+				slider->b_width,
+				slider->b_height );
+	tmpcolor = SDL_MapRGB(widget->surface->format, widget->fgcolor.r, widget->fgcolor.g, widget->fgcolor.b);
+	SDL_FillRect(s, &r, tmpcolor);
+	// draw outer border
+	STK_ImageDrawFrame(s, STK_IMAGE_FRAME_CONCAVE);
+	// draw inner border
+	STK_ImageDrawFrameWithRect(s, &r, STK_IMAGE_FRAME_CONVEX);
+	
+	return;
 }
 
 static void STK_SlidebarEventMouseButtonDown(STK_Object *object, void *signaldata, void *userdata)
@@ -290,17 +269,24 @@ static void STK_SlidebarEventMouseMotion(STK_Object *object, void *signaldata, v
 	STK_Slidebar *slider = (STK_Slidebar *)object;
 	STK_Widget *widget = (STK_Widget *)object;
 	SDL_Event *event = (SDL_Event *)signaldata;
+	int t;
 	
 	printf("Enter slidebar mouse motion event process.\n");
 	if (slider->state == STK_SLIDEBAR_DRAG) {
 		// horizontal
-		if (slider->orientation == STK_SLIDEBAR_HORIZONTAL) {
-			slider->curpixel = event->motion.x - widget->rect.x - slider->r_x;
-		}
+		if (slider->orientation == STK_SLIDEBAR_HORIZONTAL)
+			t = event->motion.x - widget->rect.x - slider->r_x;
 		// vertical
-		else {
-			slider->curpixel = event->motion.y - widget->rect.y - slider->r_y;
-		}
+		else
+			t = event->motion.y - widget->rect.y - slider->r_y;
+
+		if (t > slider->minpixel && t < slider->maxpixel) 
+			slider->curpixel = t;
+		else if (t >= slider->maxpixel)
+			slider->curpixel = slider->maxpixel;
+		else if (t <= slider->minpixel)
+			slider->curpixel = slider->minpixel;
+		
 		// calculate the current value presented by the slidebar
 		STK_SlidebarPixelToValue(slider);
 		slider->changed = 1;

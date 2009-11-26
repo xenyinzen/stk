@@ -273,3 +273,44 @@ int STK_ImageDrawFrame(SDL_Surface *s, int pattern)
 
 }
 
+
+int STK_ImageDrawFrameWithRect(SDL_Surface *s, SDL_Rect *r, int pattern)
+{
+	SDL_Rect rect;
+	STK_Image image;
+
+	// area 1
+	STK_BaseRectAssign(&rect, r->x + 2, r->y, r->w-4, 2);
+	image.fillstyle = STK_IMAGE_FILLSTYLE_HORIZONTAL;	
+	STK_ImageFillRect(s, &rect, STK_IMAGE_KIND_FRAME, pattern, &image, 0);
+	// area 3
+	STK_BaseRectAssign(&rect, r->x + 2, r->y + r->h - 2, r->w-4, 2);
+	image.fillstyle = STK_IMAGE_FILLSTYLE_HORIZONTAL;
+	STK_ImageFillRect(s, &rect, STK_IMAGE_KIND_FRAME, pattern, &image, 1);	
+	// area 2
+	STK_BaseRectAssign(&rect, r->x + r->w - 2, r->y + 2, 2, r->h - 4);
+	image.fillstyle = STK_IMAGE_FILLSTYLE_VERTICAL;
+	STK_ImageFillRect(s, &rect, STK_IMAGE_KIND_FRAME, pattern, &image, 0);	
+	// area 4
+	STK_BaseRectAssign(&rect, r->x, r->y + 2, 2, r->h-4);
+	image.fillstyle = STK_IMAGE_FILLSTYLE_VERTICAL;
+	STK_ImageFillRect(s, &rect, STK_IMAGE_KIND_FRAME, pattern, &image, 1);	
+	// area 5
+	STK_BaseRectAssign(&rect, r->x, r->y, 2, 2);
+	image.fillstyle = STK_IMAGE_FILLSTYLE_MATRIX;
+	STK_ImageFillRect(s, &rect, STK_IMAGE_KIND_FRAME, pattern, &image, 0);	
+	// area 6
+	STK_BaseRectAssign(&rect, r->x + r->w - 2, r->y, 2, 2);
+	image.fillstyle = STK_IMAGE_FILLSTYLE_MATRIX;
+	STK_ImageFillRect(s, &rect, STK_IMAGE_KIND_FRAME, pattern, &image, 1);	
+	// area 7
+	STK_BaseRectAssign(&rect, r->x + r->w-2, r->y + r->h - 2, 2, 2);
+	image.fillstyle = STK_IMAGE_FILLSTYLE_MATRIX;
+	STK_ImageFillRect(s, &rect, STK_IMAGE_KIND_FRAME, pattern, &image, 2);	
+	// area 8
+	STK_BaseRectAssign(&rect, r->x, r->y + r->h - 2, 2, 2);
+	image.fillstyle = STK_IMAGE_FILLSTYLE_MATRIX;
+	STK_ImageFillRect(s, &rect, STK_IMAGE_KIND_FRAME, pattern, &image, 3);	
+
+}
+
