@@ -114,7 +114,7 @@ int STK_FontGetHeight(STK_Font *font)
 int STK_FontDraw(STK_Font *font, char *str, STK_Widget *widget, SDL_Rect *rect, SDL_Color *fg, SDL_Color *bg)
 {
 	SDL_Surface *text;
-	SDL_Rect dst;
+	SDL_Rect src, dst;
 	Uint32 colorkey_bg;
 
 	STK_Window *win = STK_WindowGetTop();
@@ -135,8 +135,13 @@ int STK_FontDraw(STK_Font *font, char *str, STK_Widget *widget, SDL_Rect *rect, 
 	// set the background of label being transparent, magic num is for test only
 	colorkey_bg = SDL_MapRGB(text->format, bg->r, bg->g, bg->b);
 	SDL_SetColorKey(text, SDL_SRCCOLORKEY, colorkey_bg);
+	
+	src.x = 0;
+	src.y = 0;
+	src.w = dst.w;
+	src.h = dst.h;
 			
-	SDL_BlitSurface(text, NULL, widget->surface, &dst);
+	SDL_BlitSurface(text, &src, widget->surface, &dst);
 	SDL_FreeSurface(text);
 
 	return 0;

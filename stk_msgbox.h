@@ -18,6 +18,7 @@ typedef struct STK_MsgBox {
 	Uint16 cur_y;			// current y coordinate
 	
 	Uint32 interval;		// the interval between text
+	Uint32 log;			// log or not?
 } STK_MsgBox;
 
 STK_MsgBox *STK_MsgBoxNew(char *str, Uint16 x, Uint16 y, Uint16 w, Uint16 h);

@@ -56,6 +56,7 @@ STK_MsgBox *STK_MsgBoxNew(char *str, Uint16 x, Uint16 y, Uint16 w, Uint16 h)
 	msgbox->start_line = 0;
 	msgbox->end_line = 0;
 	msgbox->interval = 4;
+	msgbox->log = 1;
 	STK_BaseRectAssign(	&msgbox->textarea, 
 				widget->border, 
 				widget->border,
@@ -90,22 +91,26 @@ void STK_MsgBoxDraw(STK_Widget *widget)
 	font_height = STK_FontGetHeight(font);
 	STK_MsgBoxCalcDisplayLineWindow(msgbox, font_height);
 	
-	if (msgbox->start_line < msgbox->end_line) {
-		for (i = 0; i<msgbox->end_line - msgbox->start_line; i++) {
-			rect.x = msgbox->textarea.x;
-			rect.y = msgbox->textarea.y + i*font_height + i * msgbox->interval;
-			rect.w = msgbox->textarea.w - rect.x;
-			rect.h = msgbox->textarea.h - rect.y;
-			// here, we must ensure that linebuf[i]->data is valid
-			STK_FontDraw(	font,
-					//STK_FontGetDefaultFontWithSize(),
-					msgbox->linebuf[i+msgbox->start_line]->data, 
-					widget, 
-					&rect, 
-					&widget->fgcolor, 
-					&widget->bgcolor );
-		}	
-	}
+	i = msgbox->start_line;
+	while (i != msgbox->end_line) {
+		rect.x = msgbox->textarea.x;
+		rect.y = msgbox->textarea.y \
+				+ ((i + STK_MSGBOX_LINEBUF_NUM - msgbox->start_line) \
+				% STK_MSGBOX_LINEBUF_NUM) \
+				* (font_height + msgbox->interval);
+		rect.w = msgbox->textarea.w + widget->border - rect.x;
+		rect.h = msgbox->textarea.h + widget->border - rect.y;
+		// here, we must ensure that linebuf[i]->data is valid
+		STK_FontDraw(	font,
+				//STK_FontGetDefaultFontWithSize(),
+				msgbox->linebuf[i]->data, 
+				widget, 
+				&rect, 
+				&widget->fgcolor, 
+				&widget->bgcolor );
+		i++;
+		i %= STK_MSGBOX_LINEBUF_NUM;
+	}	
 }
 
 void STK_MsgBoxClose(STK_Widget *widget)
@@ -157,6 +162,7 @@ int STK_MsgBoxCalcDisplayLineWindow(STK_MsgBox *msgbox, int font_height)
 		sum -= (font_height + msgbox->interval);
 		// move the top line up
 		msgbox->start_line++;
+		msgbox->start_line %= STK_MSGBOX_LINEBUF_NUM; 
 	}
 
 	return 0;
@@ -164,22 +170,34 @@ int STK_MsgBoxCalcDisplayLineWindow(STK_MsgBox *msgbox, int font_height)
 
 int STK_MsgBoxAddMsg(STK_MsgBox *msgbox, char *str)
 {
+	FILE *fp;
+	int i;
+	
 	if (msgbox->end_line >= STK_MSGBOX_LINEBUF_NUM || str == NULL)
 		return -1;
 	
 	if (str) {
 		msgbox->linebuf[msgbox->end_line] = STK_TextNew(str);
+		
+		if (msgbox->log) {
+			// if log flag swith on, we need to record the buffer content to log file
+			if ((fp = fopen("log.txt", "a")) == NULL) {
+				printf("Can't open log file: log.txt");
+				exit(-1);
+			}
+			
+			fprintf(fp, "%s\n", msgbox->linebuf[msgbox->end_line]->data);
+			
+			fclose(fp);
+			SDL_Delay(10);
+			// circle
+		}
 		msgbox->end_line++;
+		if (msgbox->end_line >= STK_MSGBOX_LINEBUF_NUM)
+			msgbox->end_line %= STK_MSGBOX_LINEBUF_NUM;
 	}	
 
 	STK_WidgetEventRedraw((STK_Widget *)msgbox);
 
 	return 0;
 }
-
-
-
-
-
-
-

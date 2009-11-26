@@ -57,14 +57,14 @@ STK_Widget *draw_radiobutton()
 
 STK_Widget *draw_msgbox()
 {
-	STK_MsgBox *msgbox = (STK_MsgBox *)STK_MsgBoxNew("first line", 20, 300, 250, 150);
+	STK_MsgBox *msgbox = (STK_MsgBox *)STK_MsgBoxNew("first line", 20, 300, 250, 155);
 	STK_WidgetEventShow((STK_Widget *)msgbox);
 	
 	STK_MsgBoxAddMsg(msgbox, "The second line");
-	STK_MsgBoxAddMsg(msgbox, "The 3rd line");
-//	STK_MsgBoxAddMsg(msgbox, "The 4th line");
-//	STK_MsgBoxAddMsg(msgbox, "The 5th line");
-//	STK_MsgBoxAddMsg(msgbox, "The 6th line");
+	STK_MsgBoxAddMsg(msgbox, "The 3rd line, ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt");
+	STK_MsgBoxAddMsg(msgbox, "The 4th line");
+	STK_MsgBoxAddMsg(msgbox, "The 5th line");
+	STK_MsgBoxAddMsg(msgbox, "The 6th line");
 	STK_MsgBoxAddMsg(msgbox, "The 7th line");
 	STK_MsgBoxAddMsg(msgbox, "The 8th line");
 	
@@ -98,7 +98,9 @@ int main(int argc,char **argv)
     	STK_Widget  *button;
 	STK_MsgBox *msgbox;
 	
+	int i;
     	Uint32 value = 10;
+    	char str[128];
     	
     	SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER);
 //    	SDL_Init(SDL_INIT_VIDEO);
@@ -125,8 +127,11 @@ int main(int argc,char **argv)
     	draw_radiogroup();
 	draw_progressbar(&value);
 	msgbox = (STK_MsgBox *)draw_msgbox();
-	STK_MsgBoxAddMsg(msgbox, "This 9th string.");
- 		    	
+	
+//	for (i=0; i<200; i++) {
+//		sprintf(str, "%d", i);
+//		STK_MsgBoxAddMsg(msgbox, str);
+ //	}	    	
     	STK_WindowOpen();
     	
 //    	SDL_Delay(5000);
