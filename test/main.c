@@ -63,7 +63,7 @@ STK_Widget *draw_msgbox()
 	STK_MsgBoxAddMsg(msgbox, "The second line");
 	STK_MsgBoxAddMsg(msgbox, "The 3rd line, ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt");
 	STK_MsgBoxAddMsg(msgbox, "The 4th line");
-	STK_MsgBoxAddMsg(msgbox, "The 5th line");
+	STK_MsgBoxAddMsg(msgbox, "The 5th \n haha, insert something..,\n \n        line\n");
 	STK_MsgBoxAddMsg(msgbox, "The 6th line");
 	STK_MsgBoxAddMsg(msgbox, "The 7th line");
 	STK_MsgBoxAddMsg(msgbox, "The 8th line");

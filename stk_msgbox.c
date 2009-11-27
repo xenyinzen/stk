@@ -65,8 +65,7 @@ STK_MsgBox *STK_MsgBoxNew(char *str, Uint16 x, Uint16 y, Uint16 w, Uint16 h)
 	msgbox->cur_y = 0;
 	
 	if (str) {
-		msgbox->linebuf[0] = STK_TextNew(str);
-		msgbox->end_line++;
+		STK_MsgBoxAddMsg(msgbox, str);
 	}	
 
 	return msgbox;
@@ -116,7 +115,7 @@ void STK_MsgBoxClose(STK_Widget *widget)
 {
 	STK_MsgBox *msgbox = (STK_MsgBox *)widget;
 	int i = 0;
-/*	
+	
 	// release the text line buffer
 	for (i = 0; i< STK_MSGBOX_LINEBUF_NUM; i++) {
 		if (msgbox->linebuf[i]) {
@@ -124,7 +123,7 @@ void STK_MsgBoxClose(STK_Widget *widget)
 		}
 	
 	}
-*/
+
 	// release surface
 	if (widget->surface)
 		SDL_FreeSurface(widget->surface);
@@ -169,34 +168,81 @@ int STK_MsgBoxCalcDisplayLineWindow(STK_MsgBox *msgbox, int font_height)
 
 int STK_MsgBoxAddMsg(STK_MsgBox *msgbox, char *str)
 {
-	FILE *fp;
 	int i;
 	
 	if (msgbox->end_line >= STK_MSGBOX_LINEBUF_NUM || str == NULL)
 		return -1;
 	
 	if (str) {
-		msgbox->linebuf[msgbox->end_line] = STK_TextNew(str);
+		char *psrc;
+		char *p, *saveptr;
+		char **p1, **p0;
+		int i, n;
 		
-		if (msgbox->log) {
-			// if log flag swith on, we need to record the buffer content to log file
-			if ((fp = fopen("log.txt", "a")) == NULL) {
-				printf("Can't open log file: log.txt");
-				exit(-1);
+		n = 0;
+		psrc = (char *)STK_Malloc(strlen(str) + 1);
+		strcpy(psrc, str);
+		for (i=0; i<strlen(psrc); i++) {
+			if (psrc[i] == '\n')
+				n++; 
+		}
+		
+		if (n == 0) {
+			msgbox->linebuf[msgbox->end_line] = STK_TextNew(str);
+			STK_MsgBoxLog(msgbox);
+			msgbox->end_line++;
+			if (msgbox->end_line >= STK_MSGBOX_LINEBUF_NUM)
+				msgbox->end_line %= STK_MSGBOX_LINEBUF_NUM;
+			
+		}
+		// multiple line
+		else if (n > 0) {
+			int t = 0;
+			p0 = (char **)STK_Malloc(sizeof(char *) * (n+1));
+
+			p1 = p0;
+			p = strtok_r(psrc, "\n", &saveptr);
+			while (p) {
+				*p1++ = p;
+				t++;
+				p = strtok_r(NULL, "\n", &saveptr);
 			}
 			
-			fprintf(fp, "%s\n", msgbox->linebuf[msgbox->end_line]->data);
-			
-			fclose(fp);
-			SDL_Delay(10);
-			// circle
+			p1 = p0;
+			for (i=0; i<t; i++) {
+				msgbox->linebuf[msgbox->end_line] = STK_TextNew(p1[i]);
+				STK_MsgBoxLog(msgbox);
+				msgbox->end_line++;
+				if (msgbox->end_line >= STK_MSGBOX_LINEBUF_NUM)
+					msgbox->end_line %= STK_MSGBOX_LINEBUF_NUM;
+			}			
 		}
-		msgbox->end_line++;
-		if (msgbox->end_line >= STK_MSGBOX_LINEBUF_NUM)
-			msgbox->end_line %= STK_MSGBOX_LINEBUF_NUM;
+		
+		
 	}	
 
 	STK_WidgetEventRedraw((STK_Widget *)msgbox);
 
 	return 0;
 }
+
+int STK_MsgBoxLog(STK_MsgBox *msgbox)
+{
+	FILE *fp;
+	
+	if (msgbox->log) {
+		// if log flag swith on, we need to record the buffer content to log file
+		if ((fp = fopen("log.txt", "a")) == NULL) {
+			printf("Can't open log file: log.txt");
+			exit(-1);
+		}
+		
+		fprintf(fp, "%s\n", msgbox->linebuf[msgbox->end_line]->data);
+		
+		fclose(fp);
+		SDL_Delay(10);
+	}
+
+	return 0;
+}
+
