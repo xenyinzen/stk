@@ -11,8 +11,7 @@
 #include "stk_widget.h"
 #include "stk_window.h"
 #include "stk_msgbox.h"
-
-#define STK_MSGBOX_BORDER_THICKNESS	4
+#include "stk_default.h"
 
 int STK_MsgBoxCalcDisplayLineWindow(STK_MsgBox *msgbox, int font_height);
 int STK_MsgBoxCalcTextArea(STK_MsgBox *msgbox);

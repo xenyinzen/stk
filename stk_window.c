@@ -3,6 +3,7 @@
 
 #include "SDL.h"
 #include "stk_prim.h"
+#include "stk_color.h"
 #include "stk_widget.h"
 #include "stk_window.h"
 
@@ -15,7 +16,7 @@ STK_Window *STK_WindowNew( Sint16 x, Sint16 y, Sint16 width, Sint16 height)
 	// get the main video surface
 	SDL_Surface *video = SDL_GetVideoSurface();
 	if (video == NULL)
-		return 1;
+		return NULL;
 	
 	STK_Window *win = (STK_Window *)STK_Malloc(sizeof(STK_Window));
 	
@@ -45,7 +46,7 @@ int STK_WindowOpen()
 {
 	STK_Window *window = STK_WindowGetTop();
 	if (window == NULL)
-		return 1;
+		return -1;
 	window->type = 0;
 	window->bgcolor = SDL_MapRGB(window->widget.surface->format, 0xd4, 0xd4, 0xd4);
 	window->visible = 1;
@@ -101,7 +102,7 @@ int STK_WindowSetWidgetList(STK_WidgetListNode *wl)
 {
 	STK_Window *win = STK_WindowGetTop();	
 	if (!win)
-		return 1;
+		return -1;
 
 	win->widget_list = wl;
 	
@@ -151,7 +152,7 @@ int STK_WindowGetMouseState( int *x, int *y )
 	STK_Window *win = STK_WindowGetTop();
 	
 	if (!win) 
-		return 1;
+		return -1;
 
 	SDL_GetMouseState(&abs_x, &abs_y);
 	*x = abs_x - win->widget.rect.x;
@@ -165,9 +166,9 @@ int STK_WindowCreateWidgetSurface(STK_Widget *widget)
 	STK_Window *win = STK_WindowGetTop();
 	// if the location of widget excced the bounary of win, return directly
 	if (widget->rect.x > win->widget.rect.x + win->widget.rect.w)
-		return 1;
+		return -1;
 	if (widget->rect.y > win->widget.rect.y + win->widget.rect.h)
-		return 1;
+		return -1;
 	
 	if (widget->rect.x + widget->rect.w > win->widget.rect.x + win->widget.rect.w )
 		widget->rect.w = win->widget.rect.x + win->widget.rect.w - widget->rect.x;
@@ -190,7 +191,7 @@ int STK_WindowAddWidget(STK_Widget *widget)
 	
 	STK_Window *win = STK_WindowGetTop();
 	if (!win)
-		return 1;
+		return -1;
 	
 	item = (STK_WidgetListNode *)STK_Malloc(sizeof(STK_WidgetListNode));
 	item->widget = widget;
@@ -231,7 +232,7 @@ int STK_WindowEventRealize()
 {
 	STK_Window *window = STK_WindowGetTop();
 	if (!window)
-		return 1;
+		return -1;
 	
 	SDL_Event event;
 	event.type = STK_EVENT;
@@ -248,7 +249,7 @@ int STK_WindowEventRedraw()
 {
 	STK_Window *window = STK_WindowGetTop();
 	if (!window)
-		return 1;
+		return -1;
 
 	SDL_Event event;
 	event.type = STK_EVENT;
@@ -265,7 +266,7 @@ int STK_WindowRealize()
 {
 	STK_Window *win = STK_WindowGetTop();
 	if (!win)
-		return 1;
+		return -1;
 
 	STK_WidgetListNode *item = STK_WindowGetWidgetList();
 	
@@ -293,7 +294,7 @@ int STK_WindowRedraw()
 	SDL_Surface *video = SDL_GetVideoSurface();
 	STK_Window *win = STK_WindowGetTop();
 	if (!win)
-		return 1;
+		return -1;
 		
 	win->visible = 1;
 	

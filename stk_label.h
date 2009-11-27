@@ -26,13 +26,16 @@ enum STK_LabelPattern {
 typedef struct STK_Label {
 	STK_Widget widget;
 	STK_Font *font;
-	char *caption;
+	char *caption;		// for single line
+	char **pcaption;	// for multiline
     
-	Uint32  bgcolor;
-	Uint32  fgcolor;
+	Uint32 line_height;	// line height
+	Uint32 lineskip;	// line skip
 
-	int alignment;
-	int pattern;
+    	Uint32 lines;		// how many lines
+	Uint32 alignment;
+	Uint32 pattern;
+	
 } STK_Label;
 
 STK_Label* STK_LabelNew( char *str, Uint16 x, Uint16 y);

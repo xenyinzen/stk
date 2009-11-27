@@ -11,9 +11,8 @@
 #include "stk_widget.h"
 #include "stk_window.h"
 #include "stk_entry.h"
+#include "stk_default.h"
 
-#define STK_ENTRY_BORDER_THICKNESS	3
-#define STK_ENTRY_CURSOR_WIDTH		2
 
 static void STK_EntryEventKeyDown(STK_Object *object, void *signaldata, void *userdata);
 

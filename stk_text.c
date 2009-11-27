@@ -46,7 +46,7 @@ int STK_TextSetText(STK_Text *text, char *str)
 	
 	if (!text || !str ) {
 		fprintf(stderr, "STK_TextSetText: text or str is NULL.\n");
-		return 1;
+		return -1;
 	}
 	len = strlen(str);
 

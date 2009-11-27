@@ -79,7 +79,7 @@ static int STK_SignalConnectToObject(STK_Object *object, char *signal, F_Signal_
 	// if global signal list is blank
 	if (slist_head == NULL) {
 		fprintf(stderr, "Signal [%s] doesn't exist.\n", signal);
-		return 1;	
+		return -1;	
 	}
 	// if global signal list is not blank
 	else {
@@ -94,7 +94,7 @@ static int STK_SignalConnectToObject(STK_Object *object, char *signal, F_Signal_
 		
 		if (l == NULL) {
 			fprintf(stderr, "Signal [%s] doesn't exist.\n", signal);
-			return 1;
+			return -1;
 		}
 		
 		// find the signal node in the list

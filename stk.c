@@ -17,19 +17,19 @@ static void STK_InternalEvent(SDL_Event *event);
 int STK_Init()
 {
 	if ( SDL_GetVideoSurface() == NULL)
-		return 1;
+		return -1;
 	
 	// begin to initial some lower structures
 	if (STK_SignalInit() != 0)
-		return 1;
+		return -1;
 	if (STK_WindowInit() != 0)
-		return 1;
+		return -1;
 	if (STK_WidgetInitType() != 0)
-		return 1;
+		return -1;
 	if (STK_WidgetInit() != 0)
-		return 1;
+		return -1;
 	if (STK_FontInit() != 0)
-		return 1;
+		return -1;
 
 	// enable keyboard settings
 	SDL_EnableUNICODE(1);
@@ -42,7 +42,7 @@ int STK_Main()
 	SDL_Event event;
 	
 	if (SDL_GetVideoSurface() == NULL)
-		return 1;
+		return -1;
 	// clear the event's initial value to zero
 	memset(&event, 0, sizeof(event));
 	
@@ -50,7 +50,7 @@ int STK_Main()
 		while (SDL_WaitEvent(&event)) {
 			if (STK_DispatchEvent(&event) != 0) {
 				STK_Quit();
-				return 1;		
+				return -1;		
 			}
 		}
 		// must here
@@ -62,13 +62,13 @@ static int STK_DispatchEvent(SDL_Event *event)
 {
 	SDL_Event e;
 	if (SDL_GetVideoSurface() == NULL)
-		return 1;
+		return -1;
 	
 	switch (event->type) {
 	// close the window
 	case SDL_QUIT:
 		STK_WindowClose();
-		return 1;
+		return -1;
 	// ignore, jump over
 	case SDL_VIDEOEXPOSE:
 	case SDL_ACTIVEEVENT:
@@ -133,8 +133,6 @@ static void STK_InternalEvent(SDL_Event *event)
 	default:
 		break;
 	}
-
-
 }
 
 int STK_Quit()

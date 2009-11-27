@@ -34,6 +34,10 @@
 #define STK_COLOR_MSGBOX_BACKGROUND	0xf4, 0xf4, 0xf4
 #define STK_COLOR_MSGBOX_FOREGROUND	0x10, 0x10, 0x10
 
+// s is a surface, m is a color macro, c is SDL_Rect
+#define STK_MCOLOR2INT(s, m)		( (Uint32)SDL_MapRGB(s->format, m) )
+#define STK_COLOR2INT(s, c)		( (Uint32)SDL_MapRGB(s->format, c.r, c.g, c.b) )
+
 
 enum STK_ColorType {
 	STK_COLOR_BACKGROUND,

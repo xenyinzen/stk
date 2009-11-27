@@ -62,7 +62,7 @@ int STK_WidgetDrawAll()
 	wlist = win->widget_list;
 	if (!wlist) {
 		fprintf(stderr, "No widgets to draw!\n");
-		return 1;
+		return -1;
 	} 
 	
 	SDL_mutexP(my_mutex);
@@ -207,7 +207,7 @@ int STK_WidgetIsActive(STK_Widget *widget)
 		l = STK_WindowGetWidgetList(win);
 		while (l) {
 			if (l->widget == widget)
-				return 1;
+				return -1;
 			l = l->next;
 		}
 	}
@@ -225,7 +225,7 @@ int STK_WidgetDraw(STK_Widget *widget)
 	int doupdate = 1;
 	
 	if (!win)
-		return 1;
+		return -1;
 	
 	if (win->visible) {
 		// walk along the widget list on 'win'
@@ -277,7 +277,7 @@ int STK_WidgetEventRedraw(STK_Widget *widget)
 {
 	SDL_Event event;
 	if (!widget)
-		return 1;
+		return -1;
 	
 	if (widget->flags & WIDGET_VISIBLE) {
 		event.type = STK_EVENT;
@@ -295,7 +295,7 @@ int STK_WidgetEventHide(STK_Widget *widget)
 {
 	SDL_Event event;
 	if (!widget)
-		return 1;
+		return -1;
 	
 	event.type = STK_EVENT;
 	event.user.code = STK_WIDGET_HIDE;
@@ -311,7 +311,7 @@ int STK_WidgetEventShow(STK_Widget *widget)
 {
 	SDL_Event event;
 	if (!widget)
-		return 1;
+		return -1;
 	
 	if (!(widget->flags & WIDGET_VISIBLE)) {
 		event.type = STK_EVENT;
@@ -342,7 +342,7 @@ int STK_WidgetIsInside(STK_Widget *widget, int x, int y)
 					//		if (y > widget->clip.y)
 					//			if (x < (widget->clip.x + widget->clip.w))
 					//				if (y < (widget->clip.y + widget->clip.h))
-										return 1;
+										return -1;
 				//	}
 				//	else {
 				//		return 0;
@@ -360,7 +360,7 @@ int STK_RectIsInside(const SDL_Rect *A, const SDL_Rect *B)
 			if (A->y <= B->y + B->h)
 				if (A->x <= B->x + B->w)
 					if (A->y + A->h <= B->y + B->h)
-						return 1;
+						return -1;
 	
 	return 0;
 }

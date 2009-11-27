@@ -9,8 +9,8 @@
 #include "stk_widget.h"
 #include "stk_window.h"
 #include "stk_progressbar.h"
+#include "stk_default.h"
 
-#define STK_PROGRESSBAR_BORDER_THICKNESS	2
 
 Uint32 STK_ProgressBarCheckValue(Uint32 interval, void *param);
 

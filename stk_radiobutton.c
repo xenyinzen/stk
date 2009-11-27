@@ -9,8 +9,8 @@
 #include "stk_color.h"
 #include "stk_label.h"
 #include "stk_radiobutton.h"
+#include "stk_default.h"
 
-#define STK_RADIOBUTTON_BORDER_THICKNESS	2
 
 STK_RadioButton *STK_RadioButtonNew(char *caption, Uint16 x, Uint16 y, Uint16 w, Uint16 h)
 {

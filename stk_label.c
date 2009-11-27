@@ -8,9 +8,7 @@
 #include "stk_base.h"
 #include "stk_color.h"
 #include "stk_label.h"
-
-#define STK_LABEL_DEFAULT_WIDTH		60
-#define STK_LABEL_DEFAULT_HEIGHT	30
+#include "stk_default.h"
 
 
 static void STK_LabelCalculatePattern(STK_Label *label, SDL_Rect *rect);
@@ -47,10 +45,44 @@ STK_Label *STK_LabelNew( char *str, Uint16 x, Uint16 y )
 	// create surface
 	STK_WidgetSetDims(widget, &rect);
 
+	label->lineskip	= 0;
+	label->alignment = STK_LABEL_TOPLEFT;
+	label->pattern	= STK_LABEL_NORMAL;
+
 	if (str) {
-		label->caption = (char *)STK_Malloc(strlen(str) + 1);
-		// after this copy, the last char left in caption is 0
-		strcpy(label->caption, str);
+		char *psrc = (char *)STK_Malloc(strlen(str) + 1);
+		char *p, *saveptr;
+		char **p1;
+		int i, n;
+		
+		strcpy(psrc, str);
+		
+		n = 0;
+		for (i=0; i<strlen(psrc); i++) {
+			if (psrc[i] == '\n')
+				n++; 
+		}
+		// single line
+		if (n == 0) {
+			label->caption = psrc;
+			label->lines = 1;
+		}
+		// multiple line
+		else {
+			label->caption = (char *)STK_Malloc(strlen(str) + 1);
+			strcpy(label->caption, psrc);
+			
+			label->pcaption = (char **)STK_Malloc(sizeof(char *) * (n+1));
+
+			p1 = label->pcaption;
+			p = strtok_r(psrc, "\n", &saveptr);
+			while (p) {
+				*p1++ = p;
+				p = strtok_r(NULL, "\n", &saveptr);
+			}
+
+			label->lines = n + 1;
+		}
 		
 		// adaptered to string
 		if (!widget->fixed) {
@@ -60,9 +92,8 @@ STK_Label *STK_LabelNew( char *str, Uint16 x, Uint16 y )
 	else {
 		label->caption = NULL;
 	}
+	
 		
-	label->alignment = STK_LABEL_TOPLEFT;
-	label->pattern	= STK_LABEL_NORMAL;
 	
 //for test	STK_LabelSetColor(label, STK_COLOR_BACKGROUND, 0x00, 0xff, 0xff);
 	
@@ -92,16 +123,36 @@ void STK_LabelDraw(STK_Widget *widget)
 	}
 	
 	// fill background
-	tmpcolor = SDL_MapRGB(widget->surface->format, widget->bgcolor.r, widget->bgcolor.g, widget->bgcolor.b);
+	//tmpcolor = SDL_MapRGB(widget->surface->format, widget->bgcolor.r, widget->bgcolor.g, widget->bgcolor.b);
+	tmpcolor = STK_COLOR2INT(widget->surface, widget->bgcolor);
 	SDL_FillRect(widget->surface, NULL, tmpcolor);
 	
-	if (label->caption) {
+	if (label->lines == 1 && label->caption) {
 		// calculate the rect area of font surface: 
 		// results are placed in rect as to alignment.
 		STK_LabelCalculatePattern(label, &rect);
 		
 		// draw text using widget's fgcolor and (local background only for test colorkey)
 		STK_FontDraw( STK_FontGetDefaultFontWithSize(), label->caption, widget, &rect, &widget->fgcolor, &widget->bgcolor );
+	}
+	else if (label->lines > 1 && label->pcaption) {
+		int i;
+		char **p1 = label->pcaption;
+				
+		for (i=0; i<label->lines; i++) {
+			rect.x = 0;
+			rect.y = i * (label->lineskip + label->line_height);
+			rect.w = widget->rect.w;
+			rect.h = label->line_height;
+			
+			STK_FontDraw( 	STK_FontGetDefaultFontWithSize(), 
+					p1[i], 
+					widget, 
+					&rect, 
+					&widget->fgcolor, 
+					&widget->bgcolor );
+		}
+	
 	}
 	
 	// till now, the surface of label has been filled, but shall we blit it to window surface?
@@ -111,6 +162,7 @@ void STK_LabelDraw(STK_Widget *widget)
 int STK_LabelClose(STK_Widget *widget)
 {
 	STK_Label *label = (STK_Label *)widget;
+	int i;
 	
 	// now ready to free surface
 	if (widget->surface) {
@@ -120,6 +172,17 @@ int STK_LabelClose(STK_Widget *widget)
 	if (label->caption) {
 		free(label->caption);
 		label->caption = NULL;
+	}
+	if (label->pcaption) {
+		char **p1 = label->pcaption;
+		for (i = 0; i<label->lines; i++) {
+			if ((char *)p1[i]) {
+				free(p1[i]);
+				p1[i] = NULL;
+			}
+		}
+		free(p1);
+		label->pcaption = NULL;
 	}
 	// now ready to free label node
 	free(label);
@@ -134,8 +197,32 @@ int STK_LabelAdapterToString(STK_Label *label)
 	
 	// backup widget's rect
 	STK_BaseRectCopy(&rect, &widget->rect);
-	// force rect to get eventual label->caption width and height 
-	STK_FontAdapter(STK_FontGetDefaultFontWithSize(), &rect, label->caption);
+	if (label->lines == 1) {
+		// force rect to get eventual label->caption width and height 
+		STK_FontAdapter(STK_FontGetDefaultFontWithSize(), &rect, label->caption);
+		label->line_height = rect.h;
+	}
+	else if (label->lines > 1) {
+		Uint32 width, height;
+		int i;
+		char **p1;
+
+		p1 = label->pcaption;
+		STK_FontAdapter(STK_FontGetDefaultFontWithSize(), &rect, p1[0]);
+	
+		width = rect.w;
+		label->line_height = rect.h;
+		height = rect.h * label->lines + label->lineskip * (label->lines - 1);
+
+		for (i=1; i<label->lines; i++) {
+			STK_FontAdapter(STK_FontGetDefaultFontWithSize(), &rect, p1[i]);
+			if (width < rect.w)
+				width = rect.w;
+		}
+		
+		rect.w = width;
+		rect.h = height;	
+	}
 		
 	// if areas don't equal, need to reset dimensions of this 
 	//   label: free previous surface and alloc a new one

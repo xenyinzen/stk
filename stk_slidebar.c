@@ -9,8 +9,8 @@
 #include "stk_widget.h"
 #include "stk_window.h"
 #include "stk_slidebar.h"
+#include "stk_default.h"
 
-#define STK_SLIDEBAR_BORDER_THICKNESS 2
 
 // Getting functions
 static void STK_SlidebarValueToPixel(STK_Slidebar *slider);

@@ -8,10 +8,7 @@
 #include "stk_window.h"
 #include "stk_radiobutton.h"
 #include "stk_radiogroup.h"
-
-#define STK_RADIOGROUP_BORDER_THICKNESS	2
-#define STK_RADIOBUTTON_DEFAULT_WIDTH		100
-#define STK_RADIOBUTTON_DEFAULT_HEIGHT		25
+#include "stk_default.h"
 
 
 static void STK_RadioGroupEventMouseButtonDown(STK_Object *object, void *signaldata, void *userdata);

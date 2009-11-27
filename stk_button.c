@@ -7,8 +7,8 @@
 #include "stk_window.h"
 #include "stk_label.h"
 #include "stk_button.h"
+#include "stk_default.h"
 
-#define STK_BUTTON_BORDER_THICKNESS	2
 
 STK_Button *STK_ButtonNew(char *caption, Uint16 x, Uint16 y, Uint16 w, Uint16 h)
 {

@@ -147,7 +147,7 @@ int STK_FontDraw(STK_Font *font, char *str, STK_Widget *widget, SDL_Rect *rect, 
 	return 0;
 }
 
-int STK_FontAdapter(STK_Font *font, SDL_Rect *rect, char *str)
+int STK_FontAdapter(STK_Font *font, SDL_Rect *rect, const char *str)
 {
 	int w = 0;
 	int h = 0;

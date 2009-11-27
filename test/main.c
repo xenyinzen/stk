@@ -13,7 +13,7 @@
 STK_Widget *draw_label()
 {
 	
-	STK_Label *label = (STK_Label *)STK_LabelNew("I am Tang", 400, 100);
+	STK_Label *label = (STK_Label *)STK_LabelNew("I am Tang\nand you?\n \naa", 400, 100);
 //	STK_WidgetSetDims((STK_Widget *)label, 100, 100, 200, 100);
 	STK_LabelSetAlignment(label, STK_LABEL_CENTER);
 	STK_LabelSetColor(label, STK_COLOR_BACKGROUND, 0x80, 0x00, 0x80);
