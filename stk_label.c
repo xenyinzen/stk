@@ -69,6 +69,7 @@ STK_Label *STK_LabelNew( char *str, Uint16 x, Uint16 y )
 		}
 		// multiple line
 		else {
+			int t = 0;
 			label->caption = (char *)STK_Malloc(strlen(str) + 1);
 			strcpy(label->caption, psrc);
 			
@@ -78,10 +79,11 @@ STK_Label *STK_LabelNew( char *str, Uint16 x, Uint16 y )
 			p = strtok_r(psrc, "\n", &saveptr);
 			while (p) {
 				*p1++ = p;
+				t++;
 				p = strtok_r(NULL, "\n", &saveptr);
 			}
 
-			label->lines = n + 1;
+			label->lines = t;
 		}
 		
 		// adaptered to string
