@@ -17,7 +17,7 @@ int STK_MsgBoxCalcDisplayLineWindow(STK_MsgBox *msgbox, int font_height);
 int STK_MsgBoxCalcTextArea(STK_MsgBox *msgbox);
 
 
-STK_MsgBox *STK_MsgBoxNew(char *str, Uint16 x, Uint16 y, Uint16 w, Uint16 h)
+STK_MsgBox *STK_MsgBoxNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, char *str)
 {
 	STK_MsgBox *msgbox;
 	STK_Widget *widget;
@@ -40,6 +40,7 @@ STK_MsgBox *STK_MsgBoxNew(char *str, Uint16 x, Uint16 y, Uint16 w, Uint16 h)
 	widget->type = STK_WIDGET_MSGBOX;
 	widget->flags = 0;
 	widget->border = STK_MSGBOX_BORDER_THICKNESS;
+	widget->fixed = 1;
 	STK_BaseColorAssign(&widget->bgcolor, STK_COLOR_MSGBOX_BACKGROUND);
 	STK_BaseColorAssign(&widget->fgcolor, STK_COLOR_MSGBOX_FOREGROUND);
 	

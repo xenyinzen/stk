@@ -12,7 +12,7 @@
 #include "stk_default.h"
 
 
-STK_RadioButton *STK_RadioButtonNew(char *caption, Uint16 x, Uint16 y, Uint16 w, Uint16 h)
+STK_RadioButton *STK_RadioButtonNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, char *caption)
 {
 	STK_RadioButton *rb;
 	STK_Widget *widget;
@@ -36,8 +36,6 @@ STK_RadioButton *STK_RadioButtonNew(char *caption, Uint16 x, Uint16 y, Uint16 w,
 	widget->border = STK_RADIOBUTTON_BORDER_THICKNESS;
 	widget->fixed = 0;
 	
-//for test	STK_BaseColorAssign(&widget->bgcolor, 0xff, 0x00, 0xff);
-	
 	STK_BaseRectAssign(&rect, x, y, w, h);
 	STK_WidgetSetDims(widget, &rect);
 	
@@ -46,10 +44,11 @@ STK_RadioButton *STK_RadioButtonNew(char *caption, Uint16 x, Uint16 y, Uint16 w,
 	rb->header_size = 20;	// hard coded	
 
 	// create label structure
-	rb->label = STK_LabelNew(
-				caption, 
-				x + widget->border + rb->header_size + rb->interval,
-				y + widget->border);
+	rb->label = STK_LabelNew(	x + widget->border + rb->header_size + rb->interval,
+					y + widget->border,
+					0,
+					0,
+					caption, 0);
 	if (!widget->fixed)
 		STK_RadioButtonAdapterToChild(rb);
 

@@ -1,7 +1,7 @@
 
 shared_lib = {
 	language = 'c',
-	name = 'libsdltk',
+	name = 'libstk',
 	src = '*.c',
 	incdir = '., /root/apps/luasystem/lua/include, /root/apps/sdlsystem/include/SDL, /usr/include/SDL',
 	libdir = '/usr/lib, /root/apps/sdlsystem/lib/, /root/apps/luasystem/lua/lib',

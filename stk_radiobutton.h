@@ -22,7 +22,7 @@ typedef struct STK_RadioButton {
 	Uint32 flag;
 } STK_RadioButton;
 
-STK_RadioButton *STK_RadioButtonNew(char *caption, Uint16 x, Uint16 y, Uint16 w, Uint16 h);
+STK_RadioButton *STK_RadioButtonNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, char *caption);
 void STK_RadioButtonDraw(STK_Widget *widget);
 void STK_RadioButtonClose(STK_Widget *widget);
 int STK_RadioButtonRegisterType();

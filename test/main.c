@@ -13,7 +13,7 @@
 STK_Widget *draw_label()
 {
 	
-	STK_Label *label = (STK_Label *)STK_LabelNew("I am Tang\nand you?\n \naa", 400, 100);
+	STK_Label *label = (STK_Label *)STK_LabelNew("\n\nI am Tang\nand you?\n \naa\n\n", 400, 100);
 //	STK_WidgetSetDims((STK_Widget *)label, 100, 100, 200, 100);
 	STK_LabelSetAlignment(label, STK_LABEL_CENTER);
 	STK_LabelSetColor(label, STK_COLOR_BACKGROUND, 0x80, 0x00, 0x80);
@@ -94,7 +94,6 @@ STK_Widget *draw_progressbar(Uint32 *p)
 int main(int argc,char **argv)
 {
 
-    	SDL_Surface *video;
     	STK_Widget  *button;
 	STK_MsgBox *msgbox;
 	
@@ -102,23 +101,12 @@ int main(int argc,char **argv)
     	Uint32 value = 10;
     	char str[128];
     	
-    	SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER);
-//    	SDL_Init(SDL_INIT_VIDEO);
-
-    	video=SDL_SetVideoMode(640, 480, 32, SDL_HWSURFACE);
-	if ( video ==  NULL ) {
-		fprintf(stderr, "Couldn't set 640x480x8 video mode: %s\n",
-							SDL_GetError());
-		SDL_Quit();
-	}
-    	atexit(SDL_Quit);
-    
-    	STK_Init();
+    	STK_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER, SDL_SWSURFACE, 640, 480, 32);
 
     	STK_WindowNew(0, 0, 640, 480);
     	
     	STK_Widget *label = draw_label();
-    	printf("Label: %x\n", label);
+ //   	printf("Label: %x\n", label);
     	
     	draw_button();
     	draw_slidebar();

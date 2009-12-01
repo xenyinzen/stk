@@ -14,7 +14,7 @@
 static void STK_LabelCalculatePattern(STK_Label *label, SDL_Rect *rect);
 
 
-STK_Label *STK_LabelNew( char *str, Uint16 x, Uint16 y )
+STK_Label *STK_LabelNew(Uint16 x, Uint16 y, Uint16 width, Uint16 height, char *str, Uint32 flag)
 {
 	STK_Widget *widget;
 	SDL_Rect rect;
@@ -36,12 +36,12 @@ STK_Label *STK_LabelNew( char *str, Uint16 x, Uint16 y )
 	// can't get focus
 	widget->flags	= 0;			
 	widget->border 	= 0;
-	widget->fixed	= 0;
+	widget->fixed	= (flag > 0? 1 : 0);
 	
 	rect.x	= x;
 	rect.y 	= y;
-	rect.w	= STK_LABEL_DEFAULT_WIDTH;
-	rect.h	= STK_LABEL_DEFAULT_HEIGHT;
+	rect.w	= (width < STK_LABEL_DEFAULT_WIDTH? STK_LABEL_DEFAULT_WIDTH : width);
+	rect.h	= (height < STK_LABEL_DEFAULT_HEIGHT? STK_LABEL_DEFAULT_HEIGHT : height);
 	// create surface
 	STK_WidgetSetDims(widget, &rect);
 
@@ -344,3 +344,4 @@ int STK_LabelSetColor(STK_Label *label, int which, Uint8 r, Uint8 g, Uint8 b)
 
 	return 0;
 }
+

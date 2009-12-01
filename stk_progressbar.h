@@ -13,7 +13,7 @@ typedef struct STK_ProgressBar {
 	SDL_TimerID timer;		// the timer id
 } STK_ProgressBar;
 
-STK_ProgressBar *STK_ProgressBarNew(Uint32 *pvalue, Uint16 x, Uint16 y, Uint16 w, Uint16 h);
+STK_ProgressBar *STK_ProgressBarNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, Uint32 *pvalue);
 void STK_ProgressBarDraw(STK_Widget *widget);
 void STK_ProgressBarClose(STK_Widget *widget);
 int STK_ProgressBarRegisterType();

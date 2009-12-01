@@ -99,6 +99,7 @@ int STK_WidgetDraw(STK_Widget *widget);
 int STK_WidgetEventRedraw(STK_Widget *widget);
 int STK_WidgetEventHide(STK_Widget *widget);
 int STK_WidgetEventShow(STK_Widget *widget);
+int STK_WidgetShow(STK_Widget *widget);
 int STK_WidgetIsInside(STK_Widget *widget, int x, int y);
 int STK_RectIsInside(const SDL_Rect *A, const SDL_Rect *B);
 int STK_RectIsIntersect(const SDL_Rect *A, const SDL_Rect *B, SDL_Rect *in);

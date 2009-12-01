@@ -2,6 +2,15 @@
 #define _STK_H_
 
 #include "SDL.h"
+#include "stk_color.h"
+#include "stk_label.h"
+#include "stk_button.h"
+#include "stk_slidebar.h"
+#include "stk_entry.h"
+#include "stk_radiobutton.h"
+#include "stk_radiogroup.h"
+#include "stk_progressbar.h"
+#include "stk_msgbox.h"
 
 int STK_Init();
 int STK_Main();

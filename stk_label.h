@@ -38,7 +38,7 @@ typedef struct STK_Label {
 	
 } STK_Label;
 
-STK_Label* STK_LabelNew( char *str, Uint16 x, Uint16 y);
+STK_Label* STK_LabelNew(Uint16 x, Uint16 y, Uint16 width, Uint16 height, char *str, Uint32 flag);
 int STK_LabelClose(STK_Widget *widget);
 void STK_LabelDraw(STK_Widget *widget);
 int STK_LabelRegisterType();

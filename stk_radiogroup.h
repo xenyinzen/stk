@@ -32,7 +32,7 @@ typedef struct STK_RadioGroup {
 
 } STK_RadioGroup;
 
-STK_RadioGroup *STK_RadioGroupNew(char *radiostr[], int num, Uint16 x, Uint16 y, Uint16 w, Uint16 h);
+STK_RadioGroup *STK_RadioGroupNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, char *radiostr[], int num);
 void STK_RadioGroupDraw(STK_Widget *widget);
 void STK_RadioGroupClose(STK_Widget *widget);
 int STK_RadioGroupRegisterType();

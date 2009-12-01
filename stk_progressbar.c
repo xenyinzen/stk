@@ -14,7 +14,7 @@
 
 Uint32 STK_ProgressBarCheckValue(Uint32 interval, void *param);
 
-STK_ProgressBar *STK_ProgressBarNew(Uint32 *pvalue, Uint16 x, Uint16 y, Uint16 w, Uint16 h)
+STK_ProgressBar *STK_ProgressBarNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, Uint32 *pvalue)
 {
 	STK_ProgressBar *pb;
 	STK_Widget *widget;

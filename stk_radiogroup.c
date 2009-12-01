@@ -17,7 +17,7 @@ static void STK_RadioGroupEventMouseButtonDown(STK_Object *object, void *signald
 //
 // char *radiostr[] = {"A", "AB", "ABC", "ABCD", "ABDEFGFFDSF"};
 //
-STK_RadioGroup *STK_RadioGroupNew(char *radiostr[], int num, Uint16 x, Uint16 y, Uint16 w, Uint16 h)
+STK_RadioGroup *STK_RadioGroupNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, char *radiostr[], int num)
 {	
 	STK_RadioGroup *rg;
 	STK_RadioButton *rb;
@@ -65,11 +65,11 @@ STK_RadioGroup *STK_RadioGroupNew(char *radiostr[], int num, Uint16 x, Uint16 y,
 		// here, we know, the coordination of those child radio buttons are relative to window (absoluted)
 		// , but not radiogroup right now, may be we need have a filter procedure to change this
 		rb = (STK_RadioButton *)STK_RadioButtonNew(
-						radiostr[i], 
 						x + widget->border, 
 						y + widget->border + i*(rg->item_height + rg->interval),
 						STK_RADIOBUTTON_DEFAULT_WIDTH,
-						rg->item_height );
+						rg->item_height,
+						radiostr[i]);
 		// put radio button object into each list node
 		ahead->rb = rb;
 		ahead->i = i;

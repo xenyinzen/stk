@@ -1,0 +1,10 @@
+
+program = {
+	language = 'c',
+	name = 'recover',
+	src = '*.c',
+	incdir = '., .., /root/apps/luasystem/lua/include, /root/apps/sdlsystem/include/SDL, /usr/include/SDL',
+	libdir = '., /usr/lib, /root/apps/sdlsystem/lib/, /root/apps/luasystem/lua/lib',
+	libs = 'SDL, stk, SDL_image, SDL_ttf, lua5.1, m',
+}
+

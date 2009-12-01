@@ -306,6 +306,11 @@ int STK_WidgetEventHide(STK_Widget *widget)
 	return 0;
 }
 
+int STK_WidgetShow(STK_Widget *widget)
+{
+	return STK_WidgetEventShow(widget);
+}
+
 // show event
 int STK_WidgetEventShow(STK_Widget *widget)
 {
@@ -487,3 +492,17 @@ STK_WidgetFuncs STK_WidgetGetFuncs(STK_Widget *widget)
 	return g_wlist[widget->type].funcs;
 }
 
+
+
+int STK_WidgetSetFixed(STK_Widget *widget, Uint32 flag)
+{
+	if (!widget)
+		return -1;
+		
+	if (flag)
+		widget->fixed = 1;
+	else
+		widget->fixed = 0;
+		
+	return 0;
+}

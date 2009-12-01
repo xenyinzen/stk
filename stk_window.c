@@ -13,17 +13,20 @@ static STK_Window *g_window = NULL;
 // create a new window, with dimension parameters
 STK_Window *STK_WindowNew( Sint16 x, Sint16 y, Sint16 width, Sint16 height)
 {
+	STK_Widget *widget;
 	// get the main video surface
 	SDL_Surface *video = SDL_GetVideoSurface();
+
 	if (video == NULL)
 		return NULL;
 	
 	STK_Window *win = (STK_Window *)STK_Malloc(sizeof(STK_Window));
+	widget = (STK_Widget *)win;
 	
-	win->widget.rect.x = x;
-	win->widget.rect.y = y;
-	win->widget.rect.w = width;
-	win->widget.rect.h = height;
+	widget->rect.x = x;
+	widget->rect.y = y;
+	widget->rect.w = width;
+	widget->rect.h = height;
 	
 	// when create, the visible flags is set to 0, means not display now
 	win->visible = 0;
@@ -33,8 +36,8 @@ STK_Window *STK_WindowNew( Sint16 x, Sint16 y, Sint16 width, Sint16 height)
 	win->focus_widget = NULL;
 	
 	// create window surface
-	win->widget.surface = STK_WindowCreateSubSurface(video, &(win->widget.rect));
-	win->bgcolor = 0x00d4d4d4;
+	widget->surface = STK_WindowCreateSubSurface(video, &(win->widget.rect));
+	win->bgcolor = STK_MCOLOR2INT(widget->surface, STK_COLOR_GLOBAL_BACKGROUND);
 	
 	// set 'g_window' to default window
 	g_window = win;
@@ -52,10 +55,8 @@ int STK_WindowOpen()
 	window->visible = 1;
 	
 	// realize the detailed structure
-	fprintf(stderr, "Ready to realize the window.\n");
 	STK_WindowEventRealize();
 	// draw window and display on screen
-	fprintf(stderr, "Ready to redraw the window.\n");
 	STK_WindowEventRedraw();
 	
 	return 0;
@@ -170,6 +171,7 @@ int STK_WindowCreateWidgetSurface(STK_Widget *widget)
 	if (widget->rect.y > win->widget.rect.y + win->widget.rect.h)
 		return -1;
 	
+	// these statement is very important
 	if (widget->rect.x + widget->rect.w > win->widget.rect.x + win->widget.rect.w )
 		widget->rect.w = win->widget.rect.x + win->widget.rect.w - widget->rect.x;
 	
@@ -179,7 +181,7 @@ int STK_WindowCreateWidgetSurface(STK_Widget *widget)
 	widget->surface = STK_WindowCreateSubSurface(win->widget.surface, &(widget->rect));
 	
 	// ?? why do this step?: to realize that widget using its private method
-	STK_SignalEmit(widget, "realize", NULL);
+	// STK_SignalEmit(widget, "realize", NULL);
 	
 	return 0;
 }
@@ -319,7 +321,6 @@ int STK_WindowEvent( SDL_Event *event )
 	
 	int xrel, yrel;
 	
-	printf("Enter STK_WindowEvent.\n");
 	// if the event type is SDL_MOUSEMOTION, SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP, STK_EVENT and so on
 	if (win && event->type >= SDL_MOUSEMOTION) {
 		// calculate the relative coordinates
@@ -330,18 +331,8 @@ int STK_WindowEvent( SDL_Event *event )
 	if (event->type == SDL_MOUSEBUTTONDOWN) {
 		win->pressed = 1;
 		// find out if mouse point is in certain widget 
-		printf("Mouse button down\n");
-		printf("wl = %x.\n", wl);
 		while (wl) {
 			w = wl->widget;
-			printf("w = %x.\n", w);
-			printf("widget x = %d.\n", w->rect.x);
-			printf("widget y = %d.\n", w->rect.y);
-			printf("widget w = %d.\n", w->rect.w);
-			printf("widget h = %d.\n", w->rect.h);
-			
-			printf("mouse x = %d.\n", xrel);
-			printf("mouse y = %d.\n", yrel);
 			
 			// judge whether the mouse point is on this widget area 
 			if (STK_WidgetIsInside(w, xrel, yrel)) {
@@ -366,18 +357,8 @@ int STK_WindowEvent( SDL_Event *event )
 	else if (event->type == SDL_MOUSEBUTTONUP) {
 		win->pressed = 0;
 		// find out if mouse point is in certain widget 
-		printf("Mouse button up\n");
-		printf("wl = %x.\n", wl);
 		while (wl) {
 			w = wl->widget;
-			printf("w = %x.\n", w);
-			printf("widget x = %d.\n", w->rect.x);
-			printf("widget y = %d.\n", w->rect.y);
-			printf("widget w = %d.\n", w->rect.w);
-			printf("widget h = %d.\n", w->rect.h);
-			
-			printf("mouse x = %d.\n", xrel);
-			printf("mouse y = %d.\n", yrel);
 			
 			// judge whether the mouse point is on this widget area 
 			if (STK_WidgetIsInside(w, xrel, yrel)) {
@@ -405,7 +386,6 @@ int STK_WindowEvent( SDL_Event *event )
 			// judge whether the mouse point is on this widget area 
 			if (STK_WidgetIsInside(w, xrel, yrel) && (w->flags & WIDGET_DRAGABLE)) {
 				// focusable means this widget could be clicked, inputed, and so on
-				printf("Enter drag motion");
 				w->state = 3;
 //				STK_WidgetEventRedraw(w);
 				STK_WidgetEvent(w, event);
@@ -416,33 +396,13 @@ int STK_WindowEvent( SDL_Event *event )
 		if (win->focus_widget) {
 			w = win->focus_widget;
 			if (w->flags & WIDGET_FOCUSABLE) {
-				printf("Enter keydown to entry");
 				STK_WidgetEvent(w, event);
 			}
 		} 
 	}
 	
-
-	printf("Exit STK_WindowEvent.\n");
 	return 0;
 }
-
-/*
-int STK_WindowEvent0( SDL_Event *event)
-{
-	switch (event->type) {
-	case SDL_KEYDOWN:
-		switch (event->key.keysym.sym) {
-		case SDLL_TAB:
-			
-		
-		
-		}
-	
-	
-	}
-}
-*/
 
 /** =====================================================
 

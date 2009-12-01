@@ -21,7 +21,7 @@ typedef struct STK_MsgBox {
 	Uint32 log;			// log or not?
 } STK_MsgBox;
 
-STK_MsgBox *STK_MsgBoxNew(char *str, Uint16 x, Uint16 y, Uint16 w, Uint16 h);
+STK_MsgBox *STK_MsgBoxNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, char *str);
 void STK_MsgBoxDraw(STK_Widget *widget);
 void STK_MsgBoxClose(STK_Widget *widget);
 int STK_MsgBoxRegisterType();

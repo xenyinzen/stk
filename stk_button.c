@@ -10,7 +10,7 @@
 #include "stk_default.h"
 
 
-STK_Button *STK_ButtonNew(char *caption, Uint16 x, Uint16 y, Uint16 w, Uint16 h)
+STK_Button *STK_ButtonNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, char *caption)
 {
 	STK_Button *button;
 	STK_Widget *widget;
@@ -32,13 +32,13 @@ STK_Button *STK_ButtonNew(char *caption, Uint16 x, Uint16 y, Uint16 w, Uint16 h)
 	widget->type = STK_WIDGET_BUTTON;
 	widget->flags |= WIDGET_FOCUSABLE;
 	widget->border = STK_BUTTON_BORDER_THICKNESS;
-	widget->fixed = 0;
+	widget->fixed = 1;
 	
 	STK_BaseRectAssign(&rect, x, y, w, h);
 	STK_WidgetSetDims(widget, &rect);
 
 	// create label structure
-	button->label = STK_LabelNew(caption, x + STK_BUTTON_BORDER_THICKNESS, y + STK_BUTTON_BORDER_THICKNESS);
+	button->label = STK_LabelNew(x + STK_BUTTON_BORDER_THICKNESS, y + STK_BUTTON_BORDER_THICKNESS, 0, 0, caption, 0);
 	if (!widget->fixed)
 		STK_ButtonAdapterToChild(button);
 
@@ -186,4 +186,5 @@ int STK_ButtonAdapterToChild(STK_Button *button)
 	
 	return 0;
 }
+
 

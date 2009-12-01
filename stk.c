@@ -14,10 +14,20 @@ static void STK_InternalEvent(SDL_Event *event);
 /* Initial the video surface and the basic structures of STK.
  *
  **/
-int STK_Init()
+int STK_Init(Uint32 flags, Uint32 character, Uint32 width, Uint32 height, Uint32 bpp)
 {
-	if ( SDL_GetVideoSurface() == NULL)
-		return -1;
+
+    	SDL_Surface *video;
+	
+    	SDL_Init(flags);
+    	video = SDL_SetVideoMode(width, height, bpp, character);
+	if ( !video ) {
+		fprintf(stderr, "Couldn't set video mode: %s\n",
+							SDL_GetError());
+		SDL_Quit();
+	}
+    	atexit(SDL_Quit);
+
 	
 	// begin to initial some lower structures
 	if (STK_SignalInit() != 0)

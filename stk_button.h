@@ -20,7 +20,7 @@ typedef struct STK_Button {
 	Uint32 flag;
 } STK_Button;
 
-STK_Button *STK_ButtonNew(char *caption, Uint16 x, Uint16 y, Uint16 w, Uint16 h);
+STK_Button *STK_ButtonNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, char *caption);
 void STK_ButtonDraw(STK_Widget *widget);
 void STK_ButtonClose(STK_Widget *widget);
 void STK_ButtonFilling(STK_Button *button, Uint32 pattern);
