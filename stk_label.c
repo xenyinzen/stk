@@ -119,15 +119,21 @@ void STK_LabelDraw(STK_Widget *widget)
 	STK_Label *label = (STK_Label *)widget;
 	Uint32 tmpcolor;
 	
+	// first we need clear background before scaling.
+	tmpcolor = STK_COLOR2INT(widget->surface, widget->bgcolor);
+	SDL_FillRect(widget->surface, NULL, tmpcolor);
+
 	// if label is extended, to adapter to the string
 	if (!widget->fixed) {
 		STK_LabelAdapterToString(label);
+
+		// fill background
+		// in STK_LabelAdapterToString, may alloc a new surface 
+		//tmpcolor = SDL_MapRGB(widget->surface->format, widget->bgcolor.r, widget->bgcolor.g, widget->bgcolor.b);
+		tmpcolor = STK_COLOR2INT(widget->surface, widget->bgcolor);
+		SDL_FillRect(widget->surface, NULL, tmpcolor);
 	}
 	
-	// fill background
-	//tmpcolor = SDL_MapRGB(widget->surface->format, widget->bgcolor.r, widget->bgcolor.g, widget->bgcolor.b);
-	tmpcolor = STK_COLOR2INT(widget->surface, widget->bgcolor);
-	SDL_FillRect(widget->surface, NULL, tmpcolor);
 	
 	if (label->lines == 1 && label->caption) {
 		// calculate the rect area of font surface: 

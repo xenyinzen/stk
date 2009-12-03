@@ -93,10 +93,7 @@ void STK_MsgBoxDraw(STK_Widget *widget)
 	i = msgbox->start_line;
 	while (i != msgbox->end_line) {
 		rect.x = msgbox->textarea.x;
-		rect.y = msgbox->textarea.y \
-				+ ((i + STK_MSGBOX_LINEBUF_NUM - msgbox->start_line) \
-				% STK_MSGBOX_LINEBUF_NUM) \
-				* (font_height + msgbox->interval);
+		rect.y = msgbox->textarea.y + ((i + STK_MSGBOX_LINEBUF_NUM - msgbox->start_line) % STK_MSGBOX_LINEBUF_NUM) * (font_height + msgbox->interval);
 		rect.w = msgbox->textarea.w + widget->border - rect.x;
 		rect.h = msgbox->textarea.h + widget->border - rect.y;
 		// here, we must ensure that linebuf[i]->data is valid
@@ -150,10 +147,7 @@ int STK_MsgBoxRegisterType()
 int STK_MsgBoxCalcDisplayLineWindow(STK_MsgBox *msgbox, int font_height)
 {
 	int sum;
-	int d = msgbox->end_line - msgbox->start_line;
-	
-	if (d <= 0)
-		return -1;
+	int d = (msgbox->end_line + STK_MSGBOX_LINEBUF_NUM - msgbox->start_line) % STK_MSGBOX_LINEBUF_NUM;
 	
 	sum = font_height*d + msgbox->interval*(d - 1);
 	
@@ -192,8 +186,7 @@ int STK_MsgBoxAddMsg(STK_MsgBox *msgbox, char *str)
 			msgbox->linebuf[msgbox->end_line] = STK_TextNew(str);
 			STK_MsgBoxLog(msgbox);
 			msgbox->end_line++;
-			if (msgbox->end_line >= STK_MSGBOX_LINEBUF_NUM)
-				msgbox->end_line %= STK_MSGBOX_LINEBUF_NUM;
+			msgbox->end_line %= STK_MSGBOX_LINEBUF_NUM;
 			
 		}
 		// multiple line
@@ -214,8 +207,7 @@ int STK_MsgBoxAddMsg(STK_MsgBox *msgbox, char *str)
 				msgbox->linebuf[msgbox->end_line] = STK_TextNew(p1[i]);
 				STK_MsgBoxLog(msgbox);
 				msgbox->end_line++;
-				if (msgbox->end_line >= STK_MSGBOX_LINEBUF_NUM)
-					msgbox->end_line %= STK_MSGBOX_LINEBUF_NUM;
+				msgbox->end_line %= STK_MSGBOX_LINEBUF_NUM;
 			}			
 		}
 		

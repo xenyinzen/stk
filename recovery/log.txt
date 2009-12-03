@@ -1,14 +1,24 @@
-first line
-The second line
-The 3rd line, ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt
-The 4th line
-The 5th 
- haha, insert something..,
- 
-        line
-The 6th line
-The 7th line
-The 8th line
-first line
-first line
-first line
+请按‘开始还原’按钮还原系统。
+请按‘开始还原’按钮还原系统。
+请按‘开始还原’按钮还原系统。
+请按‘开始还原’按钮还原系统。
+请按‘开始还原’按钮还原系统。
+现在开始还原。
+解压中出错！
+请按‘开始还原’按钮还原系统。
+现在开始还原。
+还原结束。
+请按‘开始还原’按钮还原系统。
+现在开始还原。
+还原结束。
+请按‘开始还原’按钮还原系统。
+现在开始还原。
+还原结束。
+请按‘开始还原’按钮还原系统。
+请按‘开始还原’按钮还原系统。
+现在开始还原。
+还原结束。
+请按‘开始还原’按钮还原系统。
+请按‘开始还原’按钮还原系统。
+现在开始还原。
+还原结束。

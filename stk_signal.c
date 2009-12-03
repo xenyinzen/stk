@@ -153,9 +153,9 @@ static int STK_SignalEmitToObject(STK_Object *object, char *signal, void *signal
 					cbl = cbl->next;
 				}
 			}
-			else {
-				fprintf(stderr, "No handlers for signal %s.\n", signal);
-			}
+//			else {
+//				fprintf(stderr, "No handlers for signal %s.\n", signal);
+//			}
 		}
 		l = l->next;
 	}

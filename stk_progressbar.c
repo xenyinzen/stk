@@ -47,7 +47,7 @@ STK_ProgressBar *STK_ProgressBarNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, Uint
 	pb->pvalue = pvalue;
 	pb->value = *(pb->pvalue);
 	
-	pb->timer = SDL_AddTimer(100, STK_ProgressBarCheckValue, (void *)pb);
+	pb->timer = SDL_AddTimer(200, STK_ProgressBarCheckValue, (void *)pb);
 	
 	return widget;
 
@@ -133,10 +133,10 @@ Uint32 STK_ProgressBarCheckValue(Uint32 interval, void *param)
 	}
 	
 	// for test only
-	SDL_Delay(100);
-	(*pb->pvalue) += 1;
-	if (*pb->pvalue >= 100)
-		(*pb->pvalue) = 0; 
+//	SDL_Delay(100);
+//	(*pb->pvalue) += 1;
+//	if (*pb->pvalue >= 100)
+//		(*pb->pvalue) = 0; 
 	
 	return interval;
 }
