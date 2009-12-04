@@ -58,7 +58,7 @@ STK_Button *draw_button_exit()
 
 STK_MsgBox *draw_msgbox()
 {
-	STK_MsgBox *msgbox = STK_MsgBoxNew(5, 100, 630, 260, "请按‘开始还原’按钮还原系统。");
+	STK_MsgBox *msgbox = STK_MsgBoxNew(5, 100, 630, 260, "请确保还原文件已在U盘上，然后按‘开始还原’按钮还原系统。");
 	STK_WidgetEventShow((STK_Widget *)msgbox);
 	
 	return msgbox;
@@ -74,8 +74,7 @@ STK_ProgressBar *draw_progressbar(Uint32 *p)
 
 int clearLog()
 {
-//	system("rm log.txt");
-	system("rm progress.txt");
+	system("echo 0 > progress.txt");
 
 	return 0;
 }
@@ -85,7 +84,7 @@ int main(int argc,char **argv)
 {
 	L = luaL_newstate();
 	luaL_openlibs(L);
-	
+	registerFuncs4Lua();	
     	
     	STK_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER, SDL_SWSURFACE, 640, 480, 32);
 

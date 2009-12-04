@@ -13,7 +13,7 @@
 STK_Font font0[STK_FONT_SIZENUM] = { 0 };
 STK_Font font1[STK_FONT_SIZENUM] = { 0 };
 
-char *default_font = "msyh.ttf";
+char *default_font = "font.ttf";
 Uint32 default_fontsize_index = 1;
 Uint32 fontsize_array[STK_FONT_SIZENUM] = {12, 16, 24, 36};
 

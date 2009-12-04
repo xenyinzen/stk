@@ -4,15 +4,19 @@
 #include <lauxlib.h>
 
 #include "stk.h"
+#include "recover.h"
+
+extern Recovery *grec;
+
 
 int loadFile( lua_State *L, const char *fname)
 {
-	if (luaL_loadfile(L, fname) || lua_pcall(L, 0, 0, 0) ) {
+	if (luaL_loadfile(L, fname) || lua_pcall(L, 0, 1, 0) ) {
 		luaL_error(L, "Cannot load file: %s", lua_tostring(L, -1));
 		return -1;
 	}
 
-	return 0;
+	return getNumber(L);
 }
 
 #if 0
@@ -188,3 +192,37 @@ int putNumber(lua_State *L, int n)
 	lua_pushnumber(L, (lua_Number)n);
 	return 0;
 }
+
+
+
+//=============================================================
+// API for lua
+//=============================================================
+int printMsg_4lua(lua_State *L)
+{
+	char *str = (char *)getStr(L);
+	
+	STK_MsgBoxAddMsg(grec->msgbox, str);
+	
+	return 0;	
+}
+
+int putenv_4lua(lua_State *L)
+{
+	char *str = (char *)getStr(L);
+	
+	putenv(str);	
+	
+	return 0;
+}
+
+
+void registerFuncs4Lua()
+{
+	extern lua_State *L;
+	
+	lua_register(L, "printMsg", (lua_CFunction)printMsg_4lua);
+	lua_register(L, "putENV", (lua_CFunction)putenv_4lua);
+
+}
+

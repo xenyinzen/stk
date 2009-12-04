@@ -5,7 +5,7 @@ shared_lib = {
 	src = '*.c',
 	incdir = '., /root/apps/luasystem/lua/include, /root/apps/sdlsystem/include/SDL, /usr/include/SDL',
 	libdir = '/usr/lib, /root/apps/sdlsystem/lib/, /root/apps/luasystem/lua/lib',
-	libs = 'SDL, SDL_image, lua5.1, m',
+	libs = 'SDL, SDL_ttf, lua5.1, m',
 	cflags = "g, Wall, fPIC, W, Waggregate-return, Wcast-align, Wmissing-prototypes, Wnested-externs, Wshadow, Wwrite-strings, pedantic",
 }
 
