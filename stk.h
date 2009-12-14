@@ -3,6 +3,7 @@
 
 #include "SDL.h"
 #include "stk_color.h"
+#include "stk_font.h"
 #include "stk_label.h"
 #include "stk_button.h"
 #include "stk_slidebar.h"

@@ -1,0 +1,26 @@
+Lemote Recovery Tool ChangeLog
+Tang Gang
+tangg@lemote.com
+=====================================================================
+
+1.0.1 changes (2009-12-14 9:30)
+	1. 
+
+---------------------------------------------------------------------
+1.0.0 changes (2009-12-8 9:30)
+	1. Move all codes to matching STK application 'recover';
+	2. The first release version.
+	
+---------------------------------------------------------------------
+0.3.0 changes (2009-08-24 9:30)
+	1. fixed a bug on copying files to local disk (in the previous version,
+in the case of 120GUP, files are copied into the memory but not local disk).
+	2. add ahead little memory test.
+	
+---------------------------------------------------------------------
+0.2.0 changes (2009-08-15 15:00)
+	1. add md5sum check (before copy check and after copy check).
+
+---------------------------------------------------------------------
+0.1.0 changes (2009-08-12 3:40)
+	1. first added.

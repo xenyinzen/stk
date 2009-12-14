@@ -10,5 +10,10 @@ typedef struct Recovery {
 	STK_ProgressBar *pb;
 } Recovery;
 
+typedef struct Screen {
+	int w;
+	int h;
+} Screen;
+
 
 #endif

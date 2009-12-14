@@ -48,7 +48,8 @@ STK_Label *STK_LabelNew(Uint16 x, Uint16 y, Uint16 width, Uint16 height, char *s
 	label->lineskip	= 0;
 	label->alignment = STK_LABEL_TOPLEFT;
 	label->pattern	= STK_LABEL_NORMAL;
-
+	label->font = STK_FontGetDefaultFontWithSize();
+	
 	if (str) {
 		char *psrc = (char *)STK_Malloc(strlen(str) + 1);
 		char *p, *saveptr;
@@ -95,8 +96,6 @@ STK_Label *STK_LabelNew(Uint16 x, Uint16 y, Uint16 width, Uint16 height, char *s
 		label->caption = NULL;
 	}
 	
-		
-	
 //for test	STK_LabelSetColor(label, STK_COLOR_BACKGROUND, 0x00, 0xff, 0xff);
 	
 	return label;
@@ -123,6 +122,7 @@ void STK_LabelDraw(STK_Widget *widget)
 	tmpcolor = STK_COLOR2INT(widget->surface, widget->bgcolor);
 	SDL_FillRect(widget->surface, NULL, tmpcolor);
 
+	
 	// if label is extended, to adapter to the string
 	if (!widget->fixed) {
 		STK_LabelAdapterToString(label);
@@ -141,7 +141,7 @@ void STK_LabelDraw(STK_Widget *widget)
 		STK_LabelCalculatePattern(label, &rect);
 		
 		// draw text using widget's fgcolor and (local background only for test colorkey)
-		STK_FontDraw( STK_FontGetDefaultFontWithSize(), label->caption, widget, &rect, &widget->fgcolor, &widget->bgcolor );
+		STK_FontDraw( label->font, label->caption, widget, &rect, &widget->fgcolor, &widget->bgcolor );
 	}
 	else if (label->lines > 1 && label->pcaption) {
 		int i;
@@ -153,7 +153,7 @@ void STK_LabelDraw(STK_Widget *widget)
 			rect.w = widget->rect.w;
 			rect.h = label->line_height;
 			
-			STK_FontDraw( 	STK_FontGetDefaultFontWithSize(), 
+			STK_FontDraw( 	label->font,
 					p1[i], 
 					widget, 
 					&rect, 
@@ -202,12 +202,12 @@ int STK_LabelAdapterToString(STK_Label *label)
 {
 	SDL_Rect rect;
 	STK_Widget *widget = (STK_Widget *)label;
-	
+
 	// backup widget's rect
 	STK_BaseRectCopy(&rect, &widget->rect);
 	if (label->lines == 1) {
 		// force rect to get eventual label->caption width and height 
-		STK_FontAdapter(STK_FontGetDefaultFontWithSize(), &rect, label->caption);
+		STK_FontAdapter(label->font, &rect, label->caption);
 		label->line_height = rect.h;
 	}
 	else if (label->lines > 1) {
@@ -216,14 +216,14 @@ int STK_LabelAdapterToString(STK_Label *label)
 		char **p1;
 
 		p1 = label->pcaption;
-		STK_FontAdapter(STK_FontGetDefaultFontWithSize(), &rect, p1[0]);
+		STK_FontAdapter(label->font, &rect, p1[0]);
 	
 		width = rect.w;
 		label->line_height = rect.h;
 		height = rect.h * label->lines + label->lineskip * (label->lines - 1);
 
 		for (i=1; i<label->lines; i++) {
-			STK_FontAdapter(STK_FontGetDefaultFontWithSize(), &rect, p1[i]);
+			STK_FontAdapter(label->font, &rect, p1[i]);
 			if (width < rect.w)
 				width = rect.w;
 		}
@@ -247,7 +247,7 @@ static void STK_LabelCalculatePattern(STK_Label *label, SDL_Rect *rect)
 	int dw, dh;
 	
 	/* Calculate the total size of the string in pixels */
-	STK_FontAdapter(STK_FontGetDefaultFontWithSize(), &dims, label->caption);
+	STK_FontAdapter(label->font, &dims, label->caption);
 	dw = widget->rect.w - dims.w;
 	dh = widget->rect.h - dims.h;
 	// if widget is too small, limit the drawing area in widget->rect
@@ -347,6 +347,19 @@ int STK_LabelSetColor(STK_Label *label, int which, Uint8 r, Uint8 g, Uint8 b)
 	
 	// need to submit a redraw event
 	STK_WidgetEventRedraw(widget);
+
+	return 0;
+}
+
+int STK_LabelSetFont(STK_Label *label, STK_Font *font)
+{
+	if (!label || !font) 
+		return -1;
+		
+	label->font = font;
+	
+	// need to submit a redraw event
+	STK_WidgetEventRedraw((STK_Widget *)label);
 
 	return 0;
 }

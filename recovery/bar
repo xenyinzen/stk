@@ -4,7 +4,7 @@
 # 'cat' with ASCII progress bar
 # (c) Henrik Theiling
 BAR_VERSION=1.4
-
+FILE="/root/progress.txt"
 # Synopsis:
 #   'bar' works just like 'cat', but shows a progress bar in ASCII art on stderr.
 #   The script's main function is meant to be usable in any Bourne shell to be
@@ -410,7 +410,7 @@ bar_cat()
                        bar_perc=`expr "${bar_perc}" : '.*\(.....\)$'`
                    fi
                    # tangdg added
-                   echo $bar_proz > progress.txt                   
+                   echo $bar_proz > $FILE                   
                    #echo $bar_perc > progress.txt                   
                    
                    # END PERC
@@ -460,7 +460,7 @@ bar_cat()
        done
        # ${BAR_ECHO} "${BAR_E_C1}" "${BAR_R}${BAR_E_C2}" 1>&2
        # tangdg added
-       echo "100" > progress.txt
+       echo "100" > $FILE
    fi
 
    if test "${bar_shown}" = 1

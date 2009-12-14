@@ -44,8 +44,14 @@ STK_MsgBox *STK_MsgBoxNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, char *str)
 	STK_BaseColorAssign(&widget->bgcolor, STK_COLOR_MSGBOX_BACKGROUND);
 	STK_BaseColorAssign(&widget->fgcolor, STK_COLOR_MSGBOX_FOREGROUND);
 	
+	msgbox->start_line = 0;
+	msgbox->end_line = 0;
+	msgbox->interval = 4;
+	msgbox->log = 1;
+	msgbox->font = STK_FontGetDefaultFont(0);
+
 	width = 60;
-	height = STK_FontGetHeight(STK_FontGetDefaultFontWithSize()) + 2 * widget->border;
+	height = STK_FontGetHeight(msgbox->font) + 2 * widget->border;
 	if (width < w)
 		width = w;
 	if (height < h)
@@ -53,10 +59,6 @@ STK_MsgBox *STK_MsgBoxNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, char *str)
 	STK_BaseRectAssign(&rect, x, y, width, height);	
 	STK_WidgetSetDims(widget, &rect);
 
-	msgbox->start_line = 0;
-	msgbox->end_line = 0;
-	msgbox->interval = 4;
-	msgbox->log = 1;
 	STK_BaseRectAssign(	&msgbox->textarea, 
 				widget->border, 
 				widget->border,
@@ -76,7 +78,6 @@ void STK_MsgBoxDraw(STK_Widget *widget)
 {
 	STK_MsgBox *msgbox = (STK_MsgBox *)widget;
 	SDL_Rect rect;
-	STK_Font *font;
 	Uint32 tmpcolor;
 	Uint32 font_height;
 	int i;
@@ -86,8 +87,7 @@ void STK_MsgBoxDraw(STK_Widget *widget)
 	SDL_FillRect(widget->surface, NULL, tmpcolor);
 	STK_ImageDrawFrame(widget->surface, STK_IMAGE_FRAME_SINGLELINE);
 
-	font = STK_FontGetDefaultFont(0);
-	font_height = STK_FontGetHeight(font);
+	font_height = STK_FontGetHeight(msgbox->font);
 	STK_MsgBoxCalcDisplayLineWindow(msgbox, font_height);
 	
 	i = msgbox->start_line;
@@ -97,7 +97,7 @@ void STK_MsgBoxDraw(STK_Widget *widget)
 		rect.w = msgbox->textarea.w + widget->border - rect.x;
 		rect.h = msgbox->textarea.h + widget->border - rect.y;
 		// here, we must ensure that linebuf[i]->data is valid
-		STK_FontDraw(	font,
+		STK_FontDraw(	msgbox->font,
 				//STK_FontGetDefaultFontWithSize(),
 				msgbox->linebuf[i]->data, 
 				widget, 
@@ -225,7 +225,7 @@ int STK_MsgBoxLog(STK_MsgBox *msgbox)
 	
 	if (msgbox->log) {
 		// if log flag swith on, we need to record the buffer content to log file
-		if ((fp = fopen("log.txt", "a")) == NULL) {
+		if ((fp = fopen("/root/log.txt", "a")) == NULL) {
 			printf("Can't open log file: log.txt");
 			exit(-1);
 		}
@@ -236,6 +236,17 @@ int STK_MsgBoxLog(STK_MsgBox *msgbox)
 		SDL_Delay(10);
 	}
 
+	return 0;
+}
+
+int STK_MsgBoxSetFont(STK_MsgBox *msgbox, STK_Font *font)
+{
+	if (!msgbox || !font)
+		return -1;
+		
+	msgbox->font = font;
+	
+	STK_WidgetEventRedraw((STK_Widget *)msgbox);
 	return 0;
 }
 

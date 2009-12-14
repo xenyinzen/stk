@@ -19,15 +19,21 @@ int thread_bar(void *data)
 		grec->button_start = NULL;	
 	}
 
-//	ret = system("./bar /root/tmp/home.tar.gz | tar xzf - -C ttt");
+	if (grec->button_exit) {
+		STK_WidgetClose((STK_Widget *)grec->button_exit);
+		grec->button_exit = NULL;	
+	}
+
+	ret = system("./bar /root/tmp/home.tar.gz | tar xzf - -C ttt");
 	
-	ret = loadFile(L, "recover.lua");
+//	ret = loadFile(L, "recover.lua");
 	printf("ret = %d \n", ret);
 
 	// pass
 	if (ret == 0) {
 		printf("%s\n", "Revovery finish.");
 		STK_MsgBoxAddMsg(grec->msgbox, "还原结束。");
+		STK_LabelSetColor(grec->label_status, STK_COLOR_FOREGROUND, 0x40, 0x80, 0x20);		
 		STK_LabelSetText(grec->label_status, "系统还原结束。请按‘退出’键重启");
 	
 	}
@@ -36,6 +42,10 @@ int thread_bar(void *data)
 		STK_MsgBoxAddMsg(grec->msgbox, "还原出错！");
 		STK_LabelSetColor(grec->label_status, STK_COLOR_FOREGROUND, 0xff, 0x00, 0x00);
 		STK_LabelSetText(grec->label_status, "  还原出错！                   ");
+	}
+	
+	if (!grec->button_exit) {
+		grec->button_exit = (STK_Button *)draw_button_exit();
 	}
 	
 	pt_flag = 0;
@@ -52,7 +62,7 @@ int thread_update(void *data)
 	
 	while (pt_flag || progress <= 99) {
 		
-		if ((fprogress = fopen("progress.txt", "r")) == NULL) {
+		if ((fprogress = fopen("/root/progress.txt", "r")) == NULL) {
 			//printf("progress.txt doesn't exist.\n");
 			//progress = 0;
 		}
@@ -60,7 +70,7 @@ int thread_update(void *data)
 			fscanf(fprogress, "%d", &progress);
 			fclose(fprogress);
 
-			sprintf(str, "%d%%", progress);
+			//sprintf(str, "%d%%", progress);
 			//STK_MsgBoxAddMsg(grec->msgbox, str);
 		}
 		SDL_Delay(1000);
@@ -104,7 +114,5 @@ void cb_button_exit()
 	event.user.data2 = 0;
 		
 	SDL_PushEvent(&event);
-
-	system("reboot");
 
 }

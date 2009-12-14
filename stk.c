@@ -1,3 +1,15 @@
+/**
+*	@mainpage 	This is the main page of STK.
+*	
+*	@version 	1.0.0
+*	@author		Daogang Tang
+*	@date		2009-12-11
+*	@note		note test here.
+*/
+
+
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -47,6 +59,15 @@ int STK_Init(Uint32 flags, Uint32 character, Uint32 width, Uint32 height, Uint32
 	return 0;
 }
 
+/**
+* @brief	The main loop of STK
+* @param	NO
+* - AAA
+* - BBB
+* - CCC
+* @return	0, quit.
+*
+*/
 int STK_Main()
 {
 	SDL_Event event;
@@ -60,12 +81,13 @@ int STK_Main()
 		while (SDL_WaitEvent(&event)) {
 			if (STK_DispatchEvent(&event) != 0) {
 				STK_Quit();
-				return -1;		
+				return 0;		
 			}
 		}
 		// must here
 		SDL_Delay(10);
 	}
+	
 }
 
 static int STK_DispatchEvent(SDL_Event *event)
@@ -78,6 +100,7 @@ static int STK_DispatchEvent(SDL_Event *event)
 	// close the window
 	case SDL_QUIT:
 		STK_WindowClose();
+		SDL_Quit();
 		return -1;
 	// ignore, jump over
 	case SDL_VIDEOEXPOSE:

@@ -3,6 +3,7 @@
 
 #include "SDL.h"
 #include "stk_text.h"
+#include "stk_font.h"
 
 #define STK_MSGBOX_LINEBUF_NUM	50
 
@@ -19,6 +20,8 @@ typedef struct STK_MsgBox {
 	
 	Uint32 interval;		// the interval between text
 	Uint32 log;			// log or not?
+
+	STK_Font *font;			// font type and size pointer
 } STK_MsgBox;
 
 STK_MsgBox *STK_MsgBoxNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, char *str);
