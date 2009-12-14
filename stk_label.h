@@ -47,5 +47,6 @@ int STK_LabelSetColor(STK_Label *label, int which, Uint8 r, Uint8 g, Uint8 b);
 int STK_LabelSetAlignment(STK_Label *label, int alignment);
 int STK_LabelSetText(STK_Label *label, char *str);
 char *STK_LabelGetText(STK_Label *label);
+int STK_LabelSetFont(STK_Label *label, STK_Font *font);
 
 #endif /* _STK_LABEL_H_ */

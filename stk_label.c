@@ -154,6 +154,7 @@ void STK_LabelDraw(STK_Widget *widget)
 			rect.h = label->line_height;
 			
 			STK_FontDraw( 	label->font,
+					//STK_FontGetDefaultFontWithSize(),
 					p1[i], 
 					widget, 
 					&rect, 

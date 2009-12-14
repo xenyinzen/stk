@@ -24,9 +24,9 @@ int thread_bar(void *data)
 		grec->button_exit = NULL;	
 	}
 
-	ret = system("./bar /root/tmp/home.tar.gz | tar xzf - -C ttt");
+//	ret = system("./bar /root/tmp/home.tar.gz | tar xzf - -C ttt");
 	
-//	ret = loadFile(L, "recover.lua");
+	ret = loadFile(L, "recover.lua");
 	printf("ret = %d \n", ret);
 
 	// pass
@@ -70,6 +70,8 @@ int thread_update(void *data)
 			fscanf(fprogress, "%d", &progress);
 			fclose(fprogress);
 
+			STK_ProgressBarSetValue(grec->pb, progress);
+			
 			//sprintf(str, "%d%%", progress);
 			//STK_MsgBoxAddMsg(grec->msgbox, str);
 		}

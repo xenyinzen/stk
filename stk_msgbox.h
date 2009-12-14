@@ -9,6 +9,8 @@
 
 typedef struct STK_MsgBox {
 	STK_Widget widget;
+	STK_Font *font;			// font type and size pointer
+
 	STK_Text *linebuf[STK_MSGBOX_LINEBUF_NUM];	// point to line bufs
 	SDL_Rect textarea;		// area to fill up text
 	
@@ -21,7 +23,6 @@ typedef struct STK_MsgBox {
 	Uint32 interval;		// the interval between text
 	Uint32 log;			// log or not?
 
-	STK_Font *font;			// font type and size pointer
 } STK_MsgBox;
 
 STK_MsgBox *STK_MsgBoxNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, char *str);
@@ -30,5 +31,6 @@ void STK_MsgBoxClose(STK_Widget *widget);
 int STK_MsgBoxRegisterType();
 
 int STK_MsgBoxAddMsg(STK_MsgBox *msgbox, char *str);
+int STK_MsgBoxSetFont(STK_MsgBox *msgbox, STK_Font *font);
 
 #endif /* _STK_MSGBOX_H_ */

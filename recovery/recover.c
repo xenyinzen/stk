@@ -13,7 +13,7 @@
 lua_State *L;
 Recovery *grec;
 // default resolution is 800x600
-Screen  scr = { 800, 520 };
+Screen  scr = { 800, 600 };
 int progress = 0;
 
 
@@ -116,7 +116,8 @@ int main(int argc,char **argv)
 	luaL_openlibs(L);
 	registerFuncs4Lua();	
     	
-    	STK_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER, SDL_SWSURFACE, scr.w, scr.h, 32);
+//    	STK_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER, SDL_SWSURFACE, scr.w, scr.h, 32);
+    	STK_Init(SDL_INIT_VIDEO, SDL_SWSURFACE, scr.w, scr.h, 32);
 
     	STK_WindowNew(0, 0, scr.w, scr.h);
     	
@@ -133,7 +134,7 @@ int main(int argc,char **argv)
 	
     	STK_Main();
 
-//	system("sleep 1 && reboot");
+	system("sleep 1 && reboot");
 	
 	return 0;
 }

@@ -6,6 +6,7 @@
 #include "stk_base.h"
 #include "stk_color.h"
 #include "stk_image.h"
+#include "stk_font.h"
 #include "stk_widget.h"
 #include "stk_window.h"
 #include "stk_progressbar.h"
@@ -23,9 +24,9 @@ STK_ProgressBar *STK_ProgressBarNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, Uint
 	
 	win = STK_WindowGetTop();
 	if (!win)
-		return -1;
+		return NULL;
 	if (x >= win->widget.rect.w || y >= win->widget.rect.h)
-		return -1;	
+		return NULL;	
 	
 	pb = (STK_ProgressBar *)STK_Malloc(sizeof(STK_ProgressBar));
 	widget = (STK_Widget *)pb;
@@ -105,8 +106,6 @@ void STK_ProgressBarClose(STK_Widget *widget)
 	SDL_RemoveTimer(pb->timer);
 	// free STK_RadioGroup structure
 	free(pb);
-	
-	return 0;
 }
 
 int STK_ProgressBarRegisterType()
@@ -132,13 +131,22 @@ Uint32 STK_ProgressBarCheckValue(Uint32 interval, void *param)
 //		printf("in timer, hmm...\n");
 	}
 	
-	// for test only
-//	SDL_Delay(100);
-//	(*pb->pvalue) += 1;
-//	if (*pb->pvalue >= 100)
-//		(*pb->pvalue) = 0; 
-	
+/*	// for test only
+	SDL_Delay(100);
+	(*pb->pvalue) += 1;
+	if (*pb->pvalue >= 100)
+		(*pb->pvalue) = 0; 
+*/	
 	return interval;
 }
 
-
+int STK_ProgressBarSetValue(STK_ProgressBar *pb, int value)
+{
+	if (value < 0 || value > 100)
+		return -1;
+		
+	pb->value = value;
+	STK_WidgetEventRedraw((STK_Widget *)pb);
+	
+	return 0;
+}

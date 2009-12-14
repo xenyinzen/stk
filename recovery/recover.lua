@@ -7,6 +7,10 @@ os.execute("sleep 10")
 os.execute("echo 50 > /root/progress.txt")
 os.execute("sleep 10")
 os.execute("echo 70 > /root/progress.txt")
+os.execute("sleep 10")
+os.execute("echo 80 > /root/progress.txt")
+os.execute("sleep 10")
+os.execute("echo 100 > /root/progress.txt")
 
 printMsg("hahaha")
 

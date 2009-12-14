@@ -17,5 +17,6 @@ STK_ProgressBar *STK_ProgressBarNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, Uint
 void STK_ProgressBarDraw(STK_Widget *widget);
 void STK_ProgressBarClose(STK_Widget *widget);
 int STK_ProgressBarRegisterType();
+int STK_ProgressBarSetValue(STK_ProgressBar *pb, int value);
 
 #endif /* _STK_PROGRESSBAR_H_ */

@@ -98,7 +98,7 @@ void STK_MsgBoxDraw(STK_Widget *widget)
 		rect.h = msgbox->textarea.h + widget->border - rect.y;
 		// here, we must ensure that linebuf[i]->data is valid
 		STK_FontDraw(	msgbox->font,
-				//STK_FontGetDefaultFontWithSize(),
+				// STK_FontGetDefaultFontWithSize(),
 				msgbox->linebuf[i]->data, 
 				widget, 
 				&rect, 
