@@ -21,6 +21,7 @@ typedef struct STK_RadioGroup {
 	STK_RadioButtonListNode *rblist_head;	// point to the head of radio button array
 	
 	char **name;			// the pointer to radio buttons' names
+	int *rb_states;
 	Uint32 n;			// the number of radio buttons
 	Uint32 pos;			// current position on radio arrays
 
@@ -32,7 +33,7 @@ typedef struct STK_RadioGroup {
 
 } STK_RadioGroup;
 
-STK_RadioGroup *STK_RadioGroupNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, char *radiostr[], int num);
+STK_RadioGroup *STK_RadioGroupNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, char *radiostr[], int rb_states[], int num);
 void STK_RadioGroupDraw(STK_Widget *widget);
 void STK_RadioGroupClose(STK_Widget *widget);
 int STK_RadioGroupRegisterType();

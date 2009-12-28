@@ -15,5 +15,17 @@ typedef struct Screen {
 	int h;
 } Screen;
 
+typedef struct Misc {
+	int progress;
+	int recover_from;
+	int rb_states[3];	
+	int network;
+} Misc;
+
+enum {
+	RECO_FROM_UDISK,
+	RECO_FROM_LDISK,
+	RECO_FROM_NETWORK
+};
 
 #endif

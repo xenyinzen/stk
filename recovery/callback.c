@@ -5,7 +5,7 @@
 #include "recover.h"
 
 extern Recovery *grec;
-extern progress;
+extern misc;
 extern lua_State *L;
 
 static int pt_flag = 1;
@@ -60,17 +60,17 @@ int thread_update(void *data)
 	char str[16];
 	int ret;
 	
-	while (pt_flag || progress <= 99) {
+	while (pt_flag || misc.progress <= 99) {
 		
 		if ((fprogress = fopen("/root/progress.txt", "r")) == NULL) {
 			//printf("progress.txt doesn't exist.\n");
 			//progress = 0;
 		}
 		else {	
-			fscanf(fprogress, "%d", &progress);
+			fscanf(fprogress, "%d", &misc.progress);
 			fclose(fprogress);
 
-			STK_ProgressBarSetValue(grec->pb, progress);
+			STK_ProgressBarSetValue(grec->pb, misc.progress);
 			
 			//sprintf(str, "%d%%", progress);
 			//STK_MsgBoxAddMsg(grec->msgbox, str);

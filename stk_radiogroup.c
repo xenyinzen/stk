@@ -17,7 +17,7 @@ static void STK_RadioGroupEventMouseButtonDown(STK_Object *object, void *signald
 //
 // char *radiostr[] = {"A", "AB", "ABC", "ABCD", "ABDEFGFFDSF"};
 //
-STK_RadioGroup *STK_RadioGroupNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, char *radiostr[], int num)
+STK_RadioGroup *STK_RadioGroupNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, char *radiostr[], int rb_states[], int num)
 {	
 	STK_RadioGroup *rg;
 	STK_RadioButton *rb;
@@ -51,8 +51,11 @@ STK_RadioGroup *STK_RadioGroupNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, char *
 	rg->name = radiostr;
 	rg->interval = 2 * widget->border;
 	rg->nchoice = 0;
-	rg->mode = 1;			// multiple choices
+	rg->mode = STK_RADIOGROUP_MODE_MONO;
 	rg->item_height = STK_RADIOBUTTON_DEFAULT_HEIGHT;
+	
+	rg->rb_states = (int *)STK_Malloc(sizeof(int)*num);
+	memcpy((void *)rg->rb_states, (const void *)rb_states, sizeof(int)*num);
 
 	STK_SignalConnect(widget, "mousebuttondown", STK_RadioGroupEventMouseButtonDown, widget);
 	
@@ -70,6 +73,8 @@ STK_RadioGroup *STK_RadioGroupNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, char *
 						STK_RADIOBUTTON_DEFAULT_WIDTH,
 						rg->item_height,
 						radiostr[i]);
+		// input the history state info
+		rb->state = rg->rb_states[i];
 		// put radio button object into each list node
 		ahead->rb = rb;
 		ahead->i = i;
@@ -232,6 +237,7 @@ int STK_RadioGroupFilling(STK_RadioGroup *rg)
 	SDL_Rect rect;
 	F_Widget_Draw draw;
 
+	rg->pos = 0;
 	// draw one by one
 	while (child_list) {
 		child_widget = (STK_Widget *)child_list->rb;
@@ -251,8 +257,12 @@ int STK_RadioGroupFilling(STK_RadioGroup *rg)
 		draw = STK_WidgetGetDraw(child_widget);
 		if (draw)
 			draw(child_widget);
-
+		
+		// because state setting is in radiobutton's draw function, we need to 
+		// get it after drawing, sigh!
+		rg->rb_states[rg->pos] = child_list->rb->state;
 		child_list = child_list->next;
+		rg->pos++;
 	}
 		
 	return 0;
