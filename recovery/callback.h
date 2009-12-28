@@ -3,7 +3,8 @@
 
 void cb_button_start();
 void cb_button_exit();
-
+void cb_button_pro();
+void cb_rb_network();
 
 
 

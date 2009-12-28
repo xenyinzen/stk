@@ -7,7 +7,6 @@
 #include <lauxlib.h>
 
 
-#define BORDER	5
 /*
  * Global variables
  */
@@ -18,16 +17,36 @@ Screen  scr = { 800, 600 };
 Misc misc = {
 	0,			// progress
 	-1,			// recover_from
-	{0, 0, 0},		// rb_states[]
+	{1, 0, 0},		// rb_states[], whole, system, user
 	0			// network
-}
+};
+
+const char *recoway[3] = {
+	"当前准备通过U盘还原 ",
+	"当前准备通过硬盘还原",
+	"当前准备通过网络还原"
+};
+
 
 // ====================================================
 
 STK_Label *draw_label_head()
 {
+	char tmp[256];
+	char ver[16];
+	FILE *fp;
+	
+	if ((fp = fopen("./version.txt", "r")) == NULL) {
+		fprintf(stderr, "Can't open version.txt file.\n");
+		exit(-1);
+	}
+	fgets(ver, 16, fp);
+	fclose(fp);
+	
+	sprintf(tmp, "Lemote Recovery Tool %s", ver);
+	
 	STK_Font *font = STK_FontGetDefaultFont(2); 	 
-	STK_Label *label = (STK_Label *)STK_LabelNew(BORDER, BORDER, 400, 80, "Lemote Recovery Tool v1.0", 1);
+	STK_Label *label = (STK_Label *)STK_LabelNew(BORDER, BORDER, 400, 80, tmp, 1);
 	STK_LabelSetAlignment(label, STK_LABEL_CENTER);
 	STK_LabelSetColor(label, STK_COLOR_BACKGROUND, 0x60, 0x80, 0x30);
 	STK_WidgetShow((STK_Widget *)label);
@@ -38,8 +57,11 @@ STK_Label *draw_label_head()
 
 STK_Label *draw_label_status()
 {
+	char tmp[256];
+	
+	sprintf(tmp, "%s", recoway[misc.recover_from]);
 	STK_Font *font = STK_FontGetDefaultFont(2); 
-	STK_Label *label = (STK_Label *)STK_LabelNew(BORDER + 5, scr.h - 50, 0, 0, "准备还原", 0);
+	STK_Label *label = (STK_Label *)STK_LabelNew(BORDER + 5, scr.h - 50, 0, 0, tmp, 0);
 	STK_WidgetShow((STK_Widget *)label);
 	STK_LabelSetFont(label, font);
 	
@@ -63,41 +85,50 @@ STK_Button *draw_button_exit()
 	STK_WidgetSetFixed(widget, 1);
 	STK_SignalConnect(widget, "mousebuttondown", cb_button_exit, widget);
 	
-	STK_WidgetShow((widget);
+	STK_WidgetShow(widget);
 	return button;
 }
 
-STK_Button *draw_button_professional()
+STK_Button *draw_button_pro()
 {
 	STK_Button *button = STK_ButtonNew(scr.w - 120, scr.h - 55, 90, 35, "高级");
 	STK_Widget *widget = (STK_Widget *)button;
 	STK_WidgetSetFixed(widget, 1);
-	STK_SignalConnect(widget, "mousebuttondown", cb_button_exit, widget);
+	STK_SignalConnect(widget, "mousebuttondown", cb_button_pro, widget);
 	
 	STK_WidgetShow(widget);
 	return button;
 }
 
-STK_RadioGroup *draw_rg_scheme(int rb_states[], int n)
+STK_RadioGroup *draw_radiogroup(int rb_states[], int n)
 {
 	char *items[3] = {
 		"全盘还原",
 		"系统数据区还原",
 		"用户数据区还原"
-	}
+	};
 
 //	int num1 = sizeof(items) / sizeof(char);
-	int num2 = sizeof(chosen) / sizeof(int);
-	
+/*	int num2 = sizeof(rb_states) / sizeof(int);
 	if (num2 != n) {
-		fprintf(stderr, "Error on chosen array size.");
+		fprintf(stderr, "Error on rb_states array size.");
 		exit(-1);
 	}	
+*/	
+	STK_RadioGroup *rg = STK_RadioGroupNew(scr.w - BORDER - 160, BORDER + 125, 150, 0, items, rb_states, n);
 	
-	STK_RadioGroup *rg = STK_RadioGroupNew(scr.w - BORDER - 150, BORDER + 105, 150, 0, items, rb_states, n);
-	
-	STK_WidgetShow((STK_Widget *)button);
+	STK_WidgetShow((STK_Widget *)rg);
 	return rg;
+}
+
+STK_RadioButton *draw_radiobutton()
+{
+	STK_RadioButton *rb = STK_RadioButtonNew(scr.w - BORDER - 160, BORDER + 250, 150, 0, "从网络还原", &misc.network);
+	STK_Widget *widget = (STK_Widget *)rb;
+	STK_SignalConnect(widget, "mousebuttondown", cb_rb_network, widget);
+	STK_WidgetShow(widget);
+	
+	return rb;	
 }
 
 STK_MsgBox *draw_msgbox()
@@ -182,7 +213,7 @@ int clearLog()
 }
 
 
-int main(int argc,char **argv)
+int main(int argc, char **argv)
 {
 	char mountdir[256] = {0};
 	int ret = 0;
@@ -209,19 +240,21 @@ int main(int argc,char **argv)
 		}
 		sprintf(mountdir, "/root/ndisk/config.txt");	
 		misc.recover_from = RECO_FROM_NETWORK;
+		misc.network = 1;
 	}
 */
+	misc.recover_from = 0;
 	// start main body
 	L = luaL_newstate();
 	luaL_openlibs(L);
 	registerFuncs4Lua();	
-
+/*
 	if (loadFile(L, mountdir) == -1) {		
 		fprintf(stderr, "Can not find config.txt file in %s\n", mountdir);
 		lua_close(L);
 		return -1;
 	}
-    	
+*/    	
 //    	STK_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER, SDL_SWSURFACE, scr.w, scr.h, 32);
     	STK_Init(SDL_INIT_VIDEO, SDL_SWSURFACE, scr.w, scr.h, 32);
 
@@ -232,6 +265,7 @@ int main(int argc,char **argv)
     	grec->label_head = draw_label_head();
 	grec->button_start = draw_button_start();
 	grec->button_exit = draw_button_exit();
+	grec->button_pro = draw_button_pro();
 	grec->msgbox = draw_msgbox();
 	grec->pb = draw_progressbar(&misc.progress);
 	grec->label_status = draw_label_status();

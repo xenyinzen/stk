@@ -32,5 +32,6 @@ int STK_MsgBoxRegisterType();
 
 int STK_MsgBoxAddMsg(STK_MsgBox *msgbox, char *str);
 int STK_MsgBoxSetFont(STK_MsgBox *msgbox, STK_Font *font);
+int STK_MsgBoxSetSize(STK_MsgBox *msgbox, Uint32 width, Uint32 height);
 
 #endif /* _STK_MSGBOX_H_ */

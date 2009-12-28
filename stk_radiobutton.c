@@ -12,7 +12,7 @@
 #include "stk_default.h"
 
 
-STK_RadioButton *STK_RadioButtonNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, char *caption)
+STK_RadioButton *STK_RadioButtonNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, char *caption, int *pstate)
 {
 	STK_RadioButton *rb;
 	STK_Widget *widget;
@@ -39,7 +39,7 @@ STK_RadioButton *STK_RadioButtonNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, char
 	STK_BaseRectAssign(&rect, x, y, w, h);
 	STK_WidgetSetDims(widget, &rect);
 	
-	rb->state = STK_RADIOBUTTON_RELEASE;
+	rb->state = *pstate;
 	rb->interval = 2*widget->border;
 	rb->header_size = 20;	// hard coded	
 

@@ -250,3 +250,22 @@ int STK_MsgBoxSetFont(STK_MsgBox *msgbox, STK_Font *font)
 	return 0;
 }
 
+int STK_MsgBoxSetSize(STK_MsgBox *msgbox, Uint32 width, Uint32 height)
+{
+	STK_Widget *widget = (STK_Widget *)msgbox;
+	SDL_Rect r;
+	
+	// should check the validating of width and height
+	
+	r.x = widget->rect.x;
+	r.y = widget->rect.y;
+	r.w = width;
+	r.h = height;
+	
+	STK_WidgetSetDims(widget, &r);	
+	STK_WidgetEventRedraw(widget);
+	
+	return 0;
+}
+
+

@@ -72,9 +72,9 @@ STK_RadioGroup *STK_RadioGroupNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, char *
 						y + widget->border + i*(rg->item_height + rg->interval),
 						STK_RADIOBUTTON_DEFAULT_WIDTH,
 						rg->item_height,
-						radiostr[i]);
+						radiostr[i], &rg->rb_states[i]);
 		// input the history state info
-		rb->state = rg->rb_states[i];
+		// rb->state = rg->rb_states[i];
 		// put radio button object into each list node
 		ahead->rb = rb;
 		ahead->i = i;
@@ -212,6 +212,10 @@ void STK_RadioGroupClose(STK_Widget *widget)
 		SDL_FreeSurface(widget->surface);
 	}
 	
+	if (rg->rb_states) {
+		free(rg->rb_states);
+		rg->rb_states = NULL;
+	}	
 	// free STK_RadioGroup structure
 	free(rg);
 	
@@ -308,7 +312,7 @@ static void STK_RadioGroupEventMouseButtonDown(STK_Object *object, void *signald
 		}		
 
 		// Mutex case: here we process other radiobutton according if setting is mutex
-		if (rg->mode && rg->nchoice >= 1) {
+		if (rg->mode == STK_RADIOGROUP_MODE_MONO && rg->nchoice >= 1) {
 			child_list = rg->rblist_head;
 			// all item clean
 			while (child_list) {

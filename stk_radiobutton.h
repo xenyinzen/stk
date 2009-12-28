@@ -6,7 +6,7 @@
 #include "stk_label.h"
 
 typedef enum STK_RadioButtonState {
-	STK_RADIOBUTTON_RELEASE = 1,
+	STK_RADIOBUTTON_RELEASE,
 	STK_RADIOBUTTON_TOGGLE
 } STK_RadioButtonState;
 
@@ -22,7 +22,7 @@ typedef struct STK_RadioButton {
 	Uint32 flag;
 } STK_RadioButton;
 
-STK_RadioButton *STK_RadioButtonNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, char *caption);
+STK_RadioButton *STK_RadioButtonNew(Uint16 x, Uint16 y, Uint16 w, Uint16 h, char *caption, int *pstate);
 void STK_RadioButtonDraw(STK_Widget *widget);
 void STK_RadioButtonClose(STK_Widget *widget);
 int STK_RadioButtonRegisterType();
