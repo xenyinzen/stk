@@ -15,13 +15,14 @@ Recovery *grec;
 // default resolution is 800x600
 Screen  scr = { 800, 600 };
 Misc misc = {
+	0,			// running
 	0,			// progress
-	-1,			// recover_from
+	0,			// recover_from
 	{1, 0, 0},		// rb_states[], whole, system, user
 	0			// network
 };
 
-const char *recoway[3] = {
+const char *recoway[NRECOWAY] = {
 	"当前准备通过U盘还原 ",
 	"当前准备通过硬盘还原",
 	"当前准备通过网络还原"
@@ -91,7 +92,7 @@ STK_Button *draw_button_exit()
 
 STK_Button *draw_button_pro()
 {
-	STK_Button *button = STK_ButtonNew(scr.w - 120, scr.h - 55, 90, 35, "高级");
+	STK_Button *button = STK_ButtonNew(scr.w - 120, scr.h - 50, 90, 35, "高级");
 	STK_Widget *widget = (STK_Widget *)button;
 	STK_WidgetSetFixed(widget, 1);
 	STK_SignalConnect(widget, "mousebuttondown", cb_button_pro, widget);
@@ -102,7 +103,7 @@ STK_Button *draw_button_pro()
 
 STK_RadioGroup *draw_radiogroup(int rb_states[], int n)
 {
-	char *items[3] = {
+	char *items[NSCHEME] = {
 		"全盘还原",
 		"系统数据区还原",
 		"用户数据区还原"
@@ -181,7 +182,7 @@ int chooseScreenResolution()
 	}
 }
 
-int findMountDir(char mountdir[])
+int findMountDir(char config_file[])
 {
 	FILE *fp;
 	char strtmp[256] = {0};
@@ -189,13 +190,13 @@ int findMountDir(char mountdir[])
 	while (fgets(strtmp, 256, fp)) {
 		// if /root/udisk mounted
 		if (strstr(strtmp, "/root/udisk")) {
-			sprintf(mountdir, "/root/udisk");
+			sprintf(config_file, "/root/udisk/config.txt");
 			misc.recover_from = RECO_FROM_UDISK;
 			break;
 		}
 		// if /root/ldisk mounted
 		if (strstr(strtmp, "/root/ldisk")) {
-			sprintf(mountdir, "/root/ldisk");
+			sprintf(config_file, "/root/ldisk/config.txt");
 			misc.recover_from = RECO_FROM_LDISK;
 			break;
 		}
@@ -215,18 +216,15 @@ int clearLog()
 
 int main(int argc, char **argv)
 {
-	char mountdir[256] = {0};
+	char config_file[256] = {0};
 	int ret = 0;
 	int t = 0;
 	
 	// set different screen resolution for different machines
 	chooseScreenResolution();
 	
-	findMountDir(mountdir);
-/*	if (recover_from > 0) {
-		sprintf(mountdir, "%s/config.txt", mountdir);	
-	}
-	// download config.txt from network
+	findMountDir(config_file);
+/*	// download config.txt from network
 	else {
 		chdir("/root/ndisk/");
 		// set local IP
@@ -243,18 +241,26 @@ int main(int argc, char **argv)
 		misc.network = 1;
 	}
 */
-	misc.recover_from = 0;
+//	misc.recover_from = 0;
 	// start main body
 	L = luaL_newstate();
 	luaL_openlibs(L);
 	registerFuncs4Lua();	
-/*
-	if (loadFile(L, mountdir) == -1) {		
-		fprintf(stderr, "Can not find config.txt file in %s\n", mountdir);
+
+	// load local config file
+	if (loadConfig(L, "./localcfg.lua") != 0) {		
+		fprintf(stderr, "Can not find local config file\n");
 		lua_close(L);
 		return -1;
 	}
-*/    	
+	// load external config.txt file
+	if (loadConfig(L, config_file) != 0) {		
+		fprintf(stderr, "Can not find config.txt file in %s\n", config_file);
+		lua_close(L);
+		return -1;
+	}
+	
+    	
 //    	STK_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER, SDL_SWSURFACE, scr.w, scr.h, 32);
     	STK_Init(SDL_INIT_VIDEO, SDL_SWSURFACE, scr.w, scr.h, 32);
 
@@ -274,6 +280,7 @@ int main(int argc, char **argv)
 	
     	STK_Main();
 
+	free(grec);
 //	system("sleep 1 && reboot");
 	
 	return 0;

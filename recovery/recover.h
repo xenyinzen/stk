@@ -3,6 +3,8 @@
 
 
 #define BORDER	5
+#define NSCHEME 3
+#define NRECOWAY 3
 
 typedef struct Recovery {
 	STK_Label *label_head;
@@ -22,6 +24,7 @@ typedef struct Screen {
 } Screen;
 
 typedef struct Misc {
+	int running;
 	int progress;
 	int recover_from;
 	int rb_states[3];	

@@ -9,6 +9,16 @@
 extern Recovery *grec;
 
 
+int loadConfig( lua_State *L, const char *fname)
+{
+	if (luaL_loadfile(L, fname) || lua_pcall(L, 0, 0, 0) ) {
+		luaL_error(L, "Cannot load config file: %s", lua_tostring(L, -1));
+		return -1;
+	}
+
+	return 0;
+}
+
 int loadFile( lua_State *L, const char *fname)
 {
 	if (luaL_loadfile(L, fname) || lua_pcall(L, 0, 1, 0) ) {
@@ -140,6 +150,28 @@ int getTableBooleanElement(lua_State *L, char *t, char *element )
 	
 	b = lua_toboolean(L, -1);
 	lua_pop(L, 2);
+	
+	return b;
+}
+
+int setTableBooleanElement(lua_State *L, char *t, char *element, int b)
+{
+	// get the global table
+	lua_getglobal(L, t);
+	if (!lua_istable(L, -1)) {
+		fprintf(stderr, "wrong table parameter: %s.\n", t);
+		return -1;
+	}
+	
+	// push the boolean value to top of stack
+	lua_pushboolean(L, b);
+	
+	// set the specified element of the table
+	// this function will pop up the top element in the stack
+	lua_setfield(L, -2, (const char *)element);
+	
+	// pop up the global table t
+	lua_pop(L, 1);
 	
 	return b;
 }
