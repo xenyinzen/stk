@@ -18,8 +18,10 @@ Misc misc = {
 	0,			// running
 	0,			// progress
 	0,			// recover_from
+	0,			// recover_scheme
 	{1, 0, 0},		// rb_states[], whole, system, user
-	0			// network
+	0,			// network
+	0,
 };
 
 const char *recoway[NRECOWAY] = {
@@ -206,6 +208,45 @@ int findMountDir(char config_file[])
 	return 0;
 }
 
+int readAutoStartFile(FILE *fp)
+{
+	unsigned int tmp1, tmp2;
+	
+	fscanf(fp, "%d", &tmp1);
+	fscanf(fp, "%d", &tmp2);
+	
+	if (tmp2 > 2) {
+		fprintf(stderr, "Configuration error in autostart.txt\n");
+	}
+	
+	misc.autostart = (tmp1 == 0? 0: 1);
+	misc.recover_scheme = tmp2;
+	
+	if (misc.autostart) {
+		switch (misc.recover_scheme) {
+		case 0:
+			misc.rb_states[0] = 1;
+			misc.rb_states[1] = 0;
+			misc.rb_states[2] = 0;
+			break;
+
+		case 1:
+			misc.rb_states[0] = 0;
+			misc.rb_states[1] = 1;
+			misc.rb_states[2] = 0;
+			break;
+
+		case 2:
+			misc.rb_states[0] = 0;
+			misc.rb_states[1] = 0;
+			misc.rb_states[2] = 1;
+			break;
+		} 
+	}
+
+	return 0;
+}
+
 int clearLog()
 {
 	system("echo 0 > /root/progress.txt");
@@ -216,6 +257,8 @@ int clearLog()
 
 int main(int argc, char **argv)
 {
+	FILE *fp;
+	SDL_Event event;
 	char config_file[256] = {0};
 	int ret = 0;
 	int t = 0;
@@ -260,7 +303,14 @@ int main(int argc, char **argv)
 		return -1;
 	}
 	
-    	
+	if ( (fp = fopen("./autostart.txt", "r")) == NULL) {
+		fprintf(stderr, "Warning! Can't open file autostart.txt.\n");
+	}
+	else {
+		readAutoStartFile(fp);
+ 		fclose(fp);
+	}
+
 //    	STK_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER, SDL_SWSURFACE, scr.w, scr.h, 32);
     	STK_Init(SDL_INIT_VIDEO, SDL_SWSURFACE, scr.w, scr.h, 32);
 
@@ -278,10 +328,39 @@ int main(int argc, char **argv)
 	
 	STK_WindowOpen();
 	
-    	STK_Main();
+//    	STK_Main();
+
+	// clear the event's initial value to zero
+	memset(&event, 0, sizeof(event));
+	while (1) {
+		while (SDL_WaitEvent(&event)) {
+			if (STK_DispatchEvent(&event) != 0) {
+				STK_Quit();
+				free(grec);
+				system("sleep 1 && reboot");
+				return 0;
+			}
+
+			if (misc.autostart == 1) {
+				SDL_Event e;
+				e.button.type = SDL_MOUSEBUTTONDOWN;
+				e.button.button = SDL_BUTTON_LEFT;
+				e.button.state = SDL_PRESSED;
+				// we mutate a click on button_start
+				e.button.x = scr.w - 220 + 5;
+				e.button.y = BORDER + 45 + 5;
+				SDL_PushEvent(&e);
+				
+				misc.autostart = 2;
+			}
+		}
+		
+		// must here
+		SDL_Delay(10);
+	}
 
 	free(grec);
-//	system("sleep 1 && reboot");
+	system("sleep 1 && reboot");
 	
 	return 0;
 }

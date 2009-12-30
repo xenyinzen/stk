@@ -12,6 +12,21 @@ extern lua_State *L;
 
 static int pt_flag = 1;
 
+void cb_button_exit()
+{
+	SDL_Event event;
+	
+	lua_close(L);
+
+	event.type = SDL_QUIT;
+	event.user.code = 0;
+	event.user.data1 = NULL;
+	event.user.data2 = 0;
+		
+	SDL_PushEvent(&event);
+
+}
+
 int thread_bar(void *data)
 {
 	int ret;
@@ -57,8 +72,11 @@ int thread_bar(void *data)
 	}
 	
 	pt_flag = 0;
-	SDL_Delay(1000);
-	
+	SDL_Delay(3000);
+	if (misc.autostart == 2) {
+		cb_button_exit();
+	}
+		
 	return 0;
 }
 
@@ -93,13 +111,14 @@ int thread_update(void *data)
 int config_preprocess()
 {
 	int scheme[NSCHEME] = {0};
+	char tmp[256];
 	
 	// make sure recovery way by latency
 	if (grec->rg) {
-		memcpy(scheme, grec->rg->rb_states, sizeof(int)*NSCHEME );
+		memcpy(scheme, grec->rg->rb_states, sizeof(int)*NSCHEME);
 	}
 	else {
-		memcpy(scheme, misc.rb_states, (sizeof(int)*NSCHEME));
+		memcpy(scheme, misc.rb_states, sizeof(int)*NSCHEME);
 	}
 	
 	if (misc.network) {
@@ -148,7 +167,7 @@ int config_preprocess()
 		break;
 	}
 
-
+	return 0;
 }
 
 
@@ -171,23 +190,6 @@ void cb_button_start()
 	        fprintf(stderr, "Can't create thread: %s \n", SDL_GetError());
 	        return;
         }
-	
-
-}
-
-void cb_button_exit()
-{
-	SDL_Event event;
-	
-	lua_close(L);
-
-	event.type = SDL_QUIT;
-	event.user.code = 0;
-	event.user.data1 = NULL;
-	event.user.data2 = 0;
-		
-	SDL_PushEvent(&event);
-
 }
 
 void cb_button_pro()

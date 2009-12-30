@@ -173,7 +173,7 @@ int setTableBooleanElement(lua_State *L, char *t, char *element, int b)
 	// pop up the global table t
 	lua_pop(L, 1);
 	
-	return b;
+	return 0;
 }
 
 

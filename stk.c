@@ -20,7 +20,6 @@
 #include "stk_window.h"
 
 
-static int STK_DispatchEvent(SDL_Event *event);
 static void STK_InternalEvent(SDL_Event *event);
 
 /* Initial the video surface and the basic structures of STK.
@@ -90,7 +89,7 @@ int STK_Main()
 	
 }
 
-static int STK_DispatchEvent(SDL_Event *event)
+int STK_DispatchEvent(SDL_Event *event)
 {
 	SDL_Event e;
 	if (SDL_GetVideoSurface() == NULL)

@@ -27,8 +27,10 @@ typedef struct Misc {
 	int running;
 	int progress;
 	int recover_from;
-	int rb_states[3];	
+	int recover_scheme;
+	int rb_states[NSCHEME];	
 	int network;
+	int autostart;
 } Misc;
 
 enum {

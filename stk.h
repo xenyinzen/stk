@@ -15,6 +15,7 @@
 
 int STK_Init();
 int STK_Main();
+int STK_DispatchEvent(SDL_Event *event);
 int STK_Quit();
 
 
