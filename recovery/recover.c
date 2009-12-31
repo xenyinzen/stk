@@ -21,7 +21,7 @@ Misc misc = {
 	0,			// recover_scheme
 	{1, 0, 0},		// rb_states[], whole, system, user
 	0,			// network
-	0,
+	0,			// autostart
 };
 
 const char *recoway[NRECOWAY] = {
@@ -194,18 +194,20 @@ int findMountDir(char config_file[])
 		if (strstr(strtmp, "/root/udisk")) {
 			sprintf(config_file, "/root/udisk/config.txt");
 			misc.recover_from = RECO_FROM_UDISK;
-			break;
+			pclose(fp);
+			return 0;
 		}
 		// if /root/ldisk mounted
 		if (strstr(strtmp, "/root/ldisk")) {
 			sprintf(config_file, "/root/ldisk/config.txt");
 			misc.recover_from = RECO_FROM_LDISK;
-			break;
+			pclose(fp);
+			return 1;
 		}
 	}
 	
 	pclose(fp);
-	return 0;
+	return 2;
 }
 
 int readAutoStartFile(FILE *fp)
@@ -215,34 +217,32 @@ int readAutoStartFile(FILE *fp)
 	fscanf(fp, "%d", &tmp1);
 	fscanf(fp, "%d", &tmp2);
 	
-	if (tmp2 > 2) {
+	if (tmp1 > 2) {
 		fprintf(stderr, "Configuration error in autostart.txt\n");
 	}
 	
-	misc.autostart = (tmp1 == 0? 0: 1);
-	misc.recover_scheme = tmp2;
-	
-	if (misc.autostart) {
-		switch (misc.recover_scheme) {
-		case 0:
-			misc.rb_states[0] = 1;
-			misc.rb_states[1] = 0;
-			misc.rb_states[2] = 0;
-			break;
+	misc.autostart = 1;
+	misc.recover_scheme = tmp1;
 
-		case 1:
-			misc.rb_states[0] = 0;
-			misc.rb_states[1] = 1;
-			misc.rb_states[2] = 0;
-			break;
+	switch (misc.recover_scheme) {
+	case 0:
+		misc.rb_states[0] = 1;
+		misc.rb_states[1] = 0;
+		misc.rb_states[2] = 0;
+		break;
 
-		case 2:
-			misc.rb_states[0] = 0;
-			misc.rb_states[1] = 0;
-			misc.rb_states[2] = 1;
-			break;
-		} 
-	}
+	case 1:
+		misc.rb_states[0] = 0;
+		misc.rb_states[1] = 1;
+		misc.rb_states[2] = 0;
+		break;
+
+	case 2:
+		misc.rb_states[0] = 0;
+		misc.rb_states[1] = 0;
+		misc.rb_states[2] = 1;
+		break;
+	} 
 
 	return 0;
 }
@@ -266,9 +266,9 @@ int main(int argc, char **argv)
 	// set different screen resolution for different machines
 	chooseScreenResolution();
 	
-	findMountDir(config_file);
+	ret = findMountDir(config_file);
 /*	// download config.txt from network
-	else {
+	if (ret == 2) {
 		chdir("/root/ndisk/");
 		// set local IP
 		// system("ifconfig eth0 up");
@@ -284,7 +284,6 @@ int main(int argc, char **argv)
 		misc.network = 1;
 	}
 */
-//	misc.recover_from = 0;
 	// start main body
 	L = luaL_newstate();
 	luaL_openlibs(L);
