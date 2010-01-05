@@ -263,6 +263,7 @@ int getIPs(char ip[], char sip[])
 	FILE *fp;
 	char cmdline[256] = {0};
 	char *p;
+	int flag = 0;
 	
 	// read ip info
 	if ((fp = fopen("/proc/cmdline", "r")) == NULL) {
@@ -276,6 +277,7 @@ int getIPs(char ip[], char sip[])
 		fprintf(stderr, "%s\n", "NULL string in /proc/cmdline! Use default IP and SIP.");
 		strcpy(ip, "192.168.1.101");
 		strcpy(sip, "192.168.1.100");
+		fclose(fp);
 		return 1;
 	}
 	
@@ -289,6 +291,7 @@ int getIPs(char ip[], char sip[])
 	}
 	else {
 		strcpy(ip, "192.168.1.101");
+		flag = 1;
 	}
 	
 	// find SIP
@@ -301,9 +304,13 @@ int getIPs(char ip[], char sip[])
 	}
 	else {
 		strcpy(sip, "192.168.1.100");
+		flag = 1;
 	}
 
 	fclose(fp);
+	if (flag)
+		return 1;		
+	
 	return 0;
 }
 
@@ -320,7 +327,7 @@ int downloadNessesaryFilesFromNetwork(char *config_file)
 	sprintf(cmd, "ifconfig eth0 %s", ip);
 	system(cmd);
 	
-	// download font.ttf
+/*	// download font.ttf
 	chdir("/root/recovery/");
 	sprintf(cmd, "axel_daogang -n 1 ftp://%s/recovery/latest/font.ttf", sip);
 	ret = system(cmd);	
@@ -328,7 +335,7 @@ int downloadNessesaryFilesFromNetwork(char *config_file)
 		fprintf(stderr, "Can not download the font.ttf file from server.\n");
 		return -1;
 	}
-	
+*/	
 	chdir("/root/ndisk/");
 	// download config.txt file
 	sprintf(cmd, "axel_daogang -n 1 ftp://%s/recovery/latest/config.txt", sip);
@@ -361,18 +368,36 @@ int main(int argc, char **argv)
 	char config_file[256] = {0};
 	int ret = 0;
 	int t = 0;
+	char ip[256] = {0};
+	char sip[256] = {0};
+	
 	
 	// set different screen resolution for different machines
 	chooseScreenResolution();
 	
-	ret = findMountDir(config_file);
-	// download config.txt from network and set flags
-	if (ret == 2) {
-		ret = downloadNessesaryFilesFromNetwork(config_file);
-		if (ret) {
-			fprintf(stderr, "Exit.\n");
-			return -1;
+	ret = getIPs(ip, sip);
+	// if ret is not 0, it means cmdline has no IP or SIP
+	if (ret) {
+		ret = findMountDir(config_file);
+		// download config.txt from network and set flags
+		if (ret == 2) {
+			ret = downloadNessesaryFilesFromNetwork(config_file);
+			if (ret) {
+				fprintf(stderr, "Exit.\n");
+				return -1;
+			}
 		}
+	}
+	// if there is IP and SIP in cmdline
+	else {
+		misc.recover_from = RECO_FROM_NETWORK;
+		misc.recover_scheme = 0;	// network only have whole recovery mode
+
+		misc.rb_states[0] = 1;
+		misc.rb_states[1] = 0;
+		misc.rb_states[2] = 0;
+
+		misc.network = 1;
 	}
 
 	// start main body
@@ -387,10 +412,20 @@ int main(int argc, char **argv)
 		return -1;
 	}
 	// load external config.txt file
-	if (loadConfig(L, config_file) != 0) {		
-		fprintf(stderr, "Can not find config.txt file in %s\n", config_file);
-		lua_close(L);
-		return -1;
+	if (access(config_file, F_OK) == 0 ) {
+		if (loadConfig(L, config_file) != 0) {		
+			fprintf(stderr, "Can not load config.txt file: %s\n", config_file);
+			lua_close(L);
+			return -1;
+		}
+	}
+	else {
+		fprintf(stderr, "Can not find config.txt file, use default configuration.\n");
+		if (loadConfig(L, "/root/recovery/config.txt") != 0) {		
+			fprintf(stderr, "Can not load config.txt file: %s\n", config_file);
+			lua_close(L);
+			return -1;
+		}
 	}
 	
 	if (misc.recover_from != RECO_FROM_NETWORK) {
