@@ -182,6 +182,9 @@ int chooseScreenResolution()
 	else {
 		fprintf(stderr, "%s\n", "There is no arg 'machtype=lynloong' in /proc/cmdline. Use default resolution: 800x600.");
 	}
+	
+	fclose(fp);
+	return 0;
 }
 
 int findMountDir(char config_file[])
@@ -255,9 +258,105 @@ int clearLog()
 }
 
 
-int main(int argc, char **argv)
+int getIPs(char ip[], char sip[])
 {
 	FILE *fp;
+	char cmdline[256] = {0};
+	char *p;
+	
+	// read ip info
+	if ((fp = fopen("/proc/cmdline", "r")) == NULL) {
+		fprintf(stderr, "%s\n", "Can't open file /proc/cmdline! Can't get IP address, use default IP and SIP.");
+		strcpy(ip, "192.168.1.101");
+		strcpy(sip, "192.168.1.100");
+		return 1;
+	}
+	
+	if (fgets(cmdline, 256, fp) == NULL) {
+		fprintf(stderr, "%s\n", "NULL string in /proc/cmdline! Use default IP and SIP.");
+		strcpy(ip, "192.168.1.101");
+		strcpy(sip, "192.168.1.100");
+		return 1;
+	}
+	
+	// find IP
+	if ((p = strstr(cmdline, "IP=")) != NULL) {
+		strcpy(ip, p+3);
+		// remove the tail
+		if ((p = strstr(ip, " ")) != NULL) {
+			*p = '\0';
+		}
+	}
+	else {
+		strcpy(ip, "192.168.1.101");
+	}
+	
+	// find SIP
+	if ((p = strstr(cmdline, "SIP=")) != NULL) {
+		strcpy(sip, p+4);
+		// remove the tail
+		if ((p = strstr(sip, " ")) != NULL) {
+			*p = '\0';
+		}
+	}
+	else {
+		strcpy(sip, "192.168.1.100");
+	}
+
+	fclose(fp);
+	return 0;
+}
+
+int downloadNessesaryFilesFromNetwork(char *config_file)
+{
+	char ip[256] = {0};
+	char sip[256] = {0};
+	char cmd[256] = {0};
+	int ret = 0;
+	
+	getIPs(ip, sip);
+	// set local IP
+	system("ifconfig eth0 up");
+	sprintf(cmd, "ifconfig eth0 %s", ip);
+	system(cmd);
+	
+	// download font.ttf
+	chdir("/root/recovery/");
+	sprintf(cmd, "axel_daogang -n 1 ftp://%s/recovery/latest/font.ttf", sip);
+	ret = system(cmd);	
+	if (ret != 0) {
+		fprintf(stderr, "Can not download the font.ttf file from server.\n");
+		return -1;
+	}
+	
+	chdir("/root/ndisk/");
+	// download config.txt file
+	sprintf(cmd, "axel_daogang -n 1 ftp://%s/recovery/latest/config.txt", sip);
+	ret = system(cmd);
+	if (ret != 0) {
+		fprintf(stderr, "Can not download the config.txt file from server.\n");
+		return -1;
+	}
+
+	chdir("/root/recovery/");
+
+	sprintf(config_file, "/root/ndisk/config.txt");	
+	
+	misc.recover_from = RECO_FROM_NETWORK;
+	misc.autostart = 1;
+	misc.recover_scheme = 0;	// network only have whole recovery mode
+
+	misc.rb_states[0] = 1;
+	misc.rb_states[1] = 0;
+	misc.rb_states[2] = 0;
+
+	misc.network = 1;
+
+	return 0;
+}
+
+int main(int argc, char **argv)
+{
 	SDL_Event event;
 	char config_file[256] = {0};
 	int ret = 0;
@@ -267,30 +366,22 @@ int main(int argc, char **argv)
 	chooseScreenResolution();
 	
 	ret = findMountDir(config_file);
-/*	// download config.txt from network
+	// download config.txt from network and set flags
 	if (ret == 2) {
-		chdir("/root/ndisk/");
-		// set local IP
-		// system("ifconfig eth0 up");
-		// system("ifconfig eth0 192.168.1.100");
-		ret = system("wget ftp://192.168.1.1/config.txt");
-		chdir("-");
-		if (ret != 0) {
-			fprintf(stderr, "Can not download the config.txt file from server.\n");
+		ret = downloadNessesaryFilesFromNetwork(config_file);
+		if (ret) {
+			fprintf(stderr, "Exit.\n");
 			return -1;
 		}
-		sprintf(mountdir, "/root/ndisk/config.txt");	
-		misc.recover_from = RECO_FROM_NETWORK;
-		misc.network = 1;
 	}
-*/
+
 	// start main body
 	L = luaL_newstate();
 	luaL_openlibs(L);
 	registerFuncs4Lua();	
 
 	// load local config file
-	if (loadConfig(L, "./localcfg.lua") != 0) {		
+	if (loadConfig(L, "/root/recovery/localcfg.lua") != 0) {		
 		fprintf(stderr, "Can not find local config file\n");
 		lua_close(L);
 		return -1;
@@ -302,12 +393,15 @@ int main(int argc, char **argv)
 		return -1;
 	}
 	
-	if ( (fp = fopen("./autostart.txt", "r")) == NULL) {
-		fprintf(stderr, "Warning! Can't open file autostart.txt.\n");
-	}
-	else {
-		readAutoStartFile(fp);
- 		fclose(fp);
+	if (misc.recover_from != RECO_FROM_NETWORK) {
+		FILE *fp;
+		if ( (fp = fopen("/root/recovery/autostart.txt", "r")) == NULL) {
+			fprintf(stderr, "Warning! Can't open file autostart.txt.\n");
+		}
+		else {
+			readAutoStartFile(fp);
+			fclose(fp);
+		}
 	}
 
 //    	STK_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER, SDL_SWSURFACE, scr.w, scr.h, 32);
